@@ -7,16 +7,25 @@
 		<view>loginRes: {{loginRes}}</view>
 		<view>userInfo: {{userInfo}}</view>
 		<view>err: {{err}}</view>
+
+		<button type="primary" @click="toPay">paypal</button>
+		<view>payInfo 调起支付参数: {{payInfo}}</view>
+		<view>captureInfo 付款成功结果: {{captureInfo}}</view>
 	</view>
 </template>
 
 <script>
+	const PayOrder = uniCloud.importObject('pay-order')
+	const Paypal = uniCloud.importObject('paypal')
+
 	export default {
 		data() {
 			return {
 				loginRes: '',
 				err: '',
 				userInfo: '',
+				payInfo: {},
+				captureInfo:{}
 			}
 		},
 		methods: {
@@ -32,7 +41,8 @@
 							provider: 'facebook',
 							success: (info) => {
 								// 获取用户信息成功, info.authResult保存用户信息
-								this.userInfo = typeof info === 'object' ? JSON.stringify(info) : info;
+								this.userInfo = typeof info === 'object' ? JSON.stringify(info) :
+									info;
 							}
 						})
 					},
@@ -56,7 +66,8 @@
 							provider: 'google',
 							success: (info) => {
 								// 获取用户信息成功, info.authResult保存用户信息
-								this.userInfo = typeof info === 'object' ? JSON.stringify(info) : info;
+								this.userInfo = typeof info === 'object' ? JSON.stringify(info) :
+									info;
 							}
 						})
 					},
@@ -67,6 +78,30 @@
 						console.error(err);
 					}
 				})
+			},
+
+			async toPay() {
+				const data = await PayOrder.createBusinessOrder({
+					amount: 15
+				});
+				
+				this.payInfo = data;
+				uni.requestPayment({
+					"provider": "paypal",
+					"orderInfo": data,
+					success: async function(res) {
+						var rawdata = JSON.parse(res.rawdata);
+						console.log("orderId：" + rawdata.orderId);
+						let captureInfo = await Paypal.captureOrder({
+							orderId:rawdata.orderId
+						})
+						
+						this.captureInfo = captureInfo
+					},
+					fail: function(err) {
+						console.log('fail:' + JSON.stringify(err));
+					}
+				});
 			}
 		}
 	}
