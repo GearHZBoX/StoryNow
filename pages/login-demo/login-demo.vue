@@ -11,6 +11,7 @@
 		<button type="primary" @click="toPay">paypal1</button>
 		<view>payInfo 调起支付参数: {{payInfo}}</view>
 		<view>captureInfo 付款成功结果: {{captureInfo}}</view>
+		<view>payError 支付失败: {{payError}}</view>
 	</view>
 </template>
 
@@ -25,7 +26,8 @@
 				err: '',
 				userInfo: '',
 				payInfo: '',
-				captureInfo:''
+				captureInfo:'',
+				payError:''
 			}
 		},
 		methods: {
@@ -89,13 +91,17 @@
 				uni.requestPayment({
 					"provider": "paypal",
 					"orderInfo": data,
-					success: async function(res) {
+					success: async (res)=> {
 						var rawdata = JSON.parse(res.rawdata);
 						console.log("orderId：" + rawdata.orderId);
-						let captureInfo = await Paypal.captureOrder({
+						let [err,captureInfo] = await Paypal.captureOrder({
 							orderId:rawdata.orderId
 						})
-						
+						if(err){
+							this.payError = err;
+							return;
+						}
+						console.log("付款结果",captureInfo)
 						this.captureInfo = captureInfo
 					},
 					fail: function(err) {
