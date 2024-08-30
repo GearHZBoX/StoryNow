@@ -2,8 +2,8 @@
     "name" : "StoryNow",
     "appid" : "__UNI__5D691D4",
     "description" : "",
-    "versionName" : "1.0.1",
-    "versionCode" : 102,
+    "versionName" : "1.0.3",
+    "versionCode" : 103,
     "transformPx" : false,
     /* 5+App特有相关 */
     "app-plus" : {
@@ -41,7 +41,8 @@
                     "<uses-permission android:name=\"android.permission.FLASHLIGHT\"/>",
                     "<uses-feature android:name=\"android.hardware.camera\"/>",
                     "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"
-                ]
+                ],
+                "abiFilters" : [ "armeabi-v7a", "arm64-v8a", "x86" ]
             },
             /* ios打包配置 */
             "ios" : {
@@ -62,8 +63,8 @@
                 "payment" : {
                     "paypal" : {
                         "__platform__" : [ "ios", "android" ],
-                        "returnURL_ios" : "uni.UNI5D691D4://paypalpay",
-                        "returnURL_android" : "uni.UNI5D691D4://paypalpay"
+                        "returnURL_ios" : "test.demo1://paypalpay",
+                        "returnURL_android" : "test.demo1://paypalpay"
                     },
                     "google" : {}
                 }

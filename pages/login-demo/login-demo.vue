@@ -8,7 +8,7 @@
 		<view>userInfo: {{userInfo}}</view>
 		<view>err: {{err}}</view>
 
-		<button type="primary" @click="toPay">paypal</button>
+		<button type="primary" @click="toPay">paypal1</button>
 		<view>payInfo 调起支付参数: {{payInfo}}</view>
 		<view>captureInfo 付款成功结果: {{captureInfo}}</view>
 	</view>
@@ -24,8 +24,8 @@
 				loginRes: '',
 				err: '',
 				userInfo: '',
-				payInfo: {},
-				captureInfo:{}
+				payInfo: '',
+				captureInfo:''
 			}
 		},
 		methods: {
