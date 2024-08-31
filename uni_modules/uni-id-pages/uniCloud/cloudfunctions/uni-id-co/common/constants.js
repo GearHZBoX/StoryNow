@@ -25,8 +25,10 @@ const USER_IDENTIFIER = {
   'qq_openid.app': 'qq-account',
   'qq_openid.mp': 'qq-account',
   ali_openid: 'alipay-account',
-  apple_openid: 'alipay-account',
-  identities: 'idp'
+  apple_openid: 'apple-account',
+  identities: 'idp',
+  facebook_openid: 'facebook-account',
+  google_openid: 'google-account',
 }
 
 const USER_STATUS = {

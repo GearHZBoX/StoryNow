@@ -239,8 +239,8 @@
 						"xiaomi",
 						"sinaweibo",
 						"taobao",
-						"facebook",
-						"google",
+						// "facebook",
+						// "google",
 						"alipay",
 						"douyin",
 					].includes(type)) {
@@ -433,9 +433,9 @@
 					"univerifyStyle": this.univerifyStyle,
 					// #endif
 					success: async e => {
-						if (type == 'apple') {
+						if (['apple', 'facebook', 'google'].includes(type)) {
 							let res = await this.getUserInfo({
-								provider: "apple"
+								provider: type
 							})
 							Object.assign(e.authResult, res.userInfo)
 							uni.hideLoading()

@@ -51,7 +51,7 @@
                 "ad" : {},
                 "oauth" : {
                     "google" : {
-                        "clientid" : "771806129802-v0gto4si5sbikid4vo1dii7372ddresc.apps.googleusercontent.com"
+                        "clientid" : "771806129802-kitnh6mp2333bj21ribtcnlhisnm22cu.apps.googleusercontent.com"
                     },
                     "facebook" : {
                         "appid" : "1234052211101628",
@@ -91,5 +91,6 @@
     "uniStatistics" : {
         "enable" : false
     },
-    "vueVersion" : "3"
+    "vueVersion" : "3",
+    "locale" : "en"
 }

@@ -17,6 +17,7 @@
 				loginRes: '',
 				err: '',
 				userInfo: '',
+				debug: '',
 			}
 		},
 		methods: {
@@ -67,6 +68,11 @@
 						console.error(err);
 					}
 				})
+				
+				// plus.runtime.openURL('')
+				
+				
+				
 			}
 		}
 	}
