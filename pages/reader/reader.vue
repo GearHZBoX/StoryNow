@@ -6,7 +6,7 @@
 			<view class="uni-title">{{story.title}}</view>
 			<view class="uni-title-sub">{{story.uploader}}</view>
 			<view>{{story.hasPermission ? story.text : `${story.preview}...`}}</view>
-			<view>当前用户：{{userInfo.username}}，是否有阅读权限：{{story.hasPermission}}</view>
+			<view>当前用户：{{userInfo.nickname}}，是否有阅读权限：{{story.hasPermission}}</view>
 		</view>
 		<view v-if="error">{{'error: ' + typeof error === 'object' ? JSON.stringify(error) : error}}</view>
 		<uni-load-more status="loading" v-if="loading" icon-type="auto"></uni-load-more>

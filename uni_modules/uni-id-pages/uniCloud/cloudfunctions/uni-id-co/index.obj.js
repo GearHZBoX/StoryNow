@@ -33,7 +33,9 @@ const {
   loginByAlipay,
   loginByQQ,
   loginByApple,
-  loginByWeixinMobile
+  loginByWeixinMobile,
+  loginByFacebook,
+  loginByGoogle,
 } = require('./module/login/index')
 const {
   logout
@@ -692,5 +694,10 @@ module.exports = {
    * @param {Boolean} params.decryptData 是否解密数据
    * @returns
    */
-  getRealNameInfo
+  getRealNameInfo,
+  /**
+   * 追加实现第三方登录方法
+   */
+  loginByFacebook,
+  loginByGoogle,
 }
