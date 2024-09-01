@@ -4,13 +4,15 @@
 			"path": "pages/story-list/story-list",
 			"style": {
 				"enablePullDownRefresh": true,
-				"navigationBarTitleText": "%index.home%"
+				"navigationBarTitleText": "%index.home%",
+				"navigationStyle": "custom"
 			}
 		}, {
 			"path": "pages/user-center/user-center",
 			"style": {
 				"enablePullDownRefresh": false,
-				"navigationBarTitleText": "我的"
+				"navigationBarTitleText": "我的",
+				"navigationStyle": "custom"
 			}
 		}, {
 			"path": "uni_modules/uni-id-pages/pages/userinfo/deactivate/deactivate",
@@ -102,14 +104,16 @@
 			"path" : "pages/reader/reader",
 			"style" : 
 			{
-				"navigationBarTitleText" : "阅读器"
+				"navigationBarTitleText" : "阅读器",
+				"navigationStyle": "custom"
 			}
 		},
 		{
 			"path" : "pages/login-demo/login-demo",
 			"style" : 
 			{
-				"navigationBarTitleText" : ""
+				"navigationBarTitleText" : "",
+				"navigationStyle": "custom"
 			}
 		}
 	],
@@ -117,7 +121,7 @@
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",
 		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8"
+		"backgroundColor": "#F6F6F9"
 	},
 	"tabBar": {
 		"list": [{

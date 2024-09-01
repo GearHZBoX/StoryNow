@@ -1,9 +1,8 @@
 <template>
 	<view>
-		<!-- <view>render tag</view>
-		<view>{{typeof debugInfo === 'object' ? JSON.stringify(debugInfo) : debugInfo}}</view> -->
+		<fixed-header :title="storyTitle" backIcon></fixed-header>
+		<!-- <view>{{typeof debugInfo === 'object' ? JSON.stringify(debugInfo) : debugInfo}}</view> -->
 		<view v-if="!loading && !error">
-			<view class="uni-title">{{story.title}}</view>
 			<view class="uni-title-sub">{{story.uploader}}</view>
 			<view>{{story.hasPermission ? story.text : `${story.preview}...`}}</view>
 			<view>当前用户：{{userInfo.nickname}}，是否有阅读权限：{{story.hasPermission}}</view>
@@ -17,11 +16,16 @@
 	import {
 		store,
 		mutations
-	} from '@/uni_modules/uni-id-pages/common/store.js'
+	} from '@/uni_modules/uni-id-pages/common/store.js';
+	import fixedHeader from '../../components/fixed-header.vue';
 	export default {
+		components: {
+			fixedHeader,
+		},
 		data() {
 			return {
 				storyId: '',
+				storyTitle: '',
 				field: '_id,title,uploader,preview',
 				authorized: false,
 				loading: false,
@@ -37,6 +41,7 @@
 		},
 		onLoad(query) {
 			this.storyId = query.id;
+			this.storyTitle = query.title;
 			this.loading = true;
 			uniCloud.callFunction({
 				name: 'get-story',
@@ -47,6 +52,7 @@
 				console.log('get-story-res', res);
 				this.debugInfo = res;
 				this.story = res.result?.data || {};
+				this.storyTitle = this.story.title;
 			}).catch(err => {
 				console.error(err);
 				this.debugInfo = err;
@@ -58,11 +64,14 @@
 	}
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 	@import '@/common/uni-ui.scss';
 
 	.reader-title {
 		font-weight: bolder;
 		font-size: 32upx;
+	}
+	page {
+		background: none;
 	}
 </style>

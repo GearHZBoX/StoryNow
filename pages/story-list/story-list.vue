@@ -9,13 +9,16 @@
 	<view>
 		<!-- 刷新页面后的顶部提示框 -->
 		<view v-show="false" class="tips" :class="{ 'tips-ani': tipShow }">为您更新了10条最新新闻动态</view>
-		<uni-search-bar :radius="100" @confirm="search"></uni-search-bar>
+		<fixed-header className="list-header">
+			<uni-search-bar :radius="100" @confirm="search" style="width: 100%;"></uni-search-bar>
+		</fixed-header>
+		<view class="top-left-bg"></view>
 		<unicloud-db ref="udb" v-slot:default="{data, loading, error, options}" :options="formData" :collection="collection"
 		 :field="field" @load="load" :where="where" getcount :page-size="10" :page-current="1">
 			<!-- 基于 uni-list 的页面布局 -->
-			<uni-list>
+			<uni-list style="background: none;" border="false">
 				<!-- to 属性携带参数跳转详情页面，当前只为参考 -->
-				<uni-list-item direction="column" v-for="item in data" :key="item.id" :to="'/pages/reader/reader?id='+item._id">
+				<uni-list-item style="background: none;" direction="column" v-for="item in data" :key="item.id" :to="'/pages/reader/reader?id='+item._id+'&title='+item.title">
 					<!-- 通过header插槽定义列表的标题 -->
 					<template v-slot:header>
 						<view class="uni-title">{{item.title}}</view>
@@ -46,8 +49,11 @@
 </template>
 
 <script>
+	import fixedHeader from '../../components/fixed-header.vue';
 	export default {
-		components: {},
+		components: {
+			fixedHeader,
+		},
 		data() {
 			return {
 				// 数据表名
@@ -163,5 +169,18 @@
 		display: -webkit-box;
 		-webkit-line-clamp: 2;
 		-webkit-box-orient: vertical;
+	}
+	.list-header {
+		background: url('../../static/index-header.png') no-repeat;
+		background-size: cover;
+		background-color: #F6F6F9;
+	}
+	.top-left-bg {
+		background: url('../../static/bg.png') no-repeat;
+		background-size: contain;
+		position: fixed;
+		width: 100%;
+		height: 1000rpx;
+		top: 0;
 	}
 </style>
