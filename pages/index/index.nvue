@@ -4,9 +4,10 @@
 	</view>
 	<view class="search-container" @click="toSearch">
 		<image src="../../static/search-icon.png" class="search-container-icon"></image>
-		<text class="search-container-value">{{searchVal}}</text>
+		<text v-if="!searchVal" class="search-container-placeholder">{{placeholder}}</text>
+		<text v-if="searchVal" class="search-container-value">{{searchVal}}</text>
 		<span v-if="searchVal" @click.stop="clearToSearch" class="search-container-clear">
-			<uni-icons type="clear" color="rgba(0, 0, 0, 0.32)" size="16"></uni-icons>
+			<uni-icons type="clear" class="search-container-clear-icon" color="#c0c4cc" size="20"></uni-icons>
 		</span>
 	</view>
 	<list show-scrollbar="false" :style="'height:' + pageHeight + 'px'" ref="sublist" class="list" :offset-accuracy="5" :bounce="true"
@@ -97,6 +98,7 @@
 				total: 1,
 				initiated: false,
 				isEmpty: false,
+				placeholder: 'When My Life Ends，I Still love yoU yoU yoU yoU yoU yoU yoU yoU yoU ',
 			}
 		},
 		computed: {
@@ -145,7 +147,7 @@
 		methods: {
 			toSearch() {
 				uni.navigateTo({
-					url: '/pages/search/search?searchVal=' + this.searchVal,
+					url: `/pages/search/search?searchVal=${this.searchVal}&placeholder=${this.placeholder}` ,
 				});
 			},
 			clearToSearch() {
@@ -461,7 +463,7 @@
 	}
 
 	.search-container {
-		margin: 0 16px;
+		margin: 0 18px;
 		background-color: #ffffff;
 		border-radius: 100px;
 		height: 36px;
@@ -478,10 +480,13 @@
 			margin-right: 8px;
 		}
 		
-		&-value {
+		&-placeholder {
 			overflow: hidden;
-			color: #221F33;
+			color: #C0C0CC;
 			text-overflow: ellipsis;
+			white-space: nowrap;
+			lines: 1;
+			flex: 1;
 			
 			/* body/regular */
 			font-family: "PingFang SC";
@@ -489,11 +494,39 @@
 			font-style: normal;
 			font-weight: 400;
 			line-height: 20px; /* 142.857% */
+			padding-right: 20px;
+		}
+		
+		&-value {
+			overflow: hidden;
+			color: #221F33;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			lines: 1;
+			flex: 1;
+			
+			/* body/regular */
+			font-family: "PingFang SC";
+			font-size: 14px;
+			font-style: normal;
+			font-weight: 400;
+			line-height: 20px; /* 142.857% */
+			padding-right: 20px;
 		}
 		
 		&-clear {
 			position: absolute;
-			right: 16px;
+			right: 0;
+			height: 36px;
+			width: 44px;
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			justify-content: flex-start;
+			
+			&-icon {
+				padding-left: 8px;
+			}
 		}
 	}
 	

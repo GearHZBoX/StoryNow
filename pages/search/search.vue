@@ -2,7 +2,7 @@
 	<view>
 		<view class="page-header"></view>
 		<view class="search-container">
-			<uni-search-bar ref="searchBar" @clear="clear" @confirm="search" @cancel="cancel" focus="true" v-model="searchVal" bg-color="#ffffff"
+			<uni-search-bar :placeholder="placeholder" ref="searchBar" @clear="clear" @confirm="search" @cancel="cancel" focus="true" v-model="searchVal" bg-color="#ffffff"
 				:radius="100"></uni-search-bar>
 		</view>
 		<view class="search-history">
@@ -33,11 +33,25 @@
 			return {
 				searchVal: '',
 				history: [],
+				placeholder: '',
 			};
+		},
+		computed: {
+			realSearchVal() {
+				try{
+					return this.searchVal.trim() || this.placeholder.trim()
+				}catch(e){
+					console.error(e);
+					return '';
+				}
+			},
 		},
 		async onLoad(query) {
 			if (query.searchVal) {
 				this.searchVal = query.searchVal;
+			}
+			if (query.placeholder) {
+				this.placeholder = query.placeholder;
 			}
 			const {
 				data: history
@@ -60,11 +74,11 @@
 				uni.navigateBack({
 					success: () => {
 						uni.$emit('index-search', {
-							searchVal: this.searchVal?.trim()
+							searchVal: this.realSearchVal,
 						});
 					}
 				});
-				if (!this.searchVal?.trim()) {
+				if (!this.realSearchVal) {
 					return;
 				}
 				let historyItems = [];
@@ -82,7 +96,7 @@
 					console.error(err);
 				}
 
-				const newHistory = [...new Set([this.searchVal, ...historyItems])];
+				const newHistory = [...new Set([this.realSearchVal, ...historyItems])];
 
 				uni.setStorage({
 					key: SEARCH_HISTORY_STORAGE_KEY,
@@ -187,10 +201,13 @@
 				padding: 6px 16px;
 				border-radius: 20px;
 				background-color: #ffffff;
+				lines: 1;
+				max-width: 120px;
 
 				overflow: hidden;
 				color: #605C73;
 				text-overflow: ellipsis;
+				white-space: nowrap;
 
 				/* body/regular */
 				font-family: "PingFang SC";
