@@ -1,5 +1,13 @@
 {
-	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+	"pages": [ 
+		{
+			"path" : "pages/index/index",
+			"style" : 
+			{
+				"navigationBarTitleText" : "",
+				"navigationStyle": "custom"
+			}
+		},
 		{
 			"path": "pages/story-list/story-list",
 			"style": {
@@ -115,6 +123,22 @@
 				"navigationBarTitleText" : "",
 				"navigationStyle": "custom"
 			}
+		},
+		{
+			"path" : "pages/search/search",
+			"style" : 
+			{
+				"navigationBarTitleText" : "",
+				"navigationStyle": "custom",
+				"backgroundColor": "#F6F6F9"
+			}
+		},
+		{
+			"path" : "pages/nvue-demo/nvue-demo",
+			"style" : 
+			{
+				"navigationBarTitleText" : "sticky-list"
+			}
 		}
 	],
 	"globalStyle": {
@@ -125,16 +149,16 @@
 	},
 	"tabBar": {
 		"list": [{
-				"pagePath": "pages/story-list/story-list",
-				"text": "%index.home%"
+				"pagePath": "pages/index/index",
+				"text": "%index.home% weex"
+			},
+			{
+					"pagePath": "pages/nvue-demo/nvue-demo",
+					"text": "nvue demo"
 			},
 			{
 				"pagePath": "pages/user-center/user-center",
 				"text": "我的"
-			},
-			{
-				"pagePath": "pages/login-demo/login-demo",
-				"text": "第三方登录测试"
 			}
 		]
 	},

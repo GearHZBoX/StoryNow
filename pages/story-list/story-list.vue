@@ -177,7 +177,7 @@
 	}
 	.top-left-bg {
 		background: url('../../static/bg.png') no-repeat;
-		background-size: contain;
+		background-size: cover;
 		position: fixed;
 		width: 100%;
 		height: 1000rpx;
