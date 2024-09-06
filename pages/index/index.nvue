@@ -10,8 +10,8 @@
 			<uni-icons type="clear" class="search-container-clear-icon" color="#c0c4cc" size="20"></uni-icons>
 		</span>
 	</view>
-	<list show-scrollbar="false" :style="'height:' + pageHeight + 'px'" ref="sublist" class="list" :offset-accuracy="5" :bounce="true"
-		isSwiperList="true" :loadmoreoffset="5">
+	<list show-scrollbar="false" :style="'height:' + pageHeight + 'px'" ref="sublist" class="list" :offset-accuracy="5"
+		:bounce="true" isSwiperList="true" :loadmoreoffset="5">
 		<refresh class="refresh" @refresh="onrefresh" @pullingdown="onpullingdown"
 			:display="refreshing ? 'show' : 'hide'">
 			<div class="refresh-view">
@@ -22,14 +22,22 @@
 			</div>
 		</refresh>
 		<cell v-for="(item, index) in dataList" :key="index" :ref="'item'+index" @click="onclick">
-			<view class="list-item">
+			<view class="list-item" @click="toReader(item)">
 				<view v-if="item.type === 'skeleton'" class="skeleton-view">
 					<view class="skeleton-view-title"></view>
 					<view class="skeleton-view-text"></view>
 					<view class="skeleton-view-footer"></view>
 				</view>
 				<view v-else>
-					<text class="header-title">{{item.title}}</text>
+					<text class="header-title" v-if="!searchVal">{{item.title}}</text>
+					<view class="fragment-view" :lines="1" v-else>
+						<view class="title-fragments"
+							v-for="(fragment, fragmentIndex) in item.title?.split(searchVal)">
+							<text class="title-text">{{fragment}}</text>
+							<text class="title-text highlight-keyword"
+								v-if="fragmentIndex < item.title?.split(searchVal).length - 1">{{searchVal}}</text>
+						</view>
+					</view>
 					<text class="summary">{{item.summary}}</text>
 					<view class="list-item-footer">
 						<image class="list-item-footer-icon" src="../../static/icon-book.png"></image>
@@ -145,14 +153,26 @@
 			// });
 		},
 		methods: {
+			toReader({ _id, title }) {
+				if (!_id) {
+					return;
+				}
+				uni.navigateTo({
+					url: `/pages/reader/reader?id=${_id}&title=${title}`,
+				});
+			},
 			toSearch() {
 				uni.navigateTo({
-					url: `/pages/search/search?searchVal=${this.searchVal}&placeholder=${this.placeholder}` ,
+					url: `/pages/search/search?searchVal=${this.searchVal}&placeholder=${this.placeholder}`,
+					animationType: 'fade-in',
+					animationDuration: 200,
 				});
 			},
 			clearToSearch() {
 				uni.navigateTo({
 					url: '/pages/search/search',
+					animationType: 'fade-in',
+					animationDuration: 200,
 				});
 			},
 			async onrefresh(e) {
@@ -212,17 +232,16 @@
 						.collection('short-stories')
 						.where(where)
 						.field('_id,title,summary,uploader')
+						.orderBy('createdAt desc')
 						.skip(this.pageSize * (this.pageCurrent - 1))
 						.limit(this.pageSize)
 						.get({
 							getCount: true
 						});
-					console.log('dbResp', this.pageCurrent, this.pageSize, dbResp);
 					if (!append) {
 						this.dataList = [];
 					}
 					this.dataList.push(...dbResp.data);
-					console.log('dataList', this.dataList);
 					this.total = dbResp.count;
 				} catch (err) {
 					console.error(err);
@@ -423,21 +442,6 @@
 		}
 	}
 
-	.header-title {
-		overflow: hidden;
-		color: #221F33;
-		text-overflow: ellipsis;
-		lines: 1;
-
-		/* Title/medium */
-		font-family: "Open Sans";
-		font-size: 16px;
-		font-style: normal;
-		font-weight: 400;
-		line-height: 20px;
-		/* 125% */
-		margin-bottom: 8px;
-	}
 
 	.summary {
 		overflow: hidden;
@@ -473,13 +477,13 @@
 		flex-direction: row;
 		align-items: center;
 		position: relative;
-		
+
 		&-icon {
 			height: 14px;
 			width: 14px;
 			margin-right: 8px;
 		}
-		
+
 		&-placeholder {
 			overflow: hidden;
 			color: #C0C0CC;
@@ -487,16 +491,17 @@
 			white-space: nowrap;
 			lines: 1;
 			flex: 1;
-			
+
 			/* body/regular */
 			font-family: "PingFang SC";
 			font-size: 14px;
 			font-style: normal;
 			font-weight: 400;
-			line-height: 20px; /* 142.857% */
+			line-height: 20px;
+			/* 142.857% */
 			padding-right: 20px;
 		}
-		
+
 		&-value {
 			overflow: hidden;
 			color: #221F33;
@@ -504,16 +509,17 @@
 			white-space: nowrap;
 			lines: 1;
 			flex: 1;
-			
+
 			/* body/regular */
 			font-family: "PingFang SC";
 			font-size: 14px;
 			font-style: normal;
 			font-weight: 400;
-			line-height: 20px; /* 142.857% */
+			line-height: 20px;
+			/* 142.857% */
 			padding-right: 20px;
 		}
-		
+
 		&-clear {
 			position: absolute;
 			right: 0;
@@ -523,37 +529,95 @@
 			flex-direction: row;
 			align-items: center;
 			justify-content: flex-start;
-			
+
 			&-icon {
 				padding-left: 8px;
 			}
 		}
 	}
-	
+
 	.empty-view {
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		padding-top: 160px;
-		
+
 		&-image {
 			width: 160px;
 			height: 160px;
 			margin-bottom: 6px;
 		}
-		
+
 		&-text {
 			overflow: hidden;
 			color: rgba(0, 0, 0, 0.25);
 			text-align: center;
 			text-overflow: ellipsis;
-			
+
 			/* Mobile/Tag/T1_2_ZH */
 			font-family: "PingFang SC";
 			font-size: 12px;
 			font-style: normal;
 			font-weight: 400;
-			line-height: 16px; /* 133.333% */
+			line-height: 16px;
+			/* 133.333% */
 		}
+	}
+
+	.highlight-keyword {
+		color: #6B4CFF;
+	}
+	
+	.header-title {
+		overflow: hidden;
+		color: #221F33;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		lines: 1;
+	
+		/* Title/medium */
+		font-family: "Open Sans";
+		font-size: 16px;
+		font-style: normal;
+		font-weight: 400;
+		line-height: 20px;
+		margin-bottom: 8px;
+	}
+	
+	.title-fragments {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		lines: 1;
+		margin-bottom: 8px;
+		flex-wrap: nowrap;
+	}
+	
+	.title-text {
+		overflow: hidden;
+		color: #221F33;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		lines: 1;
+	
+		/* Title/medium */
+		font-family: "Open Sans";
+		font-size: 16px;
+		font-style: normal;
+		font-weight: 400;
+		line-height: 20px;
+	}
+	
+	.fragment-view {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		overflow: hidden;
+		lines: 1;
+		text-overflow: ellipsis;
+	}
+	
+	uni-page-body {
+		flex-direction: column;
 	}
 </style>

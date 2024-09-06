@@ -1,5 +1,5 @@
 <template>
-	<view>
+	<view :id="id">
 		<view :class="`fixed-header ${className}`" :style="style">
 			<uni-icons v-if="backIcon" type="left" class="fixed-header-icon" @click="goBack()"></uni-icons>
 			<text v-if="title" class="fixed-header-title">{{title}}</text>
@@ -17,6 +17,7 @@
 			backIcon: Boolean,
 			className: String,
 			style: String,
+			id: String,
 		},
 		data() {
 			return {
@@ -34,14 +35,15 @@
 <style lang="scss" scoped>
 	.fixed-header {
 		height: 44rpx;
-		padding: 20rpx 16rpx;
+		padding: 4rpx 16rpx;
 		display: flex;
 		align-items: center;
 		column-gap: 10rpx;
 		position: fixed;
-		background-color: none;
+		background-color: #ffffff;
 		width: calc(100% - 35rpx);
 		padding-top: 80rpx;
+		padding-bottom: 16px;
 		z-index: 10;
 
 		&-icon {
@@ -59,6 +61,6 @@
 		}
 	}
 	.header-padding {
-		padding-top: 160rpx;
+		padding-top: 120rpx;
 	}
 </style>

@@ -219,4 +219,9 @@
 			}
 		}
 	}
+	.search-container {		
+		.uni-searchbar {
+			padding-top: 0;
+		}
+	}
 </style>
