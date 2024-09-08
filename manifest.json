@@ -63,6 +63,9 @@
                     "facebook" : {
                         "appid" : "1234052211101628",
                         "client_token" : "a8049756ff270e7e921c0695e4a82f46"
+                    },
+                    "apple" : {
+                        "bundleid" : "123"
                     }
                 }
             },

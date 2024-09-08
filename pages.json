@@ -127,13 +127,37 @@
 				"navigationStyle": "custom",
 				"backgroundColor": "#F6F6F9"
 			}
+		},
+		{
+			"path" : "pages/login/login",
+			"style" : 
+			{
+				"navigationBarTitleText" : "",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path" : "pages/login/login-with-password",
+			"style" : 
+			{
+				"navigationBarTitleText" : ""
+			}
+		},
+		{
+			"path" : "pages/login/register-with-password",
+			"style" : 
+			{
+				"navigationBarTitleText" : "",
+				"navigationStyle": "custom"
+			}
 		}
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",
 		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F6F6F9"
+		"backgroundColor": "#F6F6F9",
+		"navigationStyle": "custom"
 	},
 	"tabBar": {
 		"list": [{
@@ -142,7 +166,7 @@
 		}]
 	},
 	"uniIdRouter": {
-		"loginPage": "uni_modules/uni-id-pages/pages/login/login-withpwd",
+		"loginPage": "pages/login/login",
 		"needLogin": [
 
 		]

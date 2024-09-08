@@ -27,7 +27,7 @@
 				<text class="ticket-left-description">Access to popular content across all platforms.</text>
 			</view>
 			<view class="ticket-divider"></view>
-			<view class="ticket-right">
+			<view class="ticket-right" @click.stop="purchaseVip">
 				<text class="ticket-right-prefix">${{price}}/</text>
 				<text class="ticket-right-suffix">day</text>
 			</view>
@@ -68,6 +68,25 @@
 				return store.userInfo || {};
 			},
 		},
+		methods: {
+			purchaseVip() {
+				// 判断登录状态
+				if (!store.hasLogin) {
+					uni.navigateTo({
+						url: '/pages/login/login',
+					})
+					
+					return;
+				}
+				
+				if (!this.story.hasPermission) {
+					console.log('to purchase page');
+					return;
+				}
+				
+				console.log('already has permission');
+			},
+		},
 		onReady() {
 			this.pageHeight = uni.getSystemInfoSync().windowHeight;
 			this.pageWidth = uni.getSystemInfoSync().windowWidth;
@@ -97,7 +116,6 @@
 		mounted() {
 			const query = uni.createSelectorQuery().in(this);
 			query.select('#navigator').boundingClientRect(data => {
-				console.log(data);
 				this.navigatorBottomTop = data.height;
 			}).exec();
 		},
@@ -106,7 +124,6 @@
 		}) {
 			const query = uni.createSelectorQuery().in(this);
 			query.select('#title').boundingClientRect(data => {
-				console.log(data.height + data.top, this.navigatorBottomTop);
 				if (data.height + data.top < this.navigatorBottomTop) {
 					this.showNavigatorTitle = true;
 				} else {

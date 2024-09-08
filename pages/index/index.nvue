@@ -145,12 +145,6 @@
 		async onReady() {
 			this.pageHeight = uni.getSystemInfoSync().windowHeight;
 			this.pageWidth = uni.getSystemInfoSync().windowWidth;
-			// uni.createSelectorQuery().in(this).select('#head').boundingClientRect().exec(rect => {
-			// 	this.$refs.sublist.setSpecialEffects({
-			// 		id: this.parentListId,
-			// 		headerHeight: rect[0].height
-			// 	});
-			// });
 		},
 		methods: {
 			toReader({ _id, title }) {
@@ -306,6 +300,7 @@
 		min-height: 100%;
 		display: flex;
 		font-family: "Open Sans";
+		background-color: #F6F6F9;
 	}
 
 	/* #endif */
