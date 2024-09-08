@@ -1,16 +1,22 @@
 import App from './App'
+//  #ifdef APP
 import Vuei18n from 'vue-i18n';
+// #endif
 import i18nConfig from './i18n/index.js';
 
 // #ifndef VUE3
 import Vue from 'vue'
 import './uni.promisify.adaptor'
 Vue.config.productionTip = false
+// #ifdef APP
 Vue.use(Vuei18n);
 const i18n = new Vuei18n(i18nConfig);
+// #endif
 App.mpType = 'app'
 const app = new Vue({
+// #ifdef APP
   i18n,
+// #endif
   ...App
 })
 app.$mount();

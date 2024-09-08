@@ -1,0 +1,18 @@
+$story-now-text-color-highlight: #9883FC;
+
+@font-face {
+	font-family: "Open Sans" sans-serif;
+	src: url("./static/font/Open_Sans/OpenSans-VariableFont_wdth,wght.ttf");
+}
+
+.view-with-header {
+	padding-top: 80rpx;
+}
+
+.page-header {
+	padding-top: 40px;
+}
+
+.highlight {
+	color: #9883FC;
+}
