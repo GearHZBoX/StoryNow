@@ -1,9 +1,13 @@
 <template>
 	<view class="user-center-page">
 		<!-- 登录状态 -->
-		<view class="login-status-box">
-			<img src="" class="head-img" />
+		<view class="login-status-box" v-if="!hasLogin" @click="toLogin">
 			Login in
+			<i></i>
+		</view>
+		<view class="login-status-box" v-else>
+			<img :src="userInfo.avatar_url" class="head-img" />
+			{{userInfo.username}}
 			<i></i>
 		</view>
 
@@ -19,33 +23,46 @@
 
 		<view class="history">
 			<view class="menu-item">
-				<view class="menu-item-icon"></view>
+				<view class="menu-item-icon ">
+					<img src="../../static/user-center/history.svg" />
+				</view>
 				<view class="menu-item-title">历史记录</view>
 				<view class="menu-item-more"></view>
 			</view>
-			
+
 			<view class="read-continue">
-					<text>Stepford Wives Literature's Overbearing President Loves Meg husband gets punished!
-</text>
-					<view class="continue">continue</view>
+				<text>Stepford Wives Literature's Overbearing President Loves Meg husband gets punished!
+				</text>
+				<view class="continue">continue</view>
 			</view>
 		</view>
 
 		<view class="menu-box">
-			<view class="menu-item">
-				<view class="menu-item-icon"></view>
-				<view class="menu-item-title">标题</view>
+			<view class="menu-item" @click="toPage('/pages/about-us/about-us')">
+				<view class="menu-item-icon">
+					<img src="../../static/user-center/about.svg" />
+				</view>
+				<view class="menu-item-title">About Us</view>
 				<view class="menu-item-more"></view>
 			</view>
-			<view class="menu-item">
-				<view class="menu-item-icon"></view>
-				<view class="menu-item-title">标题2</view>
+			<view class="menu-item" @click="toPage('/pages/feedback/feedback')">
+				<view class="menu-item-icon">
+					<img src="../../static/user-center/feedback.svg" />
+				</view>
+				<view class="menu-item-title">Report and Feedback</view>
+				<view class="menu-item-more"></view>
+			</view>
+			<view class="menu-item" v-if="hasLogin" @click="logout">
+				<view class="menu-item-icon">
+					<img src="../../static/user-center/logout.svg" />
+				</view>
+				<view class="menu-item-title">Log Out</view>
 				<view class="menu-item-more"></view>
 			</view>
 		</view>
 
 
-		<!-- 	<view>用户信息</view>
+		<!-- 		<view>用户信息</view>
 		<view>{{JSON.stringify(userInfo, null, 2)}}</view>
 		<button v-if="!userInfo._id" @click="goto('/uni_modules/uni-id-pages/pages/login/login-withpwd')">{{$t('login')}}</button>
 		<button v-if="!userInfo._id" @click="goto('/uni_modules/uni-id-pages/pages/register/register')">{{$t('register')}}</button>
@@ -62,21 +79,37 @@
 	} from "@/uni_modules/uni-id-pages/common/store.js";
 
 	export default {
+		computed: {
+			userInfo() {
+				return store.userInfo || {};
+			},
+			hasLogin() {
+				return store.hasLogin
+			}
+		},
 		data() {
 			return {
-				userInfo: store.userInfo,
-
 				menuList: [{
 
 				}]
 			};
 		},
 		methods: {
-			goto(url) {
+			toPage(url) {
 				uni.navigateTo({
-					url,
+					url: url,
+					animationType: 'fade-in',
+					animationDuration: 200,
 				});
 			},
+			
+			// 跳转登录
+			toLogin(){
+				uni.navigateTo({
+					url: '/pages/login/login',
+				})
+			},
+			
 			logout() {
 				mutations.logout();
 			},
@@ -85,52 +118,50 @@
 </script>
 
 <style lang="scss" scoped>
-	uni-page-body{
-		height:100%;
+	uni-page-body {
+		height: 100%;
+		background: url('../../static/img_bg.png') top/100% 100% no-repeat;
 	}
+
 	.user-center-page {
 		display: flex;
 		flex-direction: column;
 		height: 100%;
-		border: 1rpx solid red;
-		background: pink;
 
 		.login-status-box {
-			height: 88rpx;
-			border: 1rpx solid black;
+			height: 44px;
 			display: flex;
 			justify-content: flex-start;
 			align-items: center;
-			margin: 48rpx;
+			margin: 24px;
 			font-family: "Open Sans";
-			font-size: 40rpx;
+			font-size: 20px;
 			font-style: normal;
 			font-weight: 600;
-			line-height: 56rpx;
+			line-height: 28px;
 
 			.head-img {
-				width: 88rpx;
-				height: 88rpx;
+				width: 44px;
+				height: 44px;
 				border-radius: 50%;
-				border: 2rpx solid red;
-				margin-right: 28rpx;
+				margin-right: 14px;
 			}
 
 			i {
-				width: 32rpx;
-				height: 32rpx;
-				border: 2rpx solid red;
-				margin-left: 12rpx;
+				width: 16px;
+				height: 16px;
+				margin-left: 6px;
+				background: url('../../static/user-center/arrow.svg') center/100% auto no-repeat;
 			}
 		}
 
 		.vip-box {
-			border: 1rpx solid red;
-			margin: 0 48rpx;
-			padding: 24rpx 32rpx;
+			border: 1px solid red;
+			margin: 0 24px;
+			padding: 12px 16px;
 			background: #FCEDCF;
-			border: 2rpx solid white;
-			border-radius: 24rpx 24rpx 0 0;
+			border: 1px solid white;
+			border-radius: 12px 12px 0 0;
 			display: flex;
 			align-items: center;
 			justify-content: space-around;
@@ -142,45 +173,45 @@
 				.vip-title {
 					color: #483510;
 					font-family: "PingFang SC";
-					font-size: 28rpx;
+					font-size: 14px;
 					font-style: normal;
 					font-weight: 500;
-					line-height: 40rpx;
+					line-height: 20px;
 					/* 142.857% */
 				}
 
 				.vip-desc {
 					color: #A68332;
 					font-family: "Open Sans";
-					font-size: 24rpx;
+					font-size: 12px;
 					font-style: normal;
 					font-weight: 400;
-					line-height: 32rpx;
+					line-height: 16px;
 					/* 133.333% */
 				}
 			}
 
 			.vip-right {
-				width: 160rpx;
-				height: 72rpx;
-				padding: 16rpx 40rpx;
-				border-radius: 80rpx;
+				width: 80px;
+				height: 36px;
+				padding: 8px 20px;
+				border-radius: 40px;
 				background: #F8D177;
-				margin-left: 32rpx;
+				margin-left: 16px;
 				box-sizing: border-box;
 				display: flex;
 				justify-content: center;
 				align-items: center;
 				color: #483510;
 				font-family: "Open Sans";
-				font-size: 24rpx;
+				font-size: 12px;
 				font-style: normal;
 				font-weight: 400;
 
 				text {
 					color: #483510;
 					font-family: Roboto;
-					font-size: 28rpx;
+					font-size: 14px;
 					font-style: normal;
 					font-weight: 600;
 				}
@@ -188,67 +219,76 @@
 		}
 
 		.history {
-			margin: 0 32rpx;
-			border-radius: 24rpx;
+			margin: 0 16px;
+			border-radius: 12px;
 			overflow: hidden;
-			margin-bottom: 24rpx;
+			margin-bottom: 12px;
 			background: white;
-			.read-continue{
-				margin:0 24rpx;
-				border-radius: 24rpx;
-				padding: 24rpx;
-				margin-bottom: 32rpx;
+
+			.read-continue {
+				margin: 0 12px;
+				border-radius: 12px;
+				padding: 12px;
+				margin-bottom: 16px;
 				display: flex;
 				align-items: center;
-				background:  #F0EDFF;
-				text{
+				background: #F0EDFF;
+
+				text {
 					overflow: hidden;
 					text-overflow: ellipsis;
 					white-space: nowrap;
 					font-family: "PingFang SC";
-					font-size: 28px;
+					font-size: 14px;
 					font-style: normal;
 					font-weight: 400;
-					line-height: 40px; 
+					line-height: 20px;
 				}
-				.continue{
+
+				.continue {
 					display: flex;
 					justify-content: center;
 					align-items: center;
 					display: flex;
-					height: 56rpx;
-					padding: 16rpx 24rpx;
+					height: 28px;
+					padding: 8px 12px;
 					justify-content: center;
 					align-items: center;
-					border-radius: 40rpx;
+					border-radius: 20px;
 					background: rgba(255, 255, 255, 0.60);
 					color: #6B4CFF;
 					font-family: "PingFang SC";
-					font-size: 24rpx;
+					font-size: 12px;
 					font-style: normal;
 					font-weight: 500;
-					line-height: 28rpx; /* 116.667% */
+					line-height: 14px;
+					/* 116.667% */
 				}
 			}
 		}
 
 		.menu-box {
-			margin: 0 32rpx;
-			border-radius: 24rpx;
+			margin: 0 16px;
+			border-radius: 12px;
 			overflow: hidden;
 		}
 
 		.menu-item {
 			background: #FFF;
-			padding: 32rpx;
+			padding: 16px;
 			display: flex;
 			align-items: center;
 
 			.menu-item-icon {
-				border: 1rpx solid red;
-				width: 40rpx;
-				height: 40rpx;
-				margin-right: 24rpx;
+				// border: 1px solid red;
+				width: 20px;
+				height: 20px;
+				margin-right: 12px;
+
+				img {
+					width: 100%;
+					height: 100%;
+				}
 			}
 
 			.menu-item-title {
@@ -257,17 +297,17 @@
 				align-items: center;
 				color: #221F33;
 				font-family: "PingFang SC";
-				font-size: 28rpx;
+				font-size: 14px;
 				font-style: normal;
 				font-weight: 500;
-				line-height: 40rpx;
+				line-height: 20px;
 				/* 142.857% */
 			}
 
 			.menu-item-more {
-				width: 32rpx;
-				height: 32rpx;
-				border: 1rrpx solid red;
+				width: 16px;
+				height: 16px;
+				background: url('../../static/user-center/arrow.svg') center/100% auto no-repeat;
 			}
 		}
 	}

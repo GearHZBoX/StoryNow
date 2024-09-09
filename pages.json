@@ -158,6 +158,13 @@
 				"navigationBarTitleText" : "feedback"
 			}
 
+		},
+		{
+			"path" : "pages/about-us/about-us",
+			"style" : 
+			{
+				"navigationBarTitleText" : ""
+			}
 		}
 	],
 	"globalStyle": {
@@ -171,6 +178,10 @@
 		"list": [{
 			"pagePath": "pages/index/index",
 			"text": "%index.home%"
+		},
+		{
+			"pagePath": "pages/user-center/user-center",
+			"text": "Profile"
 		}]
 	},
 	"uniIdRouter": {
