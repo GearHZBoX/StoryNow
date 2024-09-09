@@ -2,6 +2,7 @@
 	export default {
 		onLaunch: function() {
 			console.log('App Launch');
+			plus.screen.lockOrientation("portrait-primary");
 		},
 		onShow: function() {
 			console.log('App Show')
@@ -12,6 +13,6 @@
 	}
 </script>
 
-<style>
-	/*每个页面公共css */
+<style lang="scss">
+	@import url("App.scss");
 </style>

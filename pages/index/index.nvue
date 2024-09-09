@@ -1,0 +1,618 @@
+<template>
+	<image src="../../static/img_bg.png" class="list-bg" :style="'width:' + pageWidth + 'px'"></image>
+	<view class="page-header">
+	</view>
+	<view class="search-container" @click="toSearch">
+		<image src="../../static/search-icon.png" class="search-container-icon"></image>
+		<text v-if="!searchVal" class="search-container-placeholder">{{placeholder}}</text>
+		<text v-if="searchVal" class="search-container-value">{{searchVal}}</text>
+		<span v-if="searchVal" @click.stop="clearToSearch" class="search-container-clear">
+			<uni-icons type="clear" class="search-container-clear-icon" color="#c0c4cc" size="20"></uni-icons>
+		</span>
+	</view>
+	<list show-scrollbar="false" :style="'height:' + pageHeight + 'px'" ref="sublist" class="list" :offset-accuracy="5"
+		:bounce="true" isSwiperList="true" :loadmoreoffset="5">
+		<refresh class="refresh" @refresh="onrefresh" @pullingdown="onpullingdown"
+			:display="refreshing ? 'show' : 'hide'">
+			<div class="refresh-view">
+				<span ref="refreshIcon">
+					<image v-if="refreshing" class="refresh-view-loading" src="../../static/loading.png"></image>
+				</span>
+				<text class="refresh-view-text">{{refreshText}}</text>
+			</div>
+		</refresh>
+		<cell v-for="(item, index) in dataList" :key="index" :ref="'item'+index" @click="onclick">
+			<view class="list-item" @click="toReader(item)">
+				<view v-if="item.type === 'skeleton'" class="skeleton-view">
+					<view class="skeleton-view-title"></view>
+					<view class="skeleton-view-text"></view>
+					<view class="skeleton-view-footer"></view>
+				</view>
+				<view v-else>
+					<text class="header-title" v-if="!searchVal">{{item.title}}</text>
+					<view class="fragment-view" :lines="1" v-else>
+						<view class="title-fragments"
+							v-for="(fragment, fragmentIndex) in item.title?.split(searchVal)">
+							<text class="title-text">{{fragment}}</text>
+							<text class="title-text highlight-keyword"
+								v-if="fragmentIndex < item.title?.split(searchVal).length - 1">{{searchVal}}</text>
+						</view>
+					</view>
+					<text class="summary">{{item.summary}}</text>
+					<view class="list-item-footer">
+						<image class="list-item-footer-icon" src="../../static/icon-book.png"></image>
+						<text class="list-item-footer-uploader">{{item.uploader + '. '}}</text>
+						<text class="list-item-footer-suffix">upload</text>
+					</view>
+				</view>
+			</view>
+		</cell>
+		<cell v-if="isEmpty && !dataList.length">
+			<view class="empty-view">
+				<image src="../../static/empty.png" class="empty-view-image"></image>
+				<text class="empty-view-text">无内容</text>
+			</view>
+		</cell>
+		<loading v-if="hasMore" :display="loadingMore ? 'show' : 'hide'" @loading="onloading">
+			<div class="loading-view">
+				<span ref="loadingIcon">
+					<image v-if="loadingMore" class="load-view-loading" src="../../static/loading.png"></image>
+				</span>
+				<text class="refresh-view-text">{{loadingText}}</text>
+			</div>
+		</loading>
+		<cell v-if="!hasMore && !refreshing && !loadingMore && dataList.length" class="no-more-tip">
+			<text class="refresh-view-text">加载完毕</text>
+		</cell>
+	</list>
+</template>
+
+<script>
+	// #ifdef APP-PLUS
+	const dom = weex.requireModule('dom');
+	const animation = weex.requireModule('animation');
+	// #endif
+
+	export default {
+		data() {
+			return {
+				parentListId: "parentListId",
+				pageHeight: 300,
+				pageWidth: 200,
+				dataList: [{
+					type: 'skeleton'
+				}, {
+					type: 'skeleton'
+				}, {
+					type: 'skeleton'
+				}, {
+					type: 'skeleton'
+				}, {
+					type: 'skeleton'
+				}, {
+					type: 'skeleton'
+				}, {
+					type: 'skeleton'
+				}, {
+					type: 'skeleton'
+				}],
+				refreshing: false,
+				refreshText: "",
+				refreshFlag: false,
+				pageCurrent: 1,
+				pageSize: 10,
+				loadingMore: false,
+				searchVal: '',
+				total: 1,
+				initiated: false,
+				isEmpty: false,
+				placeholder: 'When My Life Ends，I Still love yoU yoU yoU yoU yoU yoU yoU yoU yoU ',
+			}
+		},
+		computed: {
+			hasMore() {
+				return this.dataList.length < this.total;
+			},
+			loadingText() {
+				if (this.loadingMore) {
+					return '加载中...';
+				}
+				return '加载更多';
+			},
+		},
+		beforeCreate() {
+			const domModule = uni.requireNativePlugin('dom');
+			domModule.addRule('fontFace', {
+				'fontFamily': "Open Sans",
+				'src': "url('file://static/font/Open_Sans/OpenSans-VariableFont_wdth,wght.ttf')"
+			});
+
+			uni.$on('index-search', result => {
+				console.log('index-search', result);
+				this.searchVal = result?.searchVal || '';
+				uni.showLoading({
+					title: "loading..."
+				})
+				this.search().finally(() => {
+					uni.hideLoading();
+				});
+			});
+		},
+		async created() {
+			await this.loadData(false);
+			this.initiated = true;
+		},
+		async onReady() {
+			this.pageHeight = uni.getSystemInfoSync().windowHeight;
+			this.pageWidth = uni.getSystemInfoSync().windowWidth;
+		},
+		methods: {
+			toReader({ _id, title }) {
+				if (!_id) {
+					return;
+				}
+				uni.navigateTo({
+					url: `/pages/reader/reader?id=${_id}&title=${title}`,
+				});
+			},
+			toSearch() {
+				uni.navigateTo({
+					url: `/pages/search/search?searchVal=${this.searchVal}&placeholder=${this.placeholder}`,
+					animationType: 'fade-in',
+					animationDuration: 200,
+				});
+			},
+			clearToSearch() {
+				uni.navigateTo({
+					url: '/pages/search/search',
+					animationType: 'fade-in',
+					animationDuration: 200,
+				});
+			},
+			async onrefresh(e) {
+				this.refreshing = true;
+				this.refreshText = "刷新中...";
+				this.pageCurrent = 1;
+
+				this.refreshAni();
+
+				await this.loadData(false);
+				this.refreshing = false;
+				this.refreshFlag = false;
+				this.refreshText = "已刷新";
+			},
+			onpullingdown(e) {
+				if (this.refreshing) {
+					return;
+				}
+
+				this.pulling = false;
+				if (Math.abs(e.pullingDistance) > Math.abs(e.viewHeight)) {
+					this.refreshFlag = true;
+					this.refreshText = "释放立即刷新";
+				} else {
+					this.refreshFlag = false;
+					this.refreshText = "下拉可以刷新";
+				}
+			},
+			async search() {
+				this.isEmpty = false;
+				this.pageCurrent = 1;
+				this.dataList = [];
+				await this.loadData();
+				if (!this.dataList.length) {
+					this.isEmpty = true;
+				} else {
+					this.isEmpty = false;
+				}
+			},
+			async onloading() {
+				console.log('onloading', this.loadingMore);
+				this.pageCurrent++;
+				this.loadData();
+				this.loadingAni();
+			},
+			async loadData(append = true) {
+				if (this.loadingMore) {
+					return;
+				}
+				if (append) {
+					this.loadingMore = true;
+				}
+				try {
+					const where = this.searchVal ? `${new RegExp(this.searchVal, 'i')}.test(title)` : {};
+					const dbResp = await uniCloud
+						.databaseForJQL()
+						.collection('short-stories')
+						.where(where)
+						.field('_id,title,summary,uploader')
+						.orderBy('createdAt desc')
+						.skip(this.pageSize * (this.pageCurrent - 1))
+						.limit(this.pageSize)
+						.get({
+							getCount: true
+						});
+					if (!append) {
+						this.dataList = [];
+					}
+					this.dataList.push(...dbResp.data);
+					this.total = dbResp.count;
+				} catch (err) {
+					console.error(err);
+					uni.showToast({
+						title: `加载失败，请重试：${err}`
+					});
+				} finally {
+					this.loadingMore = false;
+				}
+
+			},
+			refreshAni() {
+				animation.transition(this.$refs.refreshIcon, {
+					styles: {
+						transform: 'rotate(0)',
+					},
+				});
+				if (!this.refreshing) {
+					return;
+				}
+				animation.transition(this.$refs.refreshIcon, {
+					styles: {
+						transform: 'rotate(-360deg)',
+					},
+					duration: 1000,
+					timingFunction: 'linear',
+					needLayout: false,
+					delay: 0,
+				}, () => {
+					this.refreshAni();
+				})
+			},
+			loadingAni() {
+				animation.transition(this.$refs.loadingIcon, {
+					styles: {
+						transform: 'rotate(0)',
+					},
+				});
+				if (!this.loadingMore) {
+					return;
+				}
+				animation.transition(this.$refs.loadingIcon, {
+					styles: {
+						transform: 'rotate(-360deg)',
+					},
+					duration: 1000,
+					timingFunction: 'linear',
+					needLayout: false,
+					delay: 0,
+				}, () => {
+					this.loadingAni();
+				})
+			}
+		}
+	}
+</script>
+
+<style lang="scss">
+	/* #ifndef APP-NVUE */
+	page {
+		width: 100%;
+		min-height: 100%;
+		display: flex;
+		font-family: "Open Sans";
+		background-color: #F6F6F9;
+	}
+
+	/* #endif */
+
+	.list-bg {
+		position: absolute;
+		top: 0;
+	}
+
+	.loading-view,
+	.refresh-view {
+		height: 50px;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.refresh-view-text {
+		overflow: hidden;
+		color: rgba(0, 0, 0, 0.45);
+		text-overflow: ellipsis;
+		margin-left: 6px;
+
+		/* Mobile/Tag/T1_2_ZH */
+		font-family: "PingFang SC";
+		font-size: 12px;
+		font-style: normal;
+		font-weight: 400;
+		line-height: 16px;
+		/* 133.333% */
+	}
+
+	.refresh-view-loading {
+		height: 14px;
+		width: 14px;
+	}
+
+	.load-view-loading {
+		height: 14px;
+		width: 14px;
+	}
+
+	.page-header {
+		height: 25px;
+		/* flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		background-color: #f4f4f4; */
+	}
+
+	.sticky-view {
+		margin-left: 12px;
+		margin-right: 12px;
+		padding: 20px;
+		background-color: #EBEBEB;
+		border-radius: 5px;
+	}
+
+	.list {
+		flex: 1;
+		margin: 16px;
+		margin-bottom: 0;
+		margin-top: 0;
+	}
+
+	.skeleton-view {
+
+		&-title {
+			width: 100px;
+			height: 20px;
+			background-color: #f1f1f1;
+			border-radius: 5px;
+			margin-bottom: 6px
+		}
+
+		&-text {
+			// width: 100px;
+			height: 60px;
+			background-color: #f1f1f1;
+			border-radius: 5px;
+			margin-bottom: 6px;
+		}
+
+		&-footer {
+			width: 50px;
+			height: 16px;
+			background-color: #f1f1f1;
+			border-radius: 5px;
+		}
+	}
+
+	.list-item {
+		padding: 16px 16px 12px 16px;
+		background-color: #fff;
+		border-radius: 20px;
+		margin-bottom: 8px;
+
+		&-footer {
+			display: flex;
+			flex-direction: row;
+
+			&-icon {
+				width: 16px;
+				height: 16px;
+				margin-right: 6px;
+			}
+
+			&-uploader {
+				overflow: hidden;
+				color: #605C73;
+				text-overflow: ellipsis;
+
+				/* body/regular */
+				font-family: "Open Sans";
+				font-size: 12px;
+				font-style: normal;
+				font-weight: 400;
+				line-height: 16px;
+				/* 133.333% */
+			}
+
+			&-suffix {
+				overflow: hidden;
+				color: #919099;
+				text-overflow: ellipsis;
+
+				/* body/regular */
+				font-family: "Open Sans";
+				font-size: 12px;
+				font-style: normal;
+				font-weight: 400;
+				line-height: 16px;
+			}
+		}
+	}
+
+
+	.summary {
+		overflow: hidden;
+		color: #605C73;
+		text-overflow: ellipsis;
+		lines: 3;
+
+		/* body/regular */
+		font-family: "Open Sans";
+		font-size: 12px;
+		font-style: normal;
+		font-weight: 400;
+		line-height: 16px;
+		/* 133.333% */
+		margin-bottom: 8px;
+	}
+
+	.no-more-tip {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: 35px;
+	}
+
+	.search-container {
+		margin: 0 18px;
+		background-color: #ffffff;
+		border-radius: 100px;
+		height: 36px;
+		margin-bottom: 20px;
+		padding: 8px 16px;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		position: relative;
+
+		&-icon {
+			height: 14px;
+			width: 14px;
+			margin-right: 8px;
+		}
+
+		&-placeholder {
+			overflow: hidden;
+			color: #C0C0CC;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			lines: 1;
+			flex: 1;
+
+			/* body/regular */
+			font-family: "PingFang SC";
+			font-size: 14px;
+			font-style: normal;
+			font-weight: 400;
+			line-height: 20px;
+			/* 142.857% */
+			padding-right: 20px;
+		}
+
+		&-value {
+			overflow: hidden;
+			color: #221F33;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			lines: 1;
+			flex: 1;
+
+			/* body/regular */
+			font-family: "PingFang SC";
+			font-size: 14px;
+			font-style: normal;
+			font-weight: 400;
+			line-height: 20px;
+			/* 142.857% */
+			padding-right: 20px;
+		}
+
+		&-clear {
+			position: absolute;
+			right: 0;
+			height: 36px;
+			width: 44px;
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			justify-content: flex-start;
+
+			&-icon {
+				padding-left: 8px;
+			}
+		}
+	}
+
+	.empty-view {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding-top: 160px;
+
+		&-image {
+			width: 160px;
+			height: 160px;
+			margin-bottom: 6px;
+		}
+
+		&-text {
+			overflow: hidden;
+			color: rgba(0, 0, 0, 0.25);
+			text-align: center;
+			text-overflow: ellipsis;
+
+			/* Mobile/Tag/T1_2_ZH */
+			font-family: "PingFang SC";
+			font-size: 12px;
+			font-style: normal;
+			font-weight: 400;
+			line-height: 16px;
+			/* 133.333% */
+		}
+	}
+
+	.highlight-keyword {
+		color: #6B4CFF;
+	}
+	
+	.header-title {
+		overflow: hidden;
+		color: #221F33;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		lines: 1;
+	
+		/* Title/medium */
+		font-family: "Open Sans";
+		font-size: 16px;
+		font-style: normal;
+		font-weight: 400;
+		line-height: 20px;
+		margin-bottom: 8px;
+	}
+	
+	.title-fragments {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		lines: 1;
+		margin-bottom: 8px;
+		flex-wrap: nowrap;
+	}
+	
+	.title-text {
+		overflow: hidden;
+		color: #221F33;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		lines: 1;
+	
+		/* Title/medium */
+		font-family: "Open Sans";
+		font-size: 16px;
+		font-style: normal;
+		font-weight: 400;
+		line-height: 20px;
+	}
+	
+	.fragment-view {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		overflow: hidden;
+		lines: 1;
+		text-overflow: ellipsis;
+	}
+	
+	uni-page-body {
+		flex-direction: column;
+	}
+</style>
