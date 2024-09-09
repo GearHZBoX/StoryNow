@@ -11,7 +11,7 @@ module.exports = {
 			const dbJQL = uniCloud.databaseForJQL({ // 获取JQL database引用，此处需要传入云对象的clientInfo
 				clientInfo: this.getClientInfo()
 			})
-			
+			console.log("imgList",imgList)
 			const feedbackInfo = await dbJQL.collection('feedback').add({
 				"content": content,
 				"img_list": imgList,
@@ -22,6 +22,6 @@ module.exports = {
 					 errMsg: '创建feedback error'
 				}
 			}
-			return data;
+			return feedbackInfo;
 	}
 }

@@ -107,14 +107,25 @@
 					})
 					return;
 				}
+				uni.showLoading({
+					mask:true
+				})
 				try {
 					const res = await FeedbackCloud.createFeedBack({
 						content: this.text,
 						imgList: this.imgList
 					})
+					
+					if(res.id){
+						uni.showToast({
+							icon:"none",
+							title:"Feedback success"
+						})
+					}
 				} catch (e) {
-				
+					console.log(e)
 				}
+				uni.hideLoading();
 			}
 		}
 	}
