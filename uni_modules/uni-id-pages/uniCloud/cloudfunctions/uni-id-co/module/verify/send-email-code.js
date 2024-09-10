@@ -1,12 +1,13 @@
 const {
-  verifyCaptcha
+	verifyCaptcha
 } = require('../../lib/utils/captcha')
 const {
-  EMAIL_SCENE
+	EMAIL_SCENE
 } = require('../../common/constants')
 const {
-  ERROR
+	ERROR
 } = require('../../common/error')
+const nodemailer = require('nodemailer');
 /**
  * 发送邮箱验证码，可用于登录、注册、绑定邮箱、修改密码等操作
  * @tutorial
@@ -16,45 +17,71 @@ const {
  * @param {String} params.scene     使用场景
  * @returns
  */
-module.exports = async function (params = {}) {
-  const schema = {
-    email: 'email',
-    captcha: 'string',
-    scene: 'string'
-  }
-  this.middleware.validate(params, schema)
+module.exports = async function(params = {}) {
+	const schema = {
+		email: 'email',
+		captcha: 'string',
+		scene: 'string'
+	}
+	this.middleware.validate(params, schema)
 
-  const {
-    email,
-    captcha,
-    scene
-  } = params
+	const {
+		email,
+		captcha,
+		scene
+	} = params
 
-  if (!(Object.values(EMAIL_SCENE).includes(scene))) {
-    throw {
-      errCode: ERROR.INVALID_PARAM
-    }
-  }
+	if (!(Object.values(EMAIL_SCENE).includes(scene))) {
+		throw {
+			errCode: ERROR.INVALID_PARAM
+		}
+	}
 
-  await verifyCaptcha.call(this, {
-    scene: 'send-email-code',
-    captcha
-  })
+	await verifyCaptcha.call(this, {
+		scene: 'send-email-code',
+		captcha
+	})
+	
+	const verifyCode = '233333';
 
-  // -- 测试代码
-  await require('../../lib/utils/verify-code')
-    .setEmailVerifyCode.call(this, {
-      email,
-      code: '123456',
-      expiresIn: 180,
-      scene
-    })
-  return {
-    errCode: 'uni-id-invalid-mail-template',
-    errMsg: `已启动测试模式，直接使用：123456作为邮箱验证码即可。\n如果是正式项目，需自行实现发送邮件的相关功能`
-  }
-  // -- 测试代码
+	await require('../../lib/utils/verify-code')
+		.setEmailVerifyCode.call(this, {
+			email,
+			code: verifyCode,
+			expiresIn: 180,
+			scene
+		})
 
+	console.log('ready to send email');
 
-  //发送邮件--需自行实现
+	const transporter = nodemailer.createTransport({
+		service: 'outlook',
+		auth: {
+			user: "storynow.app@outlook.com",
+			pass: "LatteBabe@123",
+		},
+	});
+
+	const mailOptions = {
+		from: 'storynow.app@outlook.com',
+		to: params.email,
+		subject: '【StoryNow】verify your email',
+		text: 'your verify code is ' + verifyCode,
+	};
+
+	await new Promise((resolve, reject) => {
+		transporter.sendMail(mailOptions, (error, info) => {
+			if (error) {
+				console.error(error);
+				reject(`email send failed, ${error}`);
+			} else {
+				console.log('Email sent: ' + info.response);
+				resolve(info);
+			}
+		})
+	});
+
+	return {
+		errCode: 0,
+	}
 }

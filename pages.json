@@ -163,6 +163,9 @@
 		"list": [{
 			"pagePath": "pages/index/index",
 			"text": "%index.home%"
+		},{
+			"pagePath": "pages/user-center/user-center",
+			"text": "用户信息"
 		}]
 	},
 	"uniIdRouter": {

@@ -483,7 +483,9 @@
 			overflow: hidden;
 			color: #C0C0CC;
 			text-overflow: ellipsis;
+			/* #ifndef APP */
 			white-space: nowrap;
+			/* #endif */
 			lines: 1;
 			flex: 1;
 
@@ -501,7 +503,9 @@
 			overflow: hidden;
 			color: #221F33;
 			text-overflow: ellipsis;
+			/* #ifndef APP */
 			white-space: nowrap;
+			/* #endif */
 			lines: 1;
 			flex: 1;
 
@@ -567,7 +571,9 @@
 		overflow: hidden;
 		color: #221F33;
 		text-overflow: ellipsis;
+		/* #ifndef APP */
 		white-space: nowrap;
+		/* #endif */
 		lines: 1;
 	
 		/* Title/medium */
@@ -592,7 +598,9 @@
 		overflow: hidden;
 		color: #221F33;
 		text-overflow: ellipsis;
+		/* #ifndef APP */
 		white-space: nowrap;
+		/* #endif */
 		lines: 1;
 	
 		/* Title/medium */
@@ -612,7 +620,9 @@
 		text-overflow: ellipsis;
 	}
 	
+	/* #ifndef APP-NVUE */
 	uni-page-body {
 		flex-direction: column;
 	}
+	/* #endif */
 </style>

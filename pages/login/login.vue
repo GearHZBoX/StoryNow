@@ -15,7 +15,12 @@
 			</view>
 			<view class="sign-in-with-password-button" @click="toPasswordLogin">
 				<text class="sign-in-with-password-button-text">
-					Sign In with Password
+					Sign In with Email
+				</text>
+			</view>
+			<view class="create-button" @click="toPasswordRegister">
+				<text class="create-button-text">
+					Create Account
 				</text>
 			</view>
 		</view>
@@ -168,6 +173,7 @@
 		row-gap: 24px;
 	}
 	
+	.create-button,
 	.sign-in-with-password-button {
 		display: flex;
 		height: 30px;

@@ -6,8 +6,8 @@
     "versionCode" : 101,
     "transformPx" : false,
     "networkTimeout" : {
-        "request" : 6000,
-        "connectSocket" : 6000
+        "request" : 60000,
+        "connectSocket" : 60000
     },
     /* 5+App特有相关 */
     "app-plus" : {

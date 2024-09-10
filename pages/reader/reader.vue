@@ -81,6 +81,10 @@
 				
 				if (!this.story.hasPermission) {
 					console.log('to purchase page');
+					uni.showToast({
+						title: 'to purchase page',
+						icon: 'none',
+					})
 					return;
 				}
 				

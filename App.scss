@@ -1,8 +1,12 @@
+/* #ifndef APP */
 $story-now-text-color-highlight: #9883FC;
+/* #endif */
 
 @font-face {
 	font-family: "Open Sans" sans-serif;
+	/* #ifndef APP */
 	src: url("./static/font/Open_Sans/OpenSans-VariableFont_wdth,wght.ttf");
+	/* #endif */
 }
 
 .view-with-header {
