@@ -16,21 +16,20 @@
 				<view class="vip-title">Open Storynow Membership</view>
 				<view class="vip-desc">Access to popular content across all platforms.</view>
 			</view>
-			<view class="vip-right">
+			<view class="vip-right" @click="toPage('/pages/to-vip/to-vip')">
 				<text>0.3</text>$/day
 			</view>
 		</view>
 
 		<view class="history">
 			<view class="menu-item">
-				<view class="menu-item-icon ">
-					<img src="../../static/user-center/history.svg" />
+				<view class="menu-item-icon history-icon ">
 				</view>
 				<view class="menu-item-title">历史记录</view>
 				<view class="menu-item-more"></view>
 			</view>
 
-			<view class="read-continue">
+			<view class="read-continue" v-if="hasLogin">
 				<text>Stepford Wives Literature's Overbearing President Loves Meg husband gets punished!
 				</text>
 				<view class="continue">continue</view>
@@ -39,22 +38,19 @@
 
 		<view class="menu-box">
 			<view class="menu-item" @click="toPage('/pages/about-us/about-us')">
-				<view class="menu-item-icon">
-					<img src="../../static/user-center/about.svg" />
+				<view class="menu-item-icon aubout-us-icon">
 				</view>
 				<view class="menu-item-title">About Us</view>
 				<view class="menu-item-more"></view>
 			</view>
 			<view class="menu-item" @click="toPage('/pages/feedback/feedback')">
-				<view class="menu-item-icon">
-					<img src="../../static/user-center/feedback.svg" />
+				<view class="menu-item-icon feedback-icon">
 				</view>
 				<view class="menu-item-title">Report and Feedback</view>
 				<view class="menu-item-more"></view>
 			</view>
-			<view class="menu-item" v-if="hasLogin" @click="logout">
-				<view class="menu-item-icon">
-					<img src="../../static/user-center/logout.svg" />
+			<view class="menu-item" v-if="1||hasLogin" @click="logout">
+				<view class="menu-item-icon logout-icon">
 				</view>
 				<view class="menu-item-title">Log Out</view>
 				<view class="menu-item-more"></view>
@@ -103,6 +99,7 @@
 				});
 			},
 			
+			
 			// 跳转登录
 			toLogin(){
 				uni.navigateTo({
@@ -111,29 +108,38 @@
 			},
 			
 			logout() {
-				mutations.logout();
+				uni.showModal({
+					title: 'Storynow',
+					content: 'Are you sure you want to log out？',
+					cancelText:"Cancel",
+					confirmText:"Confirm",
+					success: function (res) {
+						if (res.confirm) {
+							mutations.logout();
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+						}
+					}
+				});
 			},
 		},
 	};
 </script>
 
 <style lang="scss" scoped>
-	uni-page-body {
-		height: 100%;
-		background: url('../../static/img_bg.png') top/100% 100% no-repeat;
-	}
 
 	.user-center-page {
 		display: flex;
 		flex-direction: column;
 		height: 100%;
+		background:#F6F6F9 url("../../static/img_bg.png") top/100% 100% no-repeat;
 
 		.login-status-box {
 			height: 44px;
 			display: flex;
 			justify-content: flex-start;
 			align-items: center;
-			margin: 24px;
+			margin: 68px 24px 24px;
 			font-family: "Open Sans";
 			font-size: 20px;
 			font-style: normal;
@@ -284,11 +290,26 @@
 				width: 20px;
 				height: 20px;
 				margin-right: 12px;
-
-				img {
-					width: 100%;
-					height: 100%;
+				
+				&.aubout-us-icon{
+					background: url("../../static/user-center/about.svg") center/20px 20px no-repeat;
 				}
+				
+				&.feedback-icon{
+					background: url("../../static/user-center/feedback.svg") center/20px 20px no-repeat;
+				}
+				
+				&.history-icon{
+					background: url("../../static/user-center/history.svg") center/20px 20px no-repeat;
+				}
+				
+				&.logout-icon{
+					background: url("../../static/user-center/logout.svg") center/20px 20px no-repeat;
+				}
+				// img {
+				// 	width: 100%;
+				// 	height: 100%;
+				// }
 			}
 
 			.menu-item-title {

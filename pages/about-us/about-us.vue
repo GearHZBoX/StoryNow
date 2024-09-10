@@ -1,6 +1,6 @@
 <template>
 	<view class="about-us">
-		<fixed-header backIcon id="navigator" > 
+		<fixed-header backIcon id="navigator"  style="background: var(--light-brand-04, #F6F6F9);"> 
 			<view class="navigator-text">
 				About Us
 			</view>
@@ -53,8 +53,23 @@
 <style scoped lang="scss">
 	.about-us {
 		position: relative;
+		.navigator-text{
+			flex:1;
+			padding-right: 40px;
+			text-align: center;
+			color: var(--light-text-gray01, #221F33);
+			text-align: center;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			/* Title/medium */
+			font-family: "PingFang SC";
+			font-size: 14px;
+			font-style: normal;
+			font-weight: 500;
+			line-height: 20px; /* 142.857% */
+		}
 		.content-box {
-			padding: 20px 16px;
+			padding: 30px 16px;
 			color:  #605C73;
 			font-family: "PingFang SC";
 			white-space: pre-wrap;

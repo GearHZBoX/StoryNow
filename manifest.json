@@ -22,7 +22,8 @@
         },
         /* 模块配置 */
         "modules" : {
-            "OAuth" : {}
+            "OAuth" : {},
+            "Payment" : {}
         },
         /* 应用发布信息 */
         "distribute" : {
@@ -67,14 +68,22 @@
                     "apple" : {
                         "bundleid" : "123"
                     }
+                },
+                "payment" : {
+                    "paypal" : {
+                        "__platform__" : [ "ios", "android" ],
+                        "returnURL_ios" : "uni.UNI5D691D4://paypalpay",
+                        "returnURL_android" : "uni.UNI5D691D4://paypalpay"
+                    },
+                    "google" : {}
                 }
             },
             "splashscreen" : {
                 "androidStyle" : "default",
                 "android" : {
-                    "hdpi" : "/Users/truecyan/Desktop/极简风格字母图.png",
-                    "xhdpi" : "/Users/truecyan/Desktop/极简风格字母图.png",
-                    "xxhdpi" : "/Users/truecyan/Desktop/极简风格字母图.png"
+                    "hdpi" : "",
+                    "xhdpi" : "",
+                    "xxhdpi" : ""
                 }
             }
         },

@@ -44,7 +44,7 @@
 		width: calc(100% - 35rpx);
 		padding-top: 80rpx;
 		padding-bottom: 16px;
-		z-index: 10;
+		z-index: 100;
 
 		&-icon {
 			font-weight: bolder;

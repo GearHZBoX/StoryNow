@@ -1,6 +1,6 @@
 <template>
 	<view class="feedback">
-		<fixed-header backIcon id="navigator">
+		<fixed-header backIcon id="navigator" style="background: var(--light-brand-04, #F6F6F9);">
 			<view class="navigator-text">
 				Report and Feedback
 			</view>
@@ -22,19 +22,19 @@
 				<view class="right">{{imgList.length}}/9</view>
 			</view>
 			<view class="img-list">
-				<view class="img-item" v-for="item in imgList" :key="item.value">
+				<view class="img-item" v-for="(item,index) in imgList" :key="item.value">
 					<img :src="item">
-					<view class="delete"></view>
+					<view class="delete" @click="deleteImg(index)"></view>
 				</view>
 				<view class="upload-btn" @click="toPickImg" v-if="imgList.length<9">
-					<img>
+					<view class="upload-btn-icon"></view>
 				</view>
 			</view>
 			<view class="notice">You can upload a screenshot of the issue.</view>
 		</view>
 
 		<view class="bottom-btn">
-			<view class="submit" @click="toSubmit">Submit</view>
+			<view :class="`submit ${text.length?'':'disabled'}`" @click="toSubmit">Submit</view>
 		</view>
 	</view>
 </template>
@@ -49,10 +49,14 @@
 		data() {
 			return {
 				text: "",
-				imgList: []
+				imgList: [],
 			}
 		},
 		methods: {
+			deleteImg(i) {
+				this.imgList.splice(i, 1)
+			},
+
 			// 文件上传
 			toPickImg() {
 				uni.chooseImage({
@@ -108,18 +112,19 @@
 					return;
 				}
 				uni.showLoading({
-					mask:true
+					mask: true,
+					title:"loading..."
 				})
 				try {
 					const res = await FeedbackCloud.createFeedBack({
 						content: this.text,
 						imgList: this.imgList
 					})
-					
-					if(res.id){
+
+					if (res.id) {
 						uni.showToast({
-							icon:"none",
-							title:"Feedback success"
+							icon: "none",
+							title: "Submission successful. We will address it as soon as possible."
 						})
 					}
 				} catch (e) {
@@ -135,8 +140,25 @@
 	.feedback {
 		box-sizing: border-box;
 
+		.navigator-text {
+			flex: 1;
+			padding-right: 40px;
+			text-align: center;
+			color: var(--light-text-gray01, #221F33);
+			text-align: center;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			/* Title/medium */
+			font-family: "PingFang SC";
+			font-size: 14px;
+			font-style: normal;
+			font-weight: 500;
+			line-height: 20px;
+			/* 142.857% */
+		}
+
 		.input-box {
-			padding: 16px 24px 0;
+			padding: 26px 24px 0;
 
 			.title {
 				display: flex;
@@ -148,7 +170,7 @@
 					font-size: 14px;
 					font-style: normal;
 					font-weight: 500;
-					line-height: 20px;
+					line-height: 20p
 
 					/* 142.857% */
 					text {
@@ -214,10 +236,10 @@
 					flex-shrink: 0;
 					margin: 0 8px 8px 0;
 
-					img {
+					.upload-btn-icon {
 						width: 24px;
 						height: 24px;
-						border: 1px solid red;
+						background: url("../../static/user-center/photo.svg") center/100% auto no-repeat;
 					}
 				}
 
@@ -242,10 +264,10 @@
 					.delete {
 						width: 16px;
 						height: 16px;
-						border: 1px solid red;
 						position: absolute;
 						right: 10px;
 						top: 10px;
+						background: url('../../static/user-center/clear.svg') center/100% auto no-repeat;
 					}
 				}
 			}
@@ -265,6 +287,8 @@
 
 		.bottom-btn {
 			height: 88px;
+			display: flex;
+			justify-content: center;
 		}
 
 		.submit {
@@ -286,7 +310,10 @@
 			/* 142.857% */
 			position: fixed;
 			bottom: 44px;
-			left: 18px;
+
+			&.disabled {
+				opacity: 0.8;
+			}
 		}
 	}
 </style>
