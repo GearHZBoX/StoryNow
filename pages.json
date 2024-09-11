@@ -150,6 +150,13 @@
 				"navigationBarTitleText" : "",
 				"navigationStyle": "custom"
 			}
+		},
+		{
+			"path" : "pages/login/reset-passwd-by-email",
+			"style" : 
+			{
+				"navigationBarTitleText" : ""
+			}
 		}
 	],
 	"globalStyle": {

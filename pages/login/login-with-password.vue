@@ -25,7 +25,7 @@
 			<PrimaryButton style="margin: 40px 0 16px;" @click="login" :disabled="isProcessing || !email || !password">
 				Sign In
 			</PrimaryButton>
-			<text class="sign-in-view-forgot-password">Forgot password?</text>
+			<text class="sign-in-view-forgot-password" @click="toResetPasswd">Forgot password?</text>
 		</view>
 	</view>
 </template>
@@ -117,6 +117,11 @@
 					uni.hideLoading();
 					this.isProcessing = false;
 				})
+			},
+			toResetPasswd() {
+				uni.navigateTo({
+					url: '/pages/login/reset-passwd-by-email',
+				});
 			}
 		}
 	}
