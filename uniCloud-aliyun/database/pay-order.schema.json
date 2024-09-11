@@ -23,6 +23,10 @@
 			"title": "货币单位",
 			"bsonType": "string"
 		},
+		"days":{
+			"title":"充值天数",
+			"bsonType":"int"
+		},
 		"pay_status": {
 			"title": "支付状态",
 			"bsonType": "int",

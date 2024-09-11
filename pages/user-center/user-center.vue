@@ -26,10 +26,10 @@
 				<view class="menu-item-icon history-icon ">
 				</view>
 				<view class="menu-item-title">历史记录</view>
-				<view class="menu-item-more"></view>
+				<!-- <view class="menu-item-more"></view> -->
 			</view>
 
-			<view class="read-continue" v-if="hasLogin">
+			<view class="read-continue" v-if="1||hasLogin">
 				<text>Stepford Wives Literature's Overbearing President Loves Meg husband gets punished!
 				</text>
 				<view class="continue">continue</view>
@@ -102,7 +102,6 @@
 				
 				uni.navigateTo({
 					url: url,
-					animationType: 'fade-in',
 					animationDuration: 200,
 				});
 			},
