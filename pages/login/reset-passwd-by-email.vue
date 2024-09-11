@@ -1,39 +1,33 @@
 <!-- 找回密码页 -->
 <template>
-	<view class="uni-content">
-		<match-media :min-width="690">
-			<view class="login-logo">
-				<image :src="logo"></image>
+	<view class="page-view">
+		<StaticHeader></StaticHeader>
+		<view class="login-psw-header">
+			<view class="login-psw-header-title">
+				<text class="login-psw-header-title-main">Forgot Password</text>
+				<text class="login-psw-header-title-sub">reset your password with email</text>
 			</view>
-			<!-- 顶部文字 -->
-			<text class="title title-box">通过邮箱验证码找回密码</text>
-		</match-media>
-		<uni-forms ref="form" :value="formData" err-show-type="toast">
+		</view>
+		<uni-forms class="main-form" ref="form" :value="formData" err-show-type="toast">
+			<!-- <text class="main-title">Reset Password</text> -->
 			<uni-forms-item name="email">
-				<uni-easyinput :focus="focusEmail" @blur="focusEmail = false" class="input-box" :disabled="lock" :inputBorder="false"
+				<uni-easyinput :placeholderStyle="placeholderStyle" :focus="focusEmail" @blur="focusEmail = false" class="input-box" :disabled="lock" :inputBorder="false"
 					v-model="formData.email" placeholder="请输入邮箱">
 				</uni-easyinput>
 			</uni-forms-item>
 			<uni-forms-item name="code">
-				<uni-id-pages-email-form ref="shortCode" :email="formData.email" type="reset-pwd-by-email" v-model="formData.code">
-				</uni-id-pages-email-form>
+				<RegisterEmailForm ref="shortCode" :email="formData.email" type="reset-pwd-by-email" v-model="formData.code">
+				</RegisterEmailForm>
 			</uni-forms-item>
 			<uni-forms-item name="password">
-				<uni-easyinput :focus="focusPassword" @blur="focusPassword = false" class="input-box" type="password" :inputBorder="false" v-model="formData.password"
+				<uni-easyinput :placeholderStyle="placeholderStyle" :focus="focusPassword" @blur="focusPassword = false" class="input-box" type="password" :inputBorder="false" v-model="formData.password"
 					placeholder="请输入新密码"></uni-easyinput>
 			</uni-forms-item>
 			<uni-forms-item name="password2">
-				<uni-easyinput :focus="focusPassword2" @blur="focusPassword2 = false" class="input-box" type="password" :inputBorder="false" v-model="formData.password2"
+				<uni-easyinput :placeholderStyle="placeholderStyle" :focus="focusPassword2" @blur="focusPassword2 = false" class="input-box" type="password" :inputBorder="false" v-model="formData.password2"
 					placeholder="请再次输入新密码"></uni-easyinput>
 			</uni-forms-item>
-			<button class="uni-btn send-btn-box" type="primary" @click="submit">提交</button>
-			<match-media :min-width="690">
-				<view class="link-box">
-					<text class="link" @click="retrieveByPhone">通过手机验证码找回密码</text>
-					<view></view>
-          <text class="link" @click="backLogin">返回登录</text>
-        </view>
-			</match-media>
+			<PrimaryButton @click="submit">提交</PrimaryButton>
 		</uni-forms>
 		<uni-popup-captcha @confirm="submit" v-model="formData.captcha" scene="reset-pwd-by-sms" ref="popup"></uni-popup-captcha>
 	</view>
@@ -41,7 +35,9 @@
 
 <script>
 	import mixin from '@/uni_modules/uni-id-pages/common/login-page.mixin.js';
-	import passwordMod from '@/uni_modules/uni-id-pages/common/password.js'
+	import passwordMod from '@/uni_modules/uni-id-pages/common/password.js';
+	import RegisterEmailForm from '@/components/register-email-form.vue';
+	import StaticHeader from '../../components/static-header.vue';
 	const uniIdCo = uniCloud.importObject("uni-id-co",{
 		errorOptions:{
 			type:'toast'
@@ -49,6 +45,10 @@
 	})
 	export default {
 		mixins: [mixin],
+		components: {
+			RegisterEmailForm,
+			StaticHeader,
+		},
 		data() {
 			return {
 				lock: false,
@@ -190,6 +190,7 @@
 
 <style lang="scss">
 	@import "@/uni_modules/uni-id-pages/common/login-page.scss";
+	@import "@/common/uni-to-storynow.scss";
 
 	@media screen and (max-width: 690px) {
 		.uni-content{

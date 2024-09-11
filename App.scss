@@ -1,6 +1,5 @@
-/* #ifndef APP */
+$story-now-border-color-highlight: #9883FC;
 $story-now-text-color-highlight: #9883FC;
-/* #endif */
 
 @font-face {
 	font-family: "Open Sans" sans-serif;
@@ -18,5 +17,10 @@ $story-now-text-color-highlight: #9883FC;
 }
 
 .highlight {
-	color: #9883FC;
+	color: $story-now-text-color-highlight;
+}
+
+.storynow-agreement {
+	color: $story-now-text-color-highlight;
+	cursor: pointer;
 }

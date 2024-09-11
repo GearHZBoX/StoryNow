@@ -2,12 +2,12 @@
 	<view>
 		<uni-captcha :focus="focusCaptchaInput" ref="captcha" scene="send-email-code" v-model="captcha" />
 		<view class="box">
-			<uni-easyinput :focus="focusEmailCodeInput" @blur="focusEmailCodeInput = false" type="number" class="input-box" :inputBorder="false" v-model="modelValue" maxlength="6"
+			<uni-easyinput :placeholder-style="placeholderStyle" :focus="focusEmailCodeInput" @blur="focusEmailCodeInput = false" type="number" class="input-box" :inputBorder="false" v-model="modelValue" maxlength="6"
 				placeholder="请输入邮箱验证码">
 			</uni-easyinput>
 			<view class="short-code-btn" hover-class="hover" @click="start">
-				<text v-if="!sendingEmail" class="inner-text" :class="reverseNumber==0?'inner-text-active':''"  @click="start">{{innerText}}</text>
-				<uni-icons v-else type="spinner-cycle"></uni-icons>
+				<text v-if="!sendingEmail" :class="reverseNumber==0?'highlight':'inner-text'"  @click="start">{{innerText}}</text>
+				<uni-load-more v-else></uni-load-more>
 			</view>
 		</view>
 	</view>
@@ -86,6 +86,14 @@
 				modelValue: "",
 				focusEmailCodeInput:false,
 				sendingEmail: false,
+				placeholderStyle: `
+					color: var(--light-text-gray04, #C0C0CC);
+					font-family: "Open Sans";
+					font-size: 16px;
+					font-style: normal;
+					font-weight: 400;
+					line-height: 24px;
+				`,
 			};
 		},
 		watch: {
@@ -211,7 +219,7 @@
 		right: 8px;
 		width: 260rpx;
 		max-width: 130px;
-		height: 44px;
+		height: 100%;
 		/* #ifndef APP-NVUE */
 		display: flex;
 		/* #endif */
@@ -249,5 +257,6 @@
 		display: flex;
 		/* #endif */
 		flex-direction: row;
+		align-items: center;
 	}
 </style>
