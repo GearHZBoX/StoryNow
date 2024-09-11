@@ -2,8 +2,8 @@
     "name" : "StoryNow",
     "appid" : "__UNI__5D691D4",
     "description" : "",
-    "versionName" : "1.0.0",
-    "versionCode" : 101,
+    "versionName" : "1.0.2",
+    "versionCode" : 102,
     "transformPx" : false,
     "networkTimeout" : {
         "request" : 6000,
@@ -72,8 +72,8 @@
                 "payment" : {
                     "paypal" : {
                         "__platform__" : [ "ios", "android" ],
-                        "returnURL_ios" : "uni.UNI5D691D4://paypalpay",
-                        "returnURL_android" : "uni.UNI5D691D4://paypalpay"
+                        "returnURL_ios" : "test.demo1://paypalpay",
+                        "returnURL_android" : "test.demo1://paypalpay"
                     },
                     "google" : {}
                 }

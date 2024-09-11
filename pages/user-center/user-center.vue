@@ -16,7 +16,7 @@
 				<view class="vip-title">Open Storynow Membership</view>
 				<view class="vip-desc">Access to popular content across all platforms.</view>
 			</view>
-			<view class="vip-right" @click="toPage('/pages/to-vip/to-vip')">
+			<view class="vip-right" @click="toPage('/pages/to-vip/to-vip',true)">
 				<text>0.3</text>$/day
 			</view>
 		</view>
@@ -43,13 +43,13 @@
 				<view class="menu-item-title">About Us</view>
 				<view class="menu-item-more"></view>
 			</view>
-			<view class="menu-item" @click="toPage('/pages/feedback/feedback')">
+			<view class="menu-item" @click="toPage('/pages/feedback/feedback',true)">
 				<view class="menu-item-icon feedback-icon">
 				</view>
 				<view class="menu-item-title">Report and Feedback</view>
 				<view class="menu-item-more"></view>
 			</view>
-			<view class="menu-item" v-if="1||hasLogin" @click="logout">
+			<view class="menu-item" v-if="hasLogin" @click="logout">
 				<view class="menu-item-icon logout-icon">
 				</view>
 				<view class="menu-item-title">Log Out</view>
@@ -91,7 +91,15 @@
 			};
 		},
 		methods: {
-			toPage(url) {
+			toPage(url,auth) {
+				// 方便测试，不校验登录
+				if(false&&auth&&!this.hasLogin){
+					uni.navigateTo({
+						url: '/pages/login/login',
+					})
+					return;
+				}
+				
 				uni.navigateTo({
 					url: url,
 					animationType: 'fade-in',
@@ -127,12 +135,19 @@
 </script>
 
 <style lang="scss" scoped>
-
+	/* #ifndef APP-NVUE */
+	page {
+		width: 100%;
+		min-height: 100%;
+		background-color: #F6F6F9;
+	}
+	
+	/* #endif */
 	.user-center-page {
 		display: flex;
 		flex-direction: column;
 		height: 100%;
-		background:#F6F6F9 url("../../static/img_bg.png") top/100% 100% no-repeat;
+		background:url("../../static/img_bg.png") top/100% 100% no-repeat;
 
 		.login-status-box {
 			height: 44px;

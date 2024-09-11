@@ -13,15 +13,16 @@
 			</view>
 
 			<view class="pay-item-list">
-				<view :class="`pay-item ${activeItem.id == item.id?'active':''}`" v-for="item in priceItemList" :key="item.id" @click="toSelect(item)">
+				<view :class="`pay-item ${activeItem._id == item._id?'active':''}`" v-for="item in priceItemList"
+					:key="item._id" @click="toSelect(item)">
 					<view class="money">
-						$<text>{{item.money}}</text>
+						$<text>{{item.amount}}</text>
 					</view>
 					<view class="desc">{{item.desc}}</view>
 					<view class="notice">{{item.notice}}</view>
 					<view class="select"></view>
 				</view>
-			
+
 			</view>
 
 			<view class="agreement-box" @click="toChecked">
@@ -35,7 +36,7 @@
 				</view>
 			</view>
 
-			<view class="submit">
+			<view class="submit" @click="toPay">
 				Confirm and pay
 			</view>
 		</view>
@@ -51,6 +52,12 @@
 
 <script>
 	import fixedHeader from '../../components/fixed-header.vue';
+
+	const PayOrderCloud = uniCloud.importObject('pay-order');
+
+	const PaypalCloud = uniCloud.importObject('paypal');
+
+	const PriceConfigCloud = uniCloud.importObject('price-config')
 	export default {
 		components: {
 			fixedHeader,
@@ -58,45 +65,17 @@
 		data() {
 			return {
 				headerStyle: "background:rgba(0,0,0,0)",
-				checked:false,
-				activeItem:{},
-				priceItemList:[
-					{
-						id:1,
-						money:19,
-						desc:"Read all VIP stories",
-						notice:'30 day monthly package'
-					},
-					{
-						id:2,
-						money:19,
-						desc:"Read all VIP stories",
-						notice:'30 day monthly package'
-					},
-					{
-						id:3,
-						money:19,
-						desc:"Read all VIP stories",
-						notice:'30 day monthly package'
-					},{
-						id:4,
-						money:1999,
-						desc:"Read all VIP stories",
-						notice:'30 day monthly package'
-					},
-					{
-						id:5,
-						money:165599,
-						desc:"Read all VIP stories",
-						notice:'30 day monthly package'
-					}
-				]
+				checked: false,
+				activeItem: {},
+				priceItemList: []
 			}
+		},
+		onLoad() {
+			this.getPriceConfig();
 		},
 		onPageScroll({
 			scrollTop
 		}) {
-			console.log(scrollTop)
 			if (scrollTop < 60) {
 				this.headerStyle = "background:rgba(0,0,0,0)";
 			} else {
@@ -104,25 +83,88 @@
 			}
 		},
 		methods: {
-			toChecked(){
+			async getPriceConfig() {
+				const res = await PriceConfigCloud.getPriceConfig();
+				console.log("测试", res)
+				if (res.data) {
+					this.priceItemList = res.data;
+				}
+			},
+
+			toChecked() {
 				this.checked = !this.checked;
 			},
-			
-			toSelect(item){
+
+			toSelect(item) {
 				this.activeItem = item;
 			},
 
-			toPay(){
-				
+			toPay() {
+				if (!this.checked) {
+					uni.showToast({
+						title: "请先勾选协议"
+					})
+					return;
+				}
+				this.toCreateOrder();
+			},
+
+			async toCreateOrder() {
+				const res = await PayOrderCloud.createBusinessOrder(this.activeItem)
+
+				console.log("toCreateOrder", res)
+
+				uni.requestPayment({
+					"provider": "paypal",
+					"orderInfo": res.paymanet,
+					success: (result) => {
+						var rawdata = JSON.parse(result.rawdata);
+						this.captureOrder(res)
+					},
+					fail: function(err) {
+						console.log('fail:' + JSON.stringify(err));
+						uni.showToast({
+							title: "payment fail",
+							icon: "none"
+						})
+					}
+				});
+			},
+
+			async captureOrder(params) {
+				const orderInfo = {
+					orderId: params.paymanet.orderId,
+					id: params.orderInfo.id
+				}
+
+				const res = await PayOrderCloud.captureBusinessOrder(orderInfo);
+				console.log("支付结果",res)
+				if (res.id) {
+					uni.showToast({
+						icon:"none",
+						title: "payment success"
+					})
+				}
 			}
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
+	/* #ifndef APP-NVUE */
+	page {
+		width: 100%;
+		min-height: 100%;
+		background-color: #F6F6F9;
+	}
+
+	/* #endif */
 	.to-vip-page {
 		position: relative;
 		box-sizing: border-box;
+		display: flex;
+		justify-content: center;
+		flex-direction: column;
 		background: #F6F6F9 url('../../static/user-center/pay_bg.png') top/100% auto no-repeat;
 
 		.navigator-text {
@@ -147,6 +189,8 @@
 			box-sizing: border-box;
 			padding: 16px 16px 32px;
 			border-radius: 20px;
+			display: flex;
+			flex-direction: column;
 			background: var(--light-function-00, #FFF);
 
 			.pay-content-title {

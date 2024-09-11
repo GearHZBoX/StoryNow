@@ -15,13 +15,13 @@ const environment = "sandbox"; //运行环境 sandbox/live
  * 生成access Token
  */
 function generateAccessToken() {
-	console.log("生成access Token")
 	return new Promise((resolve) => {
 		const auth = Buffer.from(
 			PAYPAL_CLIENT_ID + ":" + PAYPAL_CLIENT_SECRET,
 		).toString("base64");
 		uniCloud.httpclient.request(`${base}/v1/oauth2/token`, {
 			method: "POST",
+			timeout:10*60*1000,
 			contentType: "application/x-www-form-urlencode",
 			data: "grant_type=client_credentials",
 			headers: {
@@ -55,7 +55,7 @@ async function createOrder(payInfo, config) {
 			intent: "CAPTURE",
 			purchase_units: [{
 				amount: {
-					currency_code: "USD",
+					currency_code: payInfo.currency_code, // USD
 					value: payInfo.amount,
 				},
 			}, ],
@@ -64,8 +64,8 @@ async function createOrder(payInfo, config) {
 					"experience_context": {
 						"payment_method_preference": "IMMEDIATE_PAYMENT_REQUIRED",
 						"payment_method_selected": "PAYPAL",
-						"brand_name": "我的支付平台001",
-						"locale": "en-US",
+						"brand_name": "StoryNow",
+						// "locale": "en-US",
 						// "landing_page": "LOGIN",
 						// 无需收货地址
 						"shipping_preference": "NO_SHIPPING",
@@ -76,17 +76,17 @@ async function createOrder(payInfo, config) {
 				},
 			}
 		};
-		console.log("paypal订单参数", payload)
-
 		uniCloud.httpclient.request(`${base}/v2/checkout/orders`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
 				Authorization: `Bearer ${config.accessToken}`,
 			},
+			timeout:10*60*1000,
 			data: JSON.stringify(payload),
 			dataType: "json"
 		}).then(res => {
+			console.log("paypal 创建订单回调成功",res)
 			resolve([null, {
 				"clientId": PAYPAL_CLIENT_ID, //客户端id
 				"orderId": res.data.id, //订单id
@@ -95,17 +95,47 @@ async function createOrder(payInfo, config) {
 				"environment": environment,
 			}])
 		}).catch(err => {
+			console.log("paypal 创建订单回调失败",err)
 			resolve([err, null])
 		})
 	})
 }
 
+
+ function captureOrder(payInfo,config){
+	return new Promise((resolve,reject)=>{
+		const {
+			orderId
+		} = payInfo;
+		const url = `${base}/v2/checkout/orders/${orderId}/capture`;
+		
+		uniCloud.httpclient.request(url, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${config.accessToken}`,
+			},
+			timeout:10*60*1000,
+			dataType: "json"
+		}).then(res=>{
+			console.log("用户扣款回调成功",res);
+			if(res.data.id&& res.data.status=== 'COMPLETED'){
+				resolve([null,res])
+			}else{
+				resolve([res,null])
+			}
+		}).catch(err=>{
+			console.log("用户扣款回调失败",err);
+			resolve([err,null])
+		})
+	})
+}
+
+
 module.exports = {
 	_before: async function() {
-		console.log("paypal___fn 云端")
-		// 用于校验token 
 		const [err, accessToken] = await generateAccessToken();
-		console.log("测试校验", err, accessToken)
+		
 		if (err) {
 			throw new Error('accessToken获取失败')
 		}
@@ -113,50 +143,26 @@ module.exports = {
 		this.accessToken = accessToken;
 	},
 
-	_after(error, result) {
-		if (error) {
-			console.log("请求异常", error);
-			return [error, null];
-		}
-		return [null, result]
-	},
+	// _after(error, result) {
+	// 	if (error) {
+	// 		return [error, null];
+	// 	}
+	// 	return [null, result]
+	// },
 
 	/**
 	 * 创建订单
 	 * @param {Object} info 订单信息
 	 */
 	async createPayOrder(payInfo) {
-		console.log("__________AAA", this.accessToken)
-		let [err,data] = await createOrder(payInfo, {
+		return  await createOrder(payInfo, {
 			accessToken: this.accessToken
-		});
-		console.log("__________BBB", data)
-		
-		if(err){
-			throw new Error('paypal创建订单失败');
-		}
-		
-		return data;
+		});;
 	},
 
-	async captureOrder(info) {
-		const {
-			orderId
-		} = info;
-		const url = `${base}/v2/checkout/orders/${orderId}/capture`;
-		console.log("捕获订单获取token", url, this.accessToken)
-
-		let res = await uniCloud.httpclient.request(url, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${this.accessToken}`,
-			},
-			dataType: "json"
-		})
-
-		console.log('捕获订单', res);
-
-		return res
+	async captureOrder(payInfo) {
+		return await captureOrder(payInfo, {
+			accessToken: this.accessToken
+		});
 	}
 }

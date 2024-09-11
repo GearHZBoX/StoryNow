@@ -1,6 +1,8 @@
 {
   "name": "pay-order",
-  "dependencies": {},
+  "dependencies": {
+    "get-user": "file:../common/get-user"
+  },
   "extensions": {
     "uni-cloud-jql": {}
   }
