@@ -157,6 +157,28 @@
 			{
 				"navigationBarTitleText" : ""
 			}
+		},
+{
+			"path" : "pages/feedback/feedback",
+			"style" : 
+			{
+				"navigationBarTitleText" : "feedback"
+			}
+
+		},
+		{
+			"path" : "pages/about-us/about-us",
+			"style" : 
+			{
+				"navigationBarTitleText" : ""
+			}
+		},
+		{
+			"path" : "pages/to-vip/to-vip",
+			"style" : 
+			{
+				"navigationBarTitleText" : ""
+			}
 		}
 	],
 	"globalStyle": {
@@ -166,17 +188,20 @@
 		"backgroundColor": "#F6F6F9",
 		"navigationStyle": "custom"
 	},
+
 	"tabBar": {
 		"selectedColor": "#9883FC",
 		"color": "rgb(153, 153, 153)",
 		"list": [{
+			"iconPath":"static/user-center/home.svg",
+			"selectedIconPath": "static/user-center/home_select.svg",
 			"pagePath": "pages/index/index",
 			"text": "%index.home%",
 			"iconPath": "static/tab-home.png",
 			"selectedIconPath": "static/tab-home-active.png"
 		},{
 			"pagePath": "pages/user-center/user-center",
-			"text": "profile",
+			"text": "Profile",
 			"iconPath": "static/tab-profile.png",
 			"selectedIconPath": "static/tab-profile-active.png"
 		}]

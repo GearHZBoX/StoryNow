@@ -65,14 +65,11 @@ module.exports = async function (params = {}) {
       errCode: ERROR.INVALID_PARAM
     }
   }
-  // const needCaptcha = await getNeedCaptcha.call(this, {
-  //   username,
-  //   mobile,
-  //   email
-  // })
-  
-  const needCaptcha = false;
-  
+  const needCaptcha = await getNeedCaptcha.call(this, {
+    username,
+    mobile,
+    email
+  })
   if (needCaptcha) {
     await verifyCaptcha.call(this, {
       captcha,

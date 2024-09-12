@@ -75,7 +75,7 @@ module.exports = async function (params = {}) {
     throw error
   }
   // 根据手机号查找匹配的用户
-  let {
+  const {
     total,
     userMatched
   } = await findUser.call(this, {
@@ -84,8 +84,6 @@ module.exports = async function (params = {}) {
     },
     authorizedApp: [this.getUniversalClientInfo().appId]
   })
-  // 排除注销用户
-  userMatched = userMatched.filter(user => user.status !== 4);
   if (userMatched.length === 0) {
     if (total > 0) {
       throw {

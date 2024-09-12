@@ -42,7 +42,7 @@ module.exports = async function(params = {}) {
 		captcha
 	})
 	
-	const verifyCode = '233333';
+	const verifyCode = 14250250;
 
 	await require('../../lib/utils/verify-code')
 		.setEmailVerifyCode.call(this, {
@@ -55,15 +55,15 @@ module.exports = async function(params = {}) {
 	console.log('ready to send email');
 
 	const transporter = nodemailer.createTransport({
-		service: 'outlook',
+		service: 'gmail',
 		auth: {
-			user: "storynow.app@outlook.com",
+			user: "storynow.app@gmail.com",
 			pass: "LatteBabe@123",
 		},
 	});
 
 	const mailOptions = {
-		from: 'storynow.app@outlook.com',
+		from: 'storynow.app@gmail.com',
 		to: params.email,
 		subject: '【StoryNow】verify your email',
 		text: 'your verify code is ' + verifyCode,

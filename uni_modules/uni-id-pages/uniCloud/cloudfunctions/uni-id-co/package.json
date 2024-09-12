@@ -15,12 +15,14 @@
         "uni-open-bridge-common": "file:../../../../uni-open-bridge-common/uniCloud/cloudfunctions/common/uni-open-bridge-common"
     },
     "extensions": {
-        "uni-cloud-redis": {},
-        "uni-cloud-sms": {},
-        "uni-cloud-verify": {}
+        "uni-cloud-redis": [],
+        "uni-cloud-sms": [],
+        "uni-cloud-verify": []
     },
     "cloudfunction-config": {
-        "keepRunningAfterReturn": false
+        "keepRunningAfterReturn": false,
+        "frequencyLimitEnable": false,
+        "blackListEnable": false
     },
     "plugin-dev-name": "uni-id-pages",
     "plugin-version": "1.1.21",

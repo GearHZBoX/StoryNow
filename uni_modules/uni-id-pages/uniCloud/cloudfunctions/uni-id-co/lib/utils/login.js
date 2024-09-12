@@ -18,14 +18,13 @@ async function realPreLogin (params = {}) {
     user
   } = params
   const appId = this.getUniversalClientInfo().appId
-  let {
+  const {
     total,
     userMatched
   } = await findUser({
     userQuery: user,
     authorizedApp: appId
   })
-  userMatched = userMatched.filter(user => user.status !== 4);
   if (userMatched.length === 0) {
     if (total > 0) {
       throw {

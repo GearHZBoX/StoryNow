@@ -1,0 +1,60 @@
+{
+	"bsonType": "object",
+	"required": [],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"order_id": {
+			"title": "订单Id",
+			"bsonType": "string"
+		},
+		"amount": {
+			"title": "支付金额",
+			"bsonType": "double"
+		},
+		"currency_code": {
+			"title": "货币单位",
+			"bsonType": "string"
+		},
+		"days":{
+			"title":"充值天数",
+			"bsonType":"int"
+		},
+		"pay_status": {
+			"title": "支付状态",
+			"bsonType": "int",
+			"enum": [1, 2, 3, 4],
+			"description": "支付状态：1 未支付 2 支付成功 3 支付失败 4 取消支付"
+		},
+		"pay_type": {
+			"title": "支付类型",
+			"bsonType": "int",
+			"enum": [1, 2],
+			"description": "支付类型：1googlePay 2paypalPay"
+		},
+		"user_id": {
+			"title": "用户Id",
+			"bsonType": "object",
+			"description": "用户信息"
+		},
+		"pay_detail": {
+			"title": "支付平台详情",
+			"bsonType": "object"
+		},
+		"createdAt":{
+			"title": "创建时间",
+			"bsonType": "timestamp"
+		},
+		"updatedAt":{
+			"title": "修改时间",
+			"bsonType": "timestamp"
+		}
+	}
+}

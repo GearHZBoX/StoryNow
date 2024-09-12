@@ -26,8 +26,6 @@ const {
  * @returns
  */
 module.exports = async function (params = {}) {
-  const db = uniCloud.database();
-  const dbCmd = db.command;
   const schema = {
     email: 'email',
     password: 'password',
@@ -73,7 +71,7 @@ module.exports = async function (params = {}) {
     extraData
   } = await preRegisterWithPassword.call(this, {
     user: {
-      email,
+      email
     },
     password
   })

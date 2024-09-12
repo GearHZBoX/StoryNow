@@ -30,8 +30,7 @@ async function realPreRegister (params = {}) {
     userQuery: user,
     authorizedApp: this.getUniversalClientInfo().appId
   })
-  
-  if (userMatched.filter(item => item.status !== 4).length > 0) {
+  if (userMatched.length > 0) {
     throw {
       errCode: ERROR.ACCOUNT_EXISTS
     }
