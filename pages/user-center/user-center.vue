@@ -85,11 +85,7 @@
 			}
 		},
 		data() {
-			return {
-				menuList: [{
-
-				}]
-			};
+			return {};
 		},
 		methods: {
 			toPage(url, auth) {
@@ -124,7 +120,7 @@
 						if (res.confirm) {
 							mutations.logout();
 						} else if (res.cancel) {
-							console.log('用户点击取消');
+							console.log('用户点击取消1');
 						}
 					}
 				});
@@ -146,8 +142,8 @@
 		display: flex;
 		flex-direction: column;
 		height: 100%;
-		background-color: #F6F6F9;
-
+		background:#F6F6F9  url("../../static/img_bg.png") top/100% auto no-repeat;
+		
 		.login-status-box {
 			height: 44px;
 			display: flex;

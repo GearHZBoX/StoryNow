@@ -16,7 +16,7 @@
 				<view :class="`pay-item ${activeItem._id == item._id?'active':''}`" v-for="item in priceItemList"
 					:key="item._id" @click="toSelect(item)">
 					<view class="money">
-						$<text>{{item.amount}}</text>
+						$<text>{{item.amount}}</text> 
 					</view>
 					<view class="desc">{{item.desc}}</view>
 					<view class="notice">{{item.notice}}</view>
@@ -108,10 +108,28 @@
 			},
 
 			toPay() {
-				if (!this.checked) {
+				if(!this.activeItem._id){
 					uni.showToast({
-						title: "请先勾选协议"
+						icon:"none",
+						title:'Please select the payment item first'
 					})
+					return;
+				}
+
+				if (!this.checked) {
+					uni.showModal({
+						title: 'Do you agree to the agreement?',
+						content: 'You can only make the payment after agreeing to the terms',
+						cancelText: "Cancel",
+						confirmText: "Confirm",
+						success: (res) => {
+							if (res.confirm) {
+								this.checked = true;
+							} else if (res.cancel) {
+								console.log('用户点击取消1');
+							}
+						}
+					});
 					return;
 				}
 				this.toCreateOrder();
@@ -165,7 +183,7 @@
 				}
 				uni.showToast({
 					icon: "none",
-					title: `会员有效期：${data?.userInfo?.vip?.duration}`,
+					title: `会员有效期：\r\n ${data?.userInfo?.vip?.duration}`,
 					duration: 10 * 1000
 				})
 			}
