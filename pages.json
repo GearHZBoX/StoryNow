@@ -188,18 +188,22 @@
 		"backgroundColor": "#F6F6F9",
 		"navigationStyle": "custom"
 	},
+
 	"tabBar": {
-		"color":"#605C73",
+		"selectedColor": "#9883FC",
+		"color": "rgb(153, 153, 153)",
 		"list": [{
 			"iconPath":"static/user-center/home.svg",
 			"selectedIconPath": "static/user-center/home_select.svg",
 			"pagePath": "pages/index/index",
-			"text": "%index.home%"
+			"text": "%index.home%",
+			"iconPath": "static/tab-home.png",
+			"selectedIconPath": "static/tab-home-active.png"
 		},{
-			"iconPath":"static/user-center/mine.svg",
-			"selectedIconPath": "static/user-center/mine_select.svg",
 			"pagePath": "pages/user-center/user-center",
-			"text": "Profile"
+			"text": "Profile",
+			"iconPath": "static/tab-profile.png",
+			"selectedIconPath": "static/tab-profile-active.png"
 		}]
 	},
 	"uniIdRouter": {

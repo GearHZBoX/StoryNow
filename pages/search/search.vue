@@ -7,13 +7,13 @@
 		</view>
 		<view class="search-history">
 			<view class="search-history-header">
-				<text class="search-history-header-title">搜索历史</text>
+				<text class="search-history-header-title">Search History</text>
 				<text v-if="history.length" class="search-history-header-clean" @click="deleteHistory">
 					<text>
 						<image class="search-history-header-clean-icon" src="../../static/clear.svg"></image>
 					</text>
 					<text class="search-history-header-clean-text">
-						清除
+						clean
 					</text>
 				</text>
 			</view>

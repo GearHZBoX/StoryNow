@@ -80,12 +80,12 @@
 				if (!this.email.length) {
 					this.focusEmail = true
 					return uni.showToast({
-						title: '请输入邮箱',
+						title: 'Please enter email',
 						icon: 'none',
 						duration: 3000
 					});
 				}
-
+				
 				if (!this.password.length) {
 					this.focusPassword = true
 					return uni.showToast({
@@ -94,7 +94,7 @@
 						duration: 3000
 					});
 				}
-
+				
 				if (!/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(this.email)) {
 					this.focusEmail = true;
 					return uni.showToast({
@@ -110,8 +110,8 @@
 				uniIdCo.login({
 					email: this.email,
 					password: this.password,
-				}).then(async (e) => {
-					await mutations.updateUserInfo();
+				}).then(e => {
+					mutations.updateUserInfo();
 					uni.switchTab({
 						url: '/pages/user-center/user-center',
 					});

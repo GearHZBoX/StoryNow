@@ -12,7 +12,7 @@
 			<!-- <text class="main-title">Reset Password</text> -->
 			<uni-forms-item name="email">
 				<uni-easyinput :placeholderStyle="placeholderStyle" :focus="focusEmail" @blur="focusEmail = false" class="input-box" :disabled="lock" :inputBorder="false"
-					v-model="formData.email" placeholder="请输入邮箱">
+					v-model="formData.email" placeholder="Enter you email">
 				</uni-easyinput>
 			</uni-forms-item>
 			<uni-forms-item name="code">
@@ -21,13 +21,13 @@
 			</uni-forms-item>
 			<uni-forms-item name="password">
 				<uni-easyinput :placeholderStyle="placeholderStyle" :focus="focusPassword" @blur="focusPassword = false" class="input-box" type="password" :inputBorder="false" v-model="formData.password"
-					placeholder="请输入新密码"></uni-easyinput>
+					placeholder="Please enter a new password"></uni-easyinput>
 			</uni-forms-item>
 			<uni-forms-item name="password2">
 				<uni-easyinput :placeholderStyle="placeholderStyle" :focus="focusPassword2" @blur="focusPassword2 = false" class="input-box" type="password" :inputBorder="false" v-model="formData.password2"
-					placeholder="请再次输入新密码"></uni-easyinput>
+					placeholder="Please enter the new password again"></uni-easyinput>
 			</uni-forms-item>
-			<PrimaryButton @click="submit">提交</PrimaryButton>
+			<PrimaryButton @click="submit">Confirm</PrimaryButton>
 		</uni-forms>
 		<uni-popup-captcha @confirm="submit" v-model="formData.captcha" scene="reset-pwd-by-sms" ref="popup"></uni-popup-captcha>
 	</view>
@@ -66,22 +66,22 @@
 					email: {
 						rules: [{
 								required: true,
-								errorMessage: '请输入邮箱',
+								errorMessage: 'Please enter email',
 							},
 							{
 								format:'email',
-								errorMessage: '邮箱格式不正确',
+								errorMessage: 'Incorrect email format',
 							}
 						]
 					},
 					code: {
 						rules: [{
 								required: true,
-								errorMessage: '请输入邮箱验证码',
+								errorMessage: 'Please enter verification code',
 							},
 							{
 								pattern: /^.{6}$/,
-								errorMessage: '请输入6位验证码',
+								errorMessage: 'Please enter the six - digit verification code.',
 							}
 						]
 					},
@@ -181,7 +181,7 @@
 			},
 			backLogin () {
 				uni.redirectTo({
-					url: '/uni_modules/uni-id-pages/pages/login/login-withpwd'
+					url: '/pages/login/login'
 				})
 			}
 		}

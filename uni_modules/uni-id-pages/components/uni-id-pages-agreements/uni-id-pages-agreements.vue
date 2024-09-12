@@ -4,24 +4,24 @@
 			<checkbox-group @change="setAgree">
 				<label class="checkbox-box">
 					<checkbox :checked="isAgree" style="transform: scale(0.5);margin-right: -6px;" />
-					<text class="text">同意</text>
+					<!-- <text class="text">Agree to the</text> -->
 				</label>
 			</checkbox-group>
 			<view class="content">
 				<view class="item" v-for="(agreement,index) in agreements" :key="index">
 					<text class="storynow-agreement text" @click="navigateTo(agreement)">{{agreement.title}}</text>
-					<text class="text and" v-if="hasAnd(agreements,index)" space="nbsp"> 和 </text>
+					<text class="text and" v-if="hasAnd(agreements,index)" space="nbsp"> & </text>
 				</view>
 			</view>
 		</template>
 		<!-- 弹出式 -->
 		<uni-popup v-if="needAgreements||needPopupAgreements" ref="popupAgreement" type="center">
-			<uni-popup-dialog confirmText="同意" @confirm="popupConfirm">
+			<uni-popup-dialog confirmText="confirm" @confirm="popupConfirm">
 				<view class="content">
-					<text class="text">请先阅读并同意</text>
+					<text class="text">Please read and agree first</text>
 					<view class="item" v-for="(agreement,index) in agreements" :key="index">
 						<text class="storynow-agreement text" @click="navigateTo(agreement)">{{agreement.title}}</text>
-						<text class="text and" v-if="hasAnd(agreements,index)" space="nbsp"> 和 </text>
+						<text class="text and" v-if="hasAnd(agreements,index)" space="nbsp">&</text>
 					</view>
 				</view>
 			</uni-popup-dialog>
@@ -48,11 +48,11 @@
 				return [
 					{
 						url:serviceUrl,
-						title:"用户服务协议"
+						title:"User Service Agreement",
 					},
 					{
 						url:privacyUrl,
-						title:"隐私政策条款"
+						title:"Privacy Policy Terms",
 					}
 				]
 			}

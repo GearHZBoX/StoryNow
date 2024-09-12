@@ -69,7 +69,7 @@ module.exports = async function(params = {}) {
 		text: 'your verify code is ' + verifyCode,
 	};
 
-	await new Promise((resolve, reject) => {
+	new Promise((resolve, reject) => {
 		transporter.sendMail(mailOptions, (error, info) => {
 			if (error) {
 				console.error(error);
