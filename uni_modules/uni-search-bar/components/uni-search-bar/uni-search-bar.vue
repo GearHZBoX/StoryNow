@@ -9,14 +9,15 @@
 			</view>
 			<input v-if="show || searchVal" :focus="showSync" :disabled="readonly" :placeholder="placeholderText" :maxlength="maxlength"
 				class="uni-searchbar__box-search-input" confirm-type="search" type="text" v-model="searchVal" :style="{color:textColor}"
-				@confirm="confirm" @blur="blur" @focus="emitFocus"/>
+				@confirm="confirm" @blur="blur" @focus="emitFocus" placeholder-style="color: #C0C0CC;" />
 			<text v-else class="uni-searchbar__text-placeholder">{{ placeholder }}</text>
 			<view v-if="show && (clearButton==='always'||clearButton==='auto'&&searchVal!=='') &&!readonly"
-				class="uni-searchbar__box-icon-clear" @click="clear">
+				class="uni-searchbar__box-icon-clear" @touchend.prevent="clear">
 				<slot name="clearIcon">
 					<uni-icons color="#c0c4cc" size="20" type="clear" />
 				</slot>
 			</view>
+			<text class="bar-builtin-search-trigger" @click="confirm">Search</text>
 		</view>
 		<text @click="cancel" class="uni-searchbar__cancel"
 			v-if="cancelButton ==='always' || show && cancelButton ==='auto'">{{cancelTextI18n}}</text>
@@ -292,7 +293,7 @@
 
 	.uni-searchbar__text-placeholder {
 		font-size: 14px;
-		color: #B3B3B3;
+		color: #c0c0c0;
 		margin-left: 5px;
 		text-align: left;
 	}
@@ -306,4 +307,20 @@
 		cursor: pointer;
 		/* #endif */
 	}
+	
+	.bar-builtin-search-trigger {
+		border-left: 1px solid rgba(240, 237, 255, 1);
+		padding-left: 12px;
+		color: var(--light-brand-01, #6B4CFF);
+		text-align: right;
+		
+		/* body/regular */
+		font-family: "PingFang SC";
+		font-size: 14px;
+		font-style: normal;
+		font-weight: 400;
+		line-height: 20px; /* 142.857% */
+		margin-left: 8px;
+	}
+	
 </style>

@@ -2,12 +2,18 @@ import {
 	mutations
 } from '@/uni_modules/uni-id-pages/common/store.js'
 import config from '@/uni_modules/uni-id-pages/config.js'
+import { placeholderStyle } from '../../../common/constant';
+import PrimaryButton from '../../../components/primary-button.vue';
 const mixin = {
+	components: {
+		PrimaryButton,
+	},
 	data() {
 		return {
 			config,
 			uniIdRedirectUrl: '',
-			isMounted: false
+			isMounted: false,
+			placeholderStyle,
 		}
 	},
 	onUnload() {

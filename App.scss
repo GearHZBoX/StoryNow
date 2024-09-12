@@ -1,0 +1,48 @@
+$story-now-border-color-highlight: #9883FC;
+$story-now-text-color-highlight: #9883FC;
+
+@font-face {
+	font-family: "Open Sans" sans-serif;
+	/* #ifndef APP */
+	src: url("./static/font/Open_Sans/OpenSans-VariableFont_wdth,wght.ttf");
+	/* #endif */
+}
+
+.view-with-header {
+	padding-top: 80rpx;
+}
+
+.page-header {
+	padding-top: 40px;
+}
+
+.highlight {
+	color: $story-now-text-color-highlight;
+}
+
+/* #ifndef APP-NVUE */
+.storynow-agreement {
+	color: $story-now-text-color-highlight;
+	cursor: pointer;
+}
+/* #endif */
+
+/* #ifndef APP-NVUE */
+@keyframes rotate {
+	0% {
+		transform: rotate(0);
+	}
+	
+	100% {
+		transform: rotate(360deg);
+	}
+}
+/* #endif */
+
+@mixin rotating($duration: 1s) {
+	animation: rotate $duration linear infinite;
+}
+
+.rotation-2s {
+	@include rotating(2s);
+}

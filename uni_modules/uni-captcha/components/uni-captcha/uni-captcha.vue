@@ -6,7 +6,7 @@
 				mode="widthFix"></image>
 		</view>
 		<input @blur="focusCaptchaInput = false" :focus="focusCaptchaInput" type="text" class="captcha"
-			:inputBorder="false" maxlength="4" v-model="val" placeholder="请输入验证码">
+			:inputBorder="false" maxlength="4" v-model="val" :placeholder-style="placeholderStyle" placeholder="Enter the captcha">
 	</view>
 </template>
 
@@ -51,7 +51,15 @@
 			return {
 				focusCaptchaInput: false,
 				captchaBase64: "",
-				loging: false
+				loging: false,
+				placeholderStyle: `
+					color: var(--light-text-gray04, #C0C0CC);
+					font-family: "Open Sans";
+					font-size: 16px;
+					font-style: normal;
+					font-weight: 400;
+					line-height: 24px;
+				`,
 			};
 		},
 		watch: {

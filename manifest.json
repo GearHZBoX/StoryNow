@@ -2,17 +2,21 @@
     "name" : "StoryNow",
     "appid" : "__UNI__5D691D4",
     "description" : "",
-    "versionName" : "1.0.3",
-    "versionCode" : 103,
+    "versionName" : "1.0.2",
+    "versionCode" : 102,
     "transformPx" : false,
+    "networkTimeout" : {
+        "request" : 60000,
+        "connectSocket" : 60000
+    },
     /* 5+App特有相关 */
     "app-plus" : {
         "usingComponents" : true,
         "nvueStyleCompiler" : "uni-app",
         "compilerVersion" : 3,
         "splashscreen" : {
-            "alwaysShowBeforeRender" : false,
-            "waiting" : false,
+            "alwaysShowBeforeRender" : true,
+            "waiting" : true,
             "autoclose" : true,
             "delay" : 0
         },
@@ -42,6 +46,8 @@
                     "<uses-feature android:name=\"android.hardware.camera\"/>",
                     "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"
                 ],
+                "minSdkVersion" : "",
+                "targetSdkVersion" : "",
                 "abiFilters" : [ "armeabi-v7a", "arm64-v8a", "x86" ]
             },
             /* ios打包配置 */
@@ -53,11 +59,14 @@
                 "ad" : {},
                 "oauth" : {
                     "google" : {
-                        "clientid" : "771806129802-v0gto4si5sbikid4vo1dii7372ddresc.apps.googleusercontent.com"
+                        "clientid" : "771806129802-kitnh6mp2333bj21ribtcnlhisnm22cu.apps.googleusercontent.com"
                     },
                     "facebook" : {
                         "appid" : "1234052211101628",
                         "client_token" : "a8049756ff270e7e921c0695e4a82f46"
+                    },
+                    "apple" : {
+                        "bundleid" : "123"
                     }
                 },
                 "payment" : {
@@ -70,14 +79,15 @@
                 }
             },
             "splashscreen" : {
-                "androidStyle" : "common",
+                "androidStyle" : "default",
                 "android" : {
                     "hdpi" : "",
                     "xhdpi" : "",
                     "xxhdpi" : ""
                 }
             }
-        }
+        },
+        "nvueCompiler" : "uni-app"
     },
     /* 快应用特有相关 */
     "quickapp" : {},
@@ -101,5 +111,6 @@
     "uniStatistics" : {
         "enable" : false
     },
-    "vueVersion" : "3"
+    "vueVersion" : "3",
+    "locale" : "en"
 }
