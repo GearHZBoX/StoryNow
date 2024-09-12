@@ -32,10 +32,10 @@
 					<text class="header-title" v-if="!searchVal">{{item.title}}</text>
 					<view class="fragment-view" :lines="1" v-else>
 						<view class="title-fragments"
-							v-for="(fragment, fragmentIndex) in item.title?.split(searchVal)">
+							v-for="({fragment, match, length}, fragmentIndex) in getHighlightTitle(item.title, searchVal)">
 							<text class="title-text">{{fragment}}</text>
 							<text class="title-text highlight-keyword"
-								v-if="fragmentIndex < item.title?.split(searchVal).length - 1">{{searchVal}}</text>
+								v-if="fragmentIndex < length - 1">{{match}}</text>
 						</view>
 					</view>
 					<text class="summary">{{item.summary}}</text>
@@ -50,7 +50,7 @@
 		<cell v-if="isEmpty && !dataList.length">
 			<view class="empty-view">
 				<image src="../../static/empty.png" class="empty-view-image"></image>
-				<text class="empty-view-text">无内容</text>
+				<text class="empty-view-text">No content</text>
 			</view>
 		</cell>
 		<loading v-if="hasMore" :display="loadingMore ? 'show' : 'hide'" @loading="onloading">
@@ -62,7 +62,7 @@
 			</div>
 		</loading>
 		<cell v-if="!hasMore && !refreshing && !loadingMore && dataList.length" class="no-more-tip">
-			<text class="refresh-view-text">加载完毕</text>
+			<text class="refresh-view-text">Loading completed</text>
 		</cell>
 	</list>
 </template>
@@ -106,7 +106,7 @@
 				total: 1,
 				initiated: false,
 				isEmpty: false,
-				placeholder: 'When My Life Ends，I Still love yoU yoU yoU yoU yoU yoU yoU yoU yoU ',
+				placeholder: `Stepford Wives Literature's Overbearing President Loves Meg husband gets punished!`,
 			}
 		},
 		computed: {
@@ -115,9 +115,9 @@
 			},
 			loadingText() {
 				if (this.loadingMore) {
-					return '加载中...';
+					return 'loading...';
 				}
-				return '加载更多';
+				return 'release to load more';
 			},
 		},
 		beforeCreate() {
@@ -147,6 +147,14 @@
 			this.pageWidth = uni.getSystemInfoSync().windowWidth;
 		},
 		methods: {
+			getHighlightTitle(title, keyword) {
+				const regexp = new RegExp(keyword, 'ig');
+				const fragments = title.split(regexp);
+				const keywordsCache = title.match(regexp)
+				
+				console.log('--', fragments, keywordsCache);
+				return fragments.map((fragment, i) => ({ fragment, match: keywordsCache[i], length: fragments.length }))
+			},
 			toReader({ _id, title }) {
 				if (!_id) {
 					return;
@@ -171,7 +179,7 @@
 			},
 			async onrefresh(e) {
 				this.refreshing = true;
-				this.refreshText = "刷新中...";
+				this.refreshText = "refreshing...";
 				this.pageCurrent = 1;
 
 				this.refreshAni();
@@ -179,7 +187,7 @@
 				await this.loadData(false);
 				this.refreshing = false;
 				this.refreshFlag = false;
-				this.refreshText = "已刷新";
+				this.refreshText = "refresh completed";
 			},
 			onpullingdown(e) {
 				if (this.refreshing) {
@@ -189,10 +197,10 @@
 				this.pulling = false;
 				if (Math.abs(e.pullingDistance) > Math.abs(e.viewHeight)) {
 					this.refreshFlag = true;
-					this.refreshText = "释放立即刷新";
+					this.refreshText = "release to refresh";
 				} else {
 					this.refreshFlag = false;
-					this.refreshText = "下拉可以刷新";
+					this.refreshText = "pull down to refresh";
 				}
 			},
 			async search() {
@@ -240,7 +248,7 @@
 				} catch (err) {
 					console.error(err);
 					uni.showToast({
-						title: `加载失败，请重试：${err}`
+						title: `load data failed：${err}`
 					});
 				} finally {
 					this.loadingMore = false;

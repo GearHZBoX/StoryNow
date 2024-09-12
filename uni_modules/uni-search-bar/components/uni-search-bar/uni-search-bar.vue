@@ -17,7 +17,7 @@
 					<uni-icons color="#c0c4cc" size="20" type="clear" />
 				</slot>
 			</view>
-			<text class="bar-builtin-search-trigger" @click="confirm">搜索</text>
+			<text class="bar-builtin-search-trigger" @click="confirm">Search</text>
 		</view>
 		<text @click="cancel" class="uni-searchbar__cancel"
 			v-if="cancelButton ==='always' || show && cancelButton ==='auto'">{{cancelTextI18n}}</text>

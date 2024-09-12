@@ -167,12 +167,18 @@
 		"navigationStyle": "custom"
 	},
 	"tabBar": {
+		"selectedColor": "#9883FC",
+		"color": "rgb(153, 153, 153)",
 		"list": [{
 			"pagePath": "pages/index/index",
-			"text": "%index.home%"
+			"text": "%index.home%",
+			"iconPath": "static/tab-home.png",
+			"selectedIconPath": "static/tab-home-active.png"
 		},{
 			"pagePath": "pages/user-center/user-center",
-			"text": "用户信息"
+			"text": "profile",
+			"iconPath": "static/tab-profile.png",
+			"selectedIconPath": "static/tab-profile-active.png"
 		}]
 	},
 	"uniIdRouter": {

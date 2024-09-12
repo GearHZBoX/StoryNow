@@ -12,20 +12,20 @@
 			<text class="main-title">Create Account</text>
 			<uni-forms-item name="email">
 				<uni-easyinput :placeholder-style="placeholderStyle" type="email" :inputBorder="false" :focus="focusEmail" @blur="focusEmail = false"
-					class="input-box" placeholder="请输入邮箱" v-model="formData.email" trim="both" />
+					class="input-box" placeholder="Enter your email" v-model="formData.email" trim="both" />
 			</uni-forms-item>
 			<uni-forms-item name="nickname">
-				<uni-easyinput :placeholder-style="placeholderStyle" :inputBorder="false" :focus="focusNickname" @blur="focusNickname = false" class="input-box" placeholder="请输入用户昵称" 
+				<uni-easyinput :placeholder-style="placeholderStyle" :inputBorder="false" :focus="focusNickname" @blur="focusNickname = false" class="input-box" placeholder="Enter your nickname" 
 				v-model="formData.nickname" trim="both" />
 			</uni-forms-item>
 			<uni-forms-item name="password" v-model="formData.password">
 				<uni-easyinput :placeholder-style="placeholderStyle" :inputBorder="false" :focus="focusPassword" @blur="focusPassword = false"
-					class="input-box" maxlength="20" :placeholder="'请输入' + (config.passwordStrength == 'weak'?'6':'8') + '-16位密码'" type="password"
+					class="input-box" maxlength="20" :placeholder="'Enter a password with' + (config.passwordStrength == 'weak'?'6':'8') + '-16 characters'" type="password"
 					v-model="formData.password" trim="both" />
 			</uni-forms-item>
 			<uni-forms-item name="password2" v-model="formData.password2">
 				<uni-easyinput :placeholder-style="placeholderStyle" :inputBorder="false" :focus="focusPassword2" @blur="focusPassword2 =false"
-					class="input-box" placeholder="再次输入密码" maxlength="20" type="password" v-model="formData.password2"
+					class="input-box" placeholder="Enter the password again" maxlength="20" type="password" v-model="formData.password2"
 					trim="both" />
 			</uni-forms-item>
 			<uni-forms-item name="code" >
@@ -84,10 +84,10 @@
 					email: {
 						rules: [{
 								required: true,
-								errorMessage: '请输入邮箱',
+								errorMessage: 'Please enter email',
 							},{
 								format:'email',
-								errorMessage: '邮箱格式不正确',
+								errorMessage: 'Incorrect email format',
 							}
 						]
 					},
@@ -95,35 +95,32 @@
 						rules: [{
 								minLength: 3,
 								maxLength: 32,
-								errorMessage: '昵称长度在 {minLength} 到 {maxLength} 个字符',
+								errorMessage: ' Length of nickname should between {minLength} and {maxLength}',
 							},
 							{
 								validateFunction: function(rule, value, data, callback) {
 									// console.log(value);
 									if (/^1\d{10}$/.test(value) || /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/.test(value)) {
-										callback('昵称不能是：手机号或邮箱')
+										callback('The nickname cannot be phone number or email')
 									};
 									if (/^\d+$/.test(value)) {
-										callback('昵称不能为纯数字')
+										callback('The nickname cannot be pure numbers.')
 									};
-									if(/[\u4E00-\u9FA5\uF900-\uFA2D]{1,}/.test(value)){
-										callback('昵称不能包含中文')
-									}
 									return true
 								}
 							}
 						],
-						label: "昵称"
+						label: "nickname"
 					},
 					...passwordMod.getPwdRules(),
 					code: {
 						rules: [{
 								required: true,
-								errorMessage: '请输入邮箱验证码',
+								errorMessage: 'Please enter email verification code',
 							},
 							{
 								pattern: /^.{6}$/,
-								errorMessage: '邮箱验证码不正确',
+								errorMessage: 'Incorrect email verification code',
 							}
 						]
 					}

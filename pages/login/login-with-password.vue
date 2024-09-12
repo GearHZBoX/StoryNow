@@ -72,7 +72,7 @@
 				if (!this.email.length) {
 					this.focusEmail = true
 					return uni.showToast({
-						title: '请输入邮箱',
+						title: 'Please enter email',
 						icon: 'none',
 						duration: 3000
 					});

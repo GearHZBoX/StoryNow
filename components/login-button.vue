@@ -6,7 +6,7 @@
 </template>
 
 <script>
-	import {
+import {
 		store,
 		mutations
 	} from '@/uni_modules/uni-id-pages/common/store.js';
@@ -70,7 +70,10 @@
 					// #ifdef H5
 					result.loginType = type
 					// #endif
-					mutations.loginSuccess(result)
+					mutations.updateUserInfo();
+					uni.switchTab({
+						url: '/pages/user-center/user-center',
+					})
 				})
 				.catch(e=>{
 					uni.showModal({

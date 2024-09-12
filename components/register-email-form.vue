@@ -3,17 +3,18 @@
 		<uni-captcha :focus="focusCaptchaInput" ref="captcha" scene="send-email-code" v-model="captcha" />
 		<view class="box">
 			<uni-easyinput :placeholder-style="placeholderStyle" :focus="focusEmailCodeInput" @blur="focusEmailCodeInput = false" type="number" class="input-box" :inputBorder="false" v-model="modelValue" maxlength="6"
-				placeholder="请输入邮箱验证码">
+				placeholder="Enter the verification code">
 			</uni-easyinput>
 			<view class="short-code-btn" hover-class="hover" @click="start">
 				<text v-if="!sendingEmail" :class="reverseNumber==0?'highlight':'inner-text'"  @click="start">{{innerText}}</text>
-				<uni-load-more v-else></uni-load-more>
+				<Spin v-else />
 			</view>
 		</view>
 	</view>
 </template>
 
 <script>
+	import Spin from './spin.vue';
 	function debounce(func, wait) {
 		let timer;
 		wait = wait || 500;
@@ -42,6 +43,9 @@
 		model: {
 			prop: 'modelValue',
 			event: 'update:modelValue'
+		},
+		components: {
+			Spin
 		},
 		props: {
 			event: ['update:modelValue'],
@@ -111,8 +115,8 @@
 		},
 		computed: {
 			innerText() {
-				if (this.reverseNumber == 0) return "获取邮箱验证码";
-				return "重新发送" + '(' + this.reverseNumber + 's)';
+				if (this.reverseNumber == 0) return "Send to email";
+				return "resend" + '(' + this.reverseNumber + 's)';
 			}
 		},
 		created() {
@@ -132,19 +136,19 @@
 				if (this.captcha.length != 4) {
 					this.$refs.captcha.focusCaptchaInput = true
 					return uni.showToast({
-						title: '请先输入图形验证码',
+						title: 'Please enter the captcha first',
 						icon: 'none',
 						duration: 3000
 					});
 				}
 				if(!this.email) return uni.showToast({
-					title: "请输入邮箱",
+					title: "Please enter the email",
 					icon: 'none',
 					duration: 3000
 				});
 				let reg_email = /@/;
 				if (!reg_email.test(this.email)) return uni.showToast({
-					title: "邮箱格式错误",
+					title: "Incorrect email format",
 					icon: 'none',
 					duration: 3000
 				});
@@ -163,7 +167,7 @@
 					"captcha": this.captcha
 				}).then(result => {
 					uni.showToast({
-						title: "邮箱验证码发送成功",
+						title: "Send success",
 						icon: 'none',
 						duration: 3000
 					});
@@ -173,7 +177,7 @@
 					if (e.code == "uni-id-invalid-mail-template") {
 						this.modelValue = "123456"
 						uni.showToast({
-							title: '已启动测试模式,详情【控制台信息】',
+							title: 'test mode',
 							icon: 'none',
 							duration: 3000
 						});
