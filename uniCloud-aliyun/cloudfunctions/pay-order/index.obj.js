@@ -3,35 +3,126 @@
  */
 const PayPal = uniCloud.importObject('payPal');
 const getUser = require('get-user');
+const dayjs = require('dayjs');
+const isBetween = require("dayjs/plugin/isBetween");
+dayjs.extend(isBetween);
 
-function updateBusinessOrder(payInfo, updateInfo, clientInfo) {
+
+// 创建业务订单
+function createBusinessOrder(businessOrder) {
 	return new Promise(async (resolve) => {
-		const {
-			orderId,
-			id
-		} = payInfo;
-
-		const dbJQL = uniCloud.databaseForJQL({ // 获取JQL database引用，此处需要传入云对象的clientInfo
-			clientInfo: clientInfo
-		})
 		try {
-			const res = await dbJQL.collection('pay-order').where({
-				_id: id
-			}).update({
-				...updateInfo,
-				"updatedAt": new Date().getTime()
-			})
-			if(res.updated==1){
-				resolve([null, res])
-			}else{
-				resolve([res, null])
+			const db = uniCloud.database();
+			const collection = db.collection('pay-order');
+			const dbCmd = db.command
+			const orderInfo = await collection.add(businessOrder)
+
+			if (orderInfo.id) {
+				resolve([null, orderInfo])
+			} else {
+				resolve([orderInfo, null])
 			}
 		} catch (e) {
-			console.log("更新订单失败回调", res)
-			
+			console.log("创建业务订单失败", e)
+			resolve([e, null])
 		}
 	})
 }
+
+function updateBusinessOrder(payInfo, updateInfo) {
+	return new Promise(async (resolve) => {
+		try {
+			const {
+				orderId,
+				id
+			} = payInfo;
+
+			const db = uniCloud.database();
+			const collection = db.collection('pay-order');
+			const dbCmd = db.command
+			const res = await collection.doc(id).updateAndReturn({
+				...updateInfo,
+				"updatedAt": dayjs().format("YYYY-MM-DD HH:mm:ss")
+			})
+			if (res.doc) {
+				resolve([null, res.doc])
+			} else {
+				resolve([res, null])
+			}
+		} catch (e) {
+			console.log("创建业务订单失败", e)
+			resolve([e, null])
+		}
+	})
+}
+
+function updateVipTime(userInfo, days, clientInfo) {
+	return new Promise(async (resolve) => {
+		let {
+			vip,
+			_id
+		} = userInfo;
+
+		try {
+			if (vip && vip.duration) {
+				vip.duration = getVipTime({
+					startTime: vip.duration[0],
+					endTime: vip.duration[1],
+					days,
+					unit: 'day'
+				})
+			} else {
+				vip = {
+					duration: getVipTime({
+						days
+					})
+				}
+				console.log("更新后时间", vip)
+			}
+
+			const db = uniCloud.database();
+			const collection = db.collection('uni-id-users');
+			const dbCmd = db.command
+
+			let res = await collection.doc(_id).updateAndReturn({
+				vip: dbCmd.set(vip)
+			})
+
+			if (res.doc) {
+				resolve([null, res.doc])
+			} else {
+				resolve([res, null])
+			}
+		} catch (e) {
+			console.log("更新vip 数据失败回调", e)
+			resolve([e, null])
+		}
+	})
+}
+
+/**
+ * 获取Vip 时间
+ */
+function getVipTime({
+	startTime = dayjs().format("YYYY-MM-DD HH:mm:ss"),
+	endTime = dayjs().format("YYYY-MM-DD HH:mm:ss"),
+	days = 0,
+	unit = "day"
+}) {
+	if (dayjs().isBetween(startTime, endTime)) {
+		endTime = dayjs(endTime).add(days, unit).format("YYYY-MM-DD HH:mm:ss");
+	} else {
+		startTime = dayjs().format("YYYY-MM-DD HH:mm:ss");
+		endTime = dayjs(startTime).add(days, unit).format("YYYY-MM-DD HH:mm:ss");
+	}
+	return [startTime, endTime]
+}
+
+function testResolve(val) {
+	return Promise.resolve(val)
+}
+
+
 
 module.exports = {
 	_before: async function() { // 通用预处理器
@@ -45,9 +136,9 @@ module.exports = {
 		console.log('当期用户信息', currentUser);
 		this.currentUser = currentUser;
 
-		// if(!currentUser){
-		// 	throw Error("当前用户不存在，或未登录")
-		// }
+		if (!currentUser) {
+			throw Error("getUserInfo fail")
+		}
 	},
 
 	/** 
@@ -60,7 +151,7 @@ module.exports = {
 			currency_code
 		} = payInfo;
 
-		let [err, data] = await PayPal.createPayOrder(payInfo);
+		const [err, data] = await PayPal.createPayOrder(payInfo);
 
 		if (err) {
 			return {
@@ -69,24 +160,21 @@ module.exports = {
 			}
 		}
 
-		const dbJQL = uniCloud.databaseForJQL({ // 获取JQL database引用，此处需要传入云对象的clientInfo
-			clientInfo: this.getClientInfo()
-		})
-
-		const orderInfo = await dbJQL.collection('pay-order').add({
+		const [businessErr, orderInfo] = await createBusinessOrder({
 			"amount": amount,
 			"currency_code": currency_code,
 			"order_id": data.orderId,
 			"pay_status": 1,
 			"pay_type": 1,
-			"user_info": this.currentUser,
+			"user_id": this.currentUser._id,
 			"pay_detail": data,
-			"createdAt": new Date().getTime()
+			"createdAt": dayjs().format("YYYY-MM-DD HH:mm:ss")
 		})
-		if (!orderInfo.id) {
+
+		if (businessErr) {
 			return {
 				errCode: -1,
-				errMsg: '业务创建订单失败'
+				errMsg: '业务订单创建失败'
 			}
 		}
 		return {
@@ -95,36 +183,102 @@ module.exports = {
 		};
 	},
 
-
 	async captureBusinessOrder(payInfo) {
+		try {
+			const db = uniCloud.database();
+			const transaction = await db.startTransaction();
 
-		let [err, data] = await PayPal.captureOrder(payInfo);
+			let [err, data] = await PayPal.captureOrder(payInfo);
 
-
-		console.log("paypay", err, data);
-
-		if (err) {
-			return {
-				errCode: -1,
-				errMsg: 'payPal扣款失败',
-				detail: err
+			if (err) {
+				await transaction.rollback({
+					errCode: -1,
+					errMsg: 'payPal扣款失败',
+					detail: err
+				})
+				return [{
+					errCode: -1,
+					errMsg: 'payPal扣款失败',
+					detail: err
+				},null]
 			}
-		}
 
-		const [businessErr, BusinessData] = await updateBusinessOrder(payInfo, {
-			pay_status: 2
-		}, {
-			clientInfo: this.getClientInfo()
-		})
+			const [businessErr, businessData] = await updateBusinessOrder(payInfo, {
+				pay_status: 2
+			})
 
-		if (businessErr) {
-			return {
-				errCode: -1,
-				errMsg: '业务订单更新失败',
-				detail: businessErr
+			if (businessErr) {
+				await transaction.rollback({
+					errCode: -1,
+					errMsg: '业务订单更新失败',
+					detail: businessErr
+				})
+				return [{
+					errCode: -1,
+					errMsg: '业务订单更新失败',
+					detail: businessErr
+				},null]
 			}
+
+			const [userErr, userInfo] = await updateVipTime(this.currentUser, payInfo.days);
+
+			if (userErr) {
+				await transaction.rollback({
+					errCode: -1,
+					errMsg: '更新用户vip信息失败',
+					detail: userErr
+				})
+				
+				return [{
+					errCode: -1,
+					errMsg: '更新用户vip信息失败',
+					detail: userErr
+				},null]
+			}
+
+			return [null,{
+				userInfo,
+				businessData
+			}]
+		} catch (e) {
+			console.error(`事务异常`, e)
+			return [ {
+				errCode: -1,
+				errMsg: '事务异常',
+				detail: e
+			},null]
 		}
-		return payInfo
 	},
 
+	async testUpdate() {
+		try {
+			const db = uniCloud.database();
+			const transaction = await db.startTransaction();
+			
+			const  res = await testResolve(1);
+			console.log("res",res);
+			if(res==1){
+				 await transaction.rollback({
+					 errCode: -1,
+					 errMsg: '2222事务异常',
+					 detail: "234"
+				 })
+				 return {
+				 	errCode: -1,
+				 	errMsg: '2222事务异常',
+				 	detail: "234"
+				 }
+			}
+			return {
+				success:1
+			}
+		} catch (e) {
+			console.error(`事务异常`, e)
+			return {
+				errCode: -1,
+				errMsg: '事务异常',
+				detail: e
+			}
+		}
+	},
 }

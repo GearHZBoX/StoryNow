@@ -39,8 +39,8 @@
 			"enum": [1, 2],
 			"description": "支付类型：1googlePay 2paypalPay"
 		},
-		"user_info": {
-			"title": "用户信息",
+		"user_id": {
+			"title": "用户Id",
 			"bsonType": "object",
 			"description": "用户信息"
 		},

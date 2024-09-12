@@ -5,7 +5,7 @@
 				Become VIP Member
 			</view>
 		</fixed-header>
-
+		
 		<view class="pay-content">
 			<view class="pay-content-title">
 				<view class="title-icon"></view>
@@ -83,6 +83,11 @@
 			}
 		},
 		methods: {
+			async test(){
+				const a = await PayOrderCloud.testUpdate();
+				console.log("测试更新1",a);
+			},
+			
 			async getPriceConfig() {
 				const res = await PriceConfigCloud.getPriceConfig();
 				console.log("测试", res)
@@ -118,8 +123,12 @@
 					"provider": "paypal",
 					"orderInfo": res.paymanet,
 					success: (result) => {
+					
 						var rawdata = JSON.parse(result.rawdata);
-						this.captureOrder(res)
+						this.captureOrder({
+							...res,
+							days:this.activeItem.days
+						})
 					},
 					fail: function(err) {
 						console.log('fail:' + JSON.stringify(err));
@@ -135,17 +144,27 @@
 				const orderInfo = {
 					orderId: params.paymanet.orderId,
 					id: params.orderInfo.id,
-					days:days
+					days:params.days
 				}
+				
+				console.log("开始扣款",orderInfo)
 
-				const res = await PayOrderCloud.captureBusinessOrder(orderInfo);
-				console.log("支付结果",res)
-				if (res.id) {
+				const [err,data] = await PayOrderCloud.captureBusinessOrder(orderInfo);
+				
+				
+				console.log("支付结果1",data)
+				if (err) {
 					uni.showToast({
 						icon:"none",
-						title: "payment success"
+						title: "payment fail"
 					})
+					return;
 				}
+				uni.showToast({
+						icon:"none",
+						title: `会员有效期：${data?.userInfo?.vip?.duration}`,
+						duration:10*1000
+				})
 			}
 		}
 	}
