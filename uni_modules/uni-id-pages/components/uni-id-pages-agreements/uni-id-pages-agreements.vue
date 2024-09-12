@@ -9,7 +9,7 @@
 			</checkbox-group>
 			<view class="content">
 				<view class="item" v-for="(agreement,index) in agreements" :key="index">
-					<text class="agreement text" @click="navigateTo(agreement)">{{agreement.title}}</text>
+					<text class="storynow-agreement text" @click="navigateTo(agreement)">{{agreement.title}}</text>
 					<text class="text and" v-if="hasAnd(agreements,index)" space="nbsp"> 和 </text>
 				</view>
 			</view>
@@ -20,7 +20,7 @@
 				<view class="content">
 					<text class="text">请先阅读并同意</text>
 					<view class="item" v-for="(agreement,index) in agreements" :key="index">
-						<text class="agreement text" @click="navigateTo(agreement)">{{agreement.title}}</text>
+						<text class="storynow-agreement text" @click="navigateTo(agreement)">{{agreement.title}}</text>
 						<text class="text and" v-if="hasAnd(agreements,index)" space="nbsp"> 和 </text>
 					</view>
 				</view>

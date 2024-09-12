@@ -6,9 +6,9 @@
 			<i></i>
 		</view>
 		<view class="login-status-box" v-else>
-			<img :src="userInfo.avatar_url" class="head-img" />
-			{{userInfo.username}}
-			<i></i>
+			<!-- <img :src="userInfo.avatar_url" class="head-img" /> -->
+			{{userInfo.nickname}}
+			<i class="king"></i>
 		</view>
 
 		<view class="vip-box">
@@ -20,6 +20,7 @@
 				<text>0.3</text>$/day
 			</view>
 		</view>
+		
 
 		<view class="history">
 			<view class="menu-item">
@@ -77,6 +78,7 @@
 	export default {
 		computed: {
 			userInfo() {
+				console.log("store.userInfo",store.userInfo)
 				return store.userInfo || {};
 			},
 			hasLogin() {
@@ -92,8 +94,7 @@
 		},
 		methods: {
 			toPage(url,auth) {
-				// 方便测试，不校验登录
-				if(false&&auth&&!this.hasLogin){
+				if(auth&&!this.hasLogin){
 					uni.navigateTo({
 						url: '/pages/login/login',
 					})
@@ -172,6 +173,12 @@
 				height: 16px;
 				margin-left: 6px;
 				background: url('../../static/user-center/arrow.svg') center/100% auto no-repeat;
+			}
+			.king{
+				width: 20px;
+				height: 20px;
+				margin-left: 6px;
+				background: url('../../static/user-center/king.svg') center/100% auto no-repeat;
 			}
 		}
 

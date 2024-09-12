@@ -1,8 +1,11 @@
+$story-now-border-color-highlight: #9883FC;
 $story-now-text-color-highlight: #9883FC;
 
 @font-face {
 	font-family: "Open Sans" sans-serif;
+	/* #ifndef APP */
 	src: url("./static/font/Open_Sans/OpenSans-VariableFont_wdth,wght.ttf");
+	/* #endif */
 }
 
 .view-with-header {
@@ -14,5 +17,10 @@ $story-now-text-color-highlight: #9883FC;
 }
 
 .highlight {
-	color: #9883FC;
+	color: $story-now-text-color-highlight;
+}
+
+.storynow-agreement {
+	color: $story-now-text-color-highlight;
+	cursor: pointer;
 }

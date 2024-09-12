@@ -151,7 +151,14 @@
 				"navigationStyle": "custom"
 			}
 		},
-	{
+		{
+			"path" : "pages/login/reset-passwd-by-email",
+			"style" : 
+			{
+				"navigationBarTitleText" : ""
+			}
+		},
+{
 			"path" : "pages/feedback/feedback",
 			"style" : 
 			{
@@ -185,10 +192,9 @@
 		"list": [{
 			"pagePath": "pages/index/index",
 			"text": "%index.home%"
-		},
-		{
+		},{
 			"pagePath": "pages/user-center/user-center",
-			"text": "Profile"
+			"text": "用户信息"
 		}]
 	},
 	"uniIdRouter": {

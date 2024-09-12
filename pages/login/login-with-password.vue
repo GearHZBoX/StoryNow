@@ -9,19 +9,23 @@
 			</view>
 		</view>
 		<view class="sign-in-view">
-			<text class="sign-in-view-title">Sign In</text>
+			<text class="sign-in-view-title">Sign In with Email</text>
 			<uni-easyinput :placeholder-style="placeholderStyle" class="sign-in-view-title-username"
-				placeholder="Enter the username">
+				placeholder="Enter the email" v-model="email" :focus="focusEmail" @blur="focusEmail = false">
 				<template #left>
 					<uni-icons :size="24" color="rgba(145, 144, 153, 1)" class="input-prefix" type='person-filled'></uni-icons>
 				</template>
 			</uni-easyinput>
 			<uni-easyinput :placeholder-style="placeholderStyle" class="sign-in-view-title-password"
-				placeholder="Password" type="password">
+				placeholder="Password" type="password" v-model="password" :focus="focusPassword" @blur="focusPassword = false">
 				<template #left>
 					<uni-icons :size="24" color="rgba(145, 144, 153, 1)" class="input-prefix" type='locked-filled'></uni-icons>
 				</template>
 			</uni-easyinput>
+			<PrimaryButton style="margin: 40px 0 16px;" @click="login" :disabled="isProcessing || !email || !password">
+				Sign In
+			</PrimaryButton>
+			<text class="sign-in-view-forgot-password" @click="toResetPasswd">Forgot password?</text>
 		</view>
 	</view>
 </template>
@@ -29,10 +33,17 @@
 <script>
 	import StaticHeader from '../../components/static-header.vue'
 	import UniEasyinput from '../../uni_modules/uni-easyinput/components/uni-easyinput/uni-easyinput.vue'
+	import PrimaryButton from '../../components/primary-button.vue'
+	import { debounce } from 'lodash';
+	const uniIdCo = uniCloud.importObject("uni-id-co",{
+		customUI:true
+	});
+	import { mutations, store } from '../../uni_modules/uni-id-pages/common/store';
 	export default {
 		components: {
 			StaticHeader,
 			UniEasyinput,
+			PrimaryButton,
 		},
 		data() {
 			return {
@@ -43,10 +54,75 @@
 		font-style: normal;
 		font-weight: 400;
 		line-height: 24px;`,
+				email: '',
+				password: '',
+				focusPassword: false,
+				focusEmail: true,
+				isProcessing: false,
 			}
 		},
+		created() {
+			this.login = debounce(this.login, 200);
+		},
 		methods: {
-
+			login() {
+				if (this.isProcessing) {
+					return;
+				}
+				if (!this.email.length) {
+					this.focusEmail = true
+					return uni.showToast({
+						title: '请输入邮箱',
+						icon: 'none',
+						duration: 3000
+					});
+				}
+				
+				if (!this.password.length) {
+					this.focusPassword = true
+					return uni.showToast({
+						title: '请输入密码',
+						icon: 'none',
+						duration: 3000
+					});
+				}
+				
+				if (!/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(this.email)) {
+					this.focusEmail = true;
+					return uni.showToast({
+						title: '邮箱格式错误',
+						icon: 'none',
+						duration: 3000
+					});
+				}
+				uni.showLoading({
+					title: '登录中'
+				});
+				this.isProcessing = true;
+				uniIdCo.login({
+					email: this.email,
+					password: this.password,
+				}).then(e => {
+					mutations.updateUserInfo();
+					uni.switchTab({
+						url: '/pages/user-center/user-center',
+					});
+				}).catch(e => {
+					console.error(e);
+					uni.showToast({
+						title: '邮箱或密码错误',
+						icon: 'none',
+					})
+				}).finally(() => {
+					uni.hideLoading();
+					this.isProcessing = false;
+				})
+			},
+			toResetPasswd() {
+				uni.navigateTo({
+					url: '/pages/login/reset-passwd-by-email',
+				});
+			}
 		}
 	}
 </script>
@@ -150,6 +226,18 @@
 					padding-right: 8px;
 				}
 			}
+		}
+		
+		&-forgot-password {
+			color: var(--light-brand-02, #9883FC);
+			text-align: center;
+			
+			/* label/medium */
+			font-family: "PingFang SC";
+			font-size: 12px;
+			font-style: normal;
+			font-weight: 500;
+			line-height: 14px; /* 116.667% */
 		}
 
 	}

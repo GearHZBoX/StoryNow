@@ -23,7 +23,6 @@
 			<template v-else>
 				<uni-icons v-if="clearable && isVal && !disabled && type !== 'textarea'" class="content-clear-icon" :class="{ 'is-textarea-icon': type === 'textarea' }" type="clear" :size="clearSize" :color="msg ? '#dd524d' : focusShow ? primaryColor : '#c0c4cc'" @click="onClear"></uni-icons>
 			</template>
-			<slot name="right"></slot>
 		</view>
 	</view>
 </template>

@@ -101,12 +101,8 @@ async function createOrder(payInfo, config) {
 	})
 }
 
-/** 
- *   捕获订单 发起扣款
- * @param {Object} payInfo
- * @param {Object} config
- */
-function captureOrder(payInfo,config){
+
+ function captureOrder(payInfo,config){
 	return new Promise((resolve,reject)=>{
 		const {
 			orderId

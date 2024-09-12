@@ -33,16 +33,6 @@ function updateBusinessOrder(payInfo, updateInfo, clientInfo) {
 	})
 }
 
-
-/**
- * 更新用户的Vip 状态
- */
-function updateUserVip(userInfo,days,clientInfo){
-	return new Promise(async (resolve)=>{
-			
-	})
-}
-
 module.exports = {
 	_before: async function() { // 通用预处理器
 		const clientInfo = this.getClientInfo()
@@ -54,6 +44,7 @@ module.exports = {
 
 		console.log('当期用户信息', currentUser);
 		this.currentUser = currentUser;
+
 		// if(!currentUser){
 		// 	throw Error("当前用户不存在，或未登录")
 		// }
@@ -66,8 +57,7 @@ module.exports = {
 	async createBusinessOrder(payInfo) {
 		const {
 			amount,
-			currency_code,
-			days
+			currency_code
 		} = payInfo;
 
 		let [err, data] = await PayPal.createPayOrder(payInfo);
@@ -89,7 +79,6 @@ module.exports = {
 			"order_id": data.orderId,
 			"pay_status": 1,
 			"pay_type": 1,
-			"days":days,
 			"user_info": this.currentUser,
 			"pay_detail": data,
 			"createdAt": new Date().getTime()
@@ -102,15 +91,15 @@ module.exports = {
 		}
 		return {
 			paymanet: data,
-			orderInfo: orderInfo,
-			days:days
+			orderInfo: orderInfo
 		};
 	},
 
-	
+
 	async captureBusinessOrder(payInfo) {
-		
+
 		let [err, data] = await PayPal.captureOrder(payInfo);
+
 
 		console.log("paypay", err, data);
 
@@ -135,12 +124,7 @@ module.exports = {
 				detail: businessErr
 			}
 		}
-		
-		// const [vipErr,VipData] = await updateUserVip(this.currentUser,payInfo,days,{
-		// 	clientInfo: this.getClientInfo()
-		// }) 
-		
-		
 		return payInfo
 	},
+
 }
