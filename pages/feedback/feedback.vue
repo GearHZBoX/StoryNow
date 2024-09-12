@@ -40,8 +40,11 @@
 </template>
 
 <script>
-	const FeedbackCloud = uniCloud.importObject('feedback')
+	import {
+		importObjectConfig
+	} from "../../utils/index.js"
 	import fixedHeader from '../../components/fixed-header.vue';
+	const FeedbackCloud = importObjectConfig('feedback')
 	export default {
 		components: {
 			fixedHeader,

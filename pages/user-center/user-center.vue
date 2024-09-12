@@ -20,7 +20,7 @@
 				<text>0.3</text>$/day
 			</view>
 		</view>
-		
+
 
 		<view class="history">
 			<view class="menu-item">
@@ -78,7 +78,6 @@
 	export default {
 		computed: {
 			userInfo() {
-				console.log("store.userInfo",store.userInfo)
 				return store.userInfo || {};
 			},
 			hasLogin() {
@@ -93,35 +92,35 @@
 			};
 		},
 		methods: {
-			toPage(url,auth) {
-				if(auth&&!this.hasLogin){
+			toPage(url, auth) {
+				if (auth && !this.hasLogin) {
 					uni.navigateTo({
 						url: '/pages/login/login',
 					})
 					return;
 				}
-				
+
 				uni.navigateTo({
 					url: url,
 					animationDuration: 200,
 				});
 			},
-			
-			
+
+
 			// 跳转登录
-			toLogin(){
+			toLogin() {
 				uni.navigateTo({
 					url: '/pages/login/login',
 				})
 			},
-			
+
 			logout() {
 				uni.showModal({
 					title: 'Storynow',
 					content: 'Are you sure you want to log out？',
-					cancelText:"Cancel",
-					confirmText:"Confirm",
-					success: function (res) {
+					cancelText: "Cancel",
+					confirmText: "Confirm",
+					success: function(res) {
 						if (res.confirm) {
 							mutations.logout();
 						} else if (res.cancel) {
@@ -139,15 +138,15 @@
 	page {
 		width: 100%;
 		min-height: 100%;
-		background-color: #F6F6F9;
+
 	}
-	
+
 	/* #endif */
 	.user-center-page {
 		display: flex;
 		flex-direction: column;
 		height: 100%;
-		background:url("../../static/img_bg.png") top/100% 100% no-repeat;
+		background-color: #F6F6F9;
 
 		.login-status-box {
 			height: 44px;
@@ -174,7 +173,8 @@
 				margin-left: 6px;
 				background: url('../../static/user-center/arrow.svg') center/100% auto no-repeat;
 			}
-			.king{
+
+			.king {
 				width: 20px;
 				height: 20px;
 				margin-left: 6px;
@@ -278,6 +278,7 @@
 					align-items: center;
 					display: flex;
 					height: 28px;
+					box-sizing: border-box;
 					padding: 8px 12px;
 					justify-content: center;
 					align-items: center;
@@ -311,22 +312,23 @@
 				width: 20px;
 				height: 20px;
 				margin-right: 12px;
-				
-				&.aubout-us-icon{
+
+				&.aubout-us-icon {
 					background: url("../../static/user-center/about.svg") center/20px 20px no-repeat;
 				}
-				
-				&.feedback-icon{
+
+				&.feedback-icon {
 					background: url("../../static/user-center/feedback.svg") center/20px 20px no-repeat;
 				}
-				
-				&.history-icon{
+
+				&.history-icon {
 					background: url("../../static/user-center/history.svg") center/20px 20px no-repeat;
 				}
-				
-				&.logout-icon{
+
+				&.logout-icon {
 					background: url("../../static/user-center/logout.svg") center/20px 20px no-repeat;
 				}
+
 				// img {
 				// 	width: 100%;
 				// 	height: 100%;

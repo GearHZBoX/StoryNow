@@ -189,12 +189,17 @@
 		"navigationStyle": "custom"
 	},
 	"tabBar": {
+		"color":"#605C73",
 		"list": [{
+			"iconPath":"static/user-center/home.svg",
+			"selectedIconPath": "static/user-center/home_select.svg",
 			"pagePath": "pages/index/index",
 			"text": "%index.home%"
 		},{
+			"iconPath":"static/user-center/mine.svg",
+			"selectedIconPath": "static/user-center/mine_select.svg",
 			"pagePath": "pages/user-center/user-center",
-			"text": "用户信息"
+			"text": "Profile"
 		}]
 	},
 	"uniIdRouter": {

@@ -5,7 +5,7 @@
 				Become VIP Member
 			</view>
 		</fixed-header>
-		
+
 		<view class="pay-content">
 			<view class="pay-content-title">
 				<view class="title-icon"></view>
@@ -16,7 +16,7 @@
 				<view :class="`pay-item ${activeItem._id == item._id?'active':''}`" v-for="item in priceItemList"
 					:key="item._id" @click="toSelect(item)">
 					<view class="money">
-						$<text>{{item.amount}}</text> 
+						$<text>{{item.amount}}</text>
 					</view>
 					<view class="desc">{{item.desc}}</view>
 					<view class="notice">{{item.notice}}</view>
@@ -52,12 +52,15 @@
 
 <script>
 	import fixedHeader from '../../components/fixed-header.vue';
+	import {
+		importObjectConfig
+	} from "../../utils/index.js"
 
-	const PayOrderCloud = uniCloud.importObject('pay-order');
+	const PayOrderCloud = importObjectConfig('pay-order');
 
-	const PaypalCloud = uniCloud.importObject('paypal');
+	const PaypalCloud = importObjectConfig('paypal');
 
-	const PriceConfigCloud = uniCloud.importObject('price-config')
+	const PriceConfigCloud = importObjectConfig('price-config')
 	export default {
 		components: {
 			fixedHeader,
@@ -83,11 +86,11 @@
 			}
 		},
 		methods: {
-			async test(){
+			async test() {
 				const a = await PayOrderCloud.testUpdate();
-				console.log("测试更新1",a);
+				console.log("测试更新1", a);
 			},
-			
+
 			async getPriceConfig() {
 				const res = await PriceConfigCloud.getPriceConfig();
 				console.log("测试", res)
@@ -123,11 +126,11 @@
 					"provider": "paypal",
 					"orderInfo": res.paymanet,
 					success: (result) => {
-					
+
 						var rawdata = JSON.parse(result.rawdata);
 						this.captureOrder({
 							...res,
-							days:this.activeItem.days
+							days: this.activeItem.days
 						})
 					},
 					fail: function(err) {
@@ -144,26 +147,26 @@
 				const orderInfo = {
 					orderId: params.paymanet.orderId,
 					id: params.orderInfo.id,
-					days:params.days
+					days: params.days
 				}
-				
-				console.log("开始扣款",orderInfo)
 
-				const [err,data] = await PayOrderCloud.captureBusinessOrder(orderInfo);
-				
-				
-				console.log("支付结果1",data)
+				console.log("开始扣款", orderInfo)
+
+				const [err, data] = await PayOrderCloud.captureBusinessOrder(orderInfo);
+
+
+				console.log("支付结果1", data)
 				if (err) {
 					uni.showToast({
-						icon:"none",
+						icon: "none",
 						title: "payment fail"
 					})
 					return;
 				}
 				uni.showToast({
-						icon:"none",
-						title: `会员有效期：${data?.userInfo?.vip?.duration}`,
-						duration:10*1000
+					icon: "none",
+					title: `会员有效期：${data?.userInfo?.vip?.duration}`,
+					duration: 10 * 1000
 				})
 			}
 		}

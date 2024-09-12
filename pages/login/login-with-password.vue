@@ -13,13 +13,16 @@
 			<uni-easyinput :placeholder-style="placeholderStyle" class="sign-in-view-title-username"
 				placeholder="Enter the email" v-model="email" :focus="focusEmail" @blur="focusEmail = false">
 				<template #left>
-					<uni-icons :size="24" color="rgba(145, 144, 153, 1)" class="input-prefix" type='person-filled'></uni-icons>
+					<uni-icons :size="24" color="rgba(145, 144, 153, 1)" class="input-prefix"
+						type='person-filled'></uni-icons>
 				</template>
 			</uni-easyinput>
 			<uni-easyinput :placeholder-style="placeholderStyle" class="sign-in-view-title-password"
-				placeholder="Password" type="password" v-model="password" :focus="focusPassword" @blur="focusPassword = false">
+				placeholder="Password" type="password" v-model="password" :focus="focusPassword"
+				@blur="focusPassword = false">
 				<template #left>
-					<uni-icons :size="24" color="rgba(145, 144, 153, 1)" class="input-prefix" type='locked-filled'></uni-icons>
+					<uni-icons :size="24" color="rgba(145, 144, 153, 1)" class="input-prefix"
+						type='locked-filled'></uni-icons>
 				</template>
 			</uni-easyinput>
 			<PrimaryButton style="margin: 40px 0 16px;" @click="login" :disabled="isProcessing || !email || !password">
@@ -34,11 +37,16 @@
 	import StaticHeader from '../../components/static-header.vue'
 	import UniEasyinput from '../../uni_modules/uni-easyinput/components/uni-easyinput/uni-easyinput.vue'
 	import PrimaryButton from '../../components/primary-button.vue'
-	import { debounce } from 'lodash';
-	const uniIdCo = uniCloud.importObject("uni-id-co",{
-		customUI:true
+	import {
+		debounce
+	} from 'lodash';
+	const uniIdCo = uniCloud.importObject("uni-id-co", {
+		customUI: true
 	});
-	import { mutations, store } from '../../uni_modules/uni-id-pages/common/store';
+	import {
+		mutations,
+		store
+	} from '../../uni_modules/uni-id-pages/common/store';
 	export default {
 		components: {
 			StaticHeader,
@@ -77,7 +85,7 @@
 						duration: 3000
 					});
 				}
-				
+
 				if (!this.password.length) {
 					this.focusPassword = true
 					return uni.showToast({
@@ -86,7 +94,7 @@
 						duration: 3000
 					});
 				}
-				
+
 				if (!/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(this.email)) {
 					this.focusEmail = true;
 					return uni.showToast({
@@ -102,8 +110,8 @@
 				uniIdCo.login({
 					email: this.email,
 					password: this.password,
-				}).then(e => {
-					mutations.updateUserInfo();
+				}).then(async (e) => {
+					await mutations.updateUserInfo();
 					uni.switchTab({
 						url: '/pages/user-center/user-center',
 					});
@@ -227,17 +235,18 @@
 				}
 			}
 		}
-		
+
 		&-forgot-password {
 			color: var(--light-brand-02, #9883FC);
 			text-align: center;
-			
+
 			/* label/medium */
 			font-family: "PingFang SC";
 			font-size: 12px;
 			font-style: normal;
 			font-weight: 500;
-			line-height: 14px; /* 116.667% */
+			line-height: 14px;
+			/* 116.667% */
 		}
 
 	}
