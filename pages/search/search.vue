@@ -3,7 +3,7 @@
 		<view class="page-header"></view>
 		<view class="search-container">
 			<uni-search-bar :placeholder="placeholder" ref="searchBar" @clear="clear" @confirm="search" @cancel="cancel" focus="true" v-model="searchVal" bg-color="#ffffff"
-				:radius="100"></uni-search-bar>
+				:radius="100" cancel-text="Cancel"></uni-search-bar>
 		</view>
 		<view class="search-history">
 			<view class="search-history-header">

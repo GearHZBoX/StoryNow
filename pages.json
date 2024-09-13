@@ -196,7 +196,7 @@
 			"iconPath":"static/user-center/home.svg",
 			"selectedIconPath": "static/user-center/home_select.svg",
 			"pagePath": "pages/index/index",
-			"text": "%index.home%",
+			"text": "Home",
 			"iconPath": "static/tab-home.png",
 			"selectedIconPath": "static/tab-home-active.png"
 		},{

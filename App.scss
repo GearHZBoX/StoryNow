@@ -37,7 +37,7 @@ $story-now-text-color-highlight: #9883FC;
 		transform: rotate(360deg);
 	}
 }
-/* #endif */
+
 
 @mixin rotating($duration: 1s) {
 	animation: rotate $duration linear infinite;
@@ -46,3 +46,4 @@ $story-now-text-color-highlight: #9883FC;
 .rotation-2s {
 	@include rotating(2s);
 }
+/* #endif */

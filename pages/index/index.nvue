@@ -451,6 +451,11 @@
 		color: #605C73;
 		text-overflow: ellipsis;
 		lines: 3;
+		/* #ifdef H5 */
+		display: -webkit-box;
+		-webkit-line-clamp: 3;
+		-webkit-box-orient: vertical;
+		/* #endif */
 
 		/* body/regular */
 		font-family: "Open Sans";

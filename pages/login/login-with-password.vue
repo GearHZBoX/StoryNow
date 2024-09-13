@@ -89,7 +89,7 @@
 				if (!this.password.length) {
 					this.focusPassword = true
 					return uni.showToast({
-						title: '请输入密码',
+						title: 'Please enter password',
 						icon: 'none',
 						duration: 3000
 					});
@@ -98,13 +98,13 @@
 				if (!/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(this.email)) {
 					this.focusEmail = true;
 					return uni.showToast({
-						title: '邮箱格式错误',
+						title: 'Incorrect email format',
 						icon: 'none',
 						duration: 3000
 					});
 				}
 				uni.showLoading({
-					title: '登录中'
+					title: 'login'
 				});
 				this.isProcessing = true;
 				uniIdCo.login({
@@ -118,7 +118,7 @@
 				}).catch(e => {
 					console.error(e);
 					uni.showToast({
-						title: '邮箱或密码错误',
+						title: 'Incorrect email or password',
 						icon: 'none',
 					})
 				}).finally(() => {

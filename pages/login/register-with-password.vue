@@ -20,7 +20,7 @@
 			</uni-forms-item>
 			<uni-forms-item name="password" v-model="formData.password">
 				<uni-easyinput :placeholder-style="placeholderStyle" :inputBorder="false" :focus="focusPassword" @blur="focusPassword = false"
-					class="input-box" maxlength="20" :placeholder="'Enter a password with' + (config.passwordStrength == 'weak'?'6':'8') + '-16 characters'" type="password"
+					class="input-box" maxlength="20" :placeholder="'Enter a password with ' + (config.passwordStrength == 'weak'?'6':'8') + '-16 characters'" type="password"
 					v-model="formData.password" trim="both" />
 			</uni-forms-item>
 			<uni-forms-item name="password2" v-model="formData.password2">
@@ -125,7 +125,7 @@
 						]
 					}
 				},
-				focusEmail:false,
+				focusEmail:true,
 				focusNickname:false,
 				focusPassword:false,
 				focusPassword2:false,
@@ -166,6 +166,9 @@
 			},
 			submitForm(params) {
 				uniIdCo.registerUserByEmail(this.formData).then(e => {
+					uni.showToast({
+						title: 'register success',
+					})
 					uni.navigateTo({
 						url: '/pages/login/login-with-password',
 						complete: (e) => {
