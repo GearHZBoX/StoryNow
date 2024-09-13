@@ -117,7 +117,6 @@
 							return;
 						}
 						const properWidth = this.pageWidth - 32;
-						console.log(properWidth, this.pageWidth);
 						this.ticketScale = Math.min(properWidth / data.width, 2);
 					}).exec();
 				})

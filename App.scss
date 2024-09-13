@@ -47,3 +47,7 @@ $story-now-text-color-highlight: #9883FC;
 	@include rotating(2s);
 }
 /* #endif */
+
+.is-focused {
+	border-color: $story-now-border-color-highlight !important;
+}

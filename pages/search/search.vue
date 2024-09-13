@@ -33,7 +33,7 @@
 			return {
 				searchVal: '',
 				history: [],
-				placeholder: '',
+				placeholder: 'Enter search content',
 			};
 		},
 		computed: {
