@@ -18,13 +18,14 @@ async function realPreUnifiedLogin (params = {}) {
     type
   } = params
   const appId = this.getUniversalClientInfo().appId
-  const {
+  let {
     total,
     userMatched
   } = await findUser({
     userQuery: user,
     authorizedApp: appId
   })
+  userMatched = userMatched.filter(user => user.status !== 4);
   if (userMatched.length === 0) {
     if (type === 'login') {
       if (total > 0) {

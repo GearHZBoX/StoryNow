@@ -118,9 +118,9 @@ import { map } from 'lodash';
 			},
 			loadingText() {
 				if (this.loadingMore) {
-					return 'loading...';
+					return 'Loading...';
 				}
-				return 'release to load more';
+				return 'Release to load more';
 			},
 		},
 		beforeCreate() {
@@ -134,7 +134,7 @@ import { map } from 'lodash';
 				console.log('index-search', result);
 				this.searchVal = result?.searchVal || '';
 				uni.showLoading({
-					title: "loading..."
+					title: "Loading"
 				})
 				this.search().finally(() => {
 					uni.hideLoading();
@@ -228,7 +228,7 @@ import { map } from 'lodash';
 			},
 			async onrefresh(e) {
 				this.refreshing = true;
-				this.refreshText = "refreshing...";
+				this.refreshText = "Refreshing...";
 				this.pageCurrent = 1;
 
 				this.refreshAni();
@@ -236,7 +236,7 @@ import { map } from 'lodash';
 				await this.loadData(false);
 				this.refreshing = false;
 				this.refreshFlag = false;
-				this.refreshText = "refresh completed";
+				this.refreshText = "Refresh completed";
 			},
 			onpullingdown(e) {
 				if (this.refreshing) {
@@ -246,10 +246,10 @@ import { map } from 'lodash';
 				this.pulling = false;
 				if (Math.abs(e.pullingDistance) > Math.abs(e.viewHeight)) {
 					this.refreshFlag = true;
-					this.refreshText = "release to refresh";
+					this.refreshText = "Release to refresh";
 				} else {
 					this.refreshFlag = false;
-					this.refreshText = "pull down to refresh";
+					this.refreshText = "Pull down to refresh";
 				}
 			},
 			async search() {

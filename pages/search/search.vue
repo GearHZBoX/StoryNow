@@ -33,7 +33,7 @@
 			return {
 				searchVal: '',
 				history: [],
-				placeholder: 'Enter search content',
+				placeholder: '',
 			};
 		},
 		computed: {
@@ -108,7 +108,7 @@
 			},
 			deleteHistory() {
 				uni.showModal({
-					title: "删除全部搜索历史?",
+					title: "Clear search histories?",
 					success: ({
 						confirm,
 						cancel

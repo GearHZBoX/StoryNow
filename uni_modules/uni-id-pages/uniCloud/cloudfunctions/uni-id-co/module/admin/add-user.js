@@ -69,7 +69,7 @@ module.exports = async function (params = {}) {
     tags,
     status
   } = params
-  const {
+  let {
     userMatched
   } = await findUser({
     userQuery: {
@@ -79,6 +79,7 @@ module.exports = async function (params = {}) {
     },
     authorizedApp
   })
+  userMatched = userMatched.filter(user => user.status !== 4);
   if (userMatched.length) {
     throw {
       errCode: ERROR.ACCOUNT_EXISTS

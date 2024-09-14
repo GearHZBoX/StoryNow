@@ -1,5 +1,5 @@
 <template>
-	<view style="position: relative;">
+	<view style="position: relative;overflow-x: hidden;">
 		<fixed-header backIcon id="navigator">
 			<text class="navigator-text" :style="`opacity: ${showNavigatorTitle ? 1 : 0};`">
 				{{storyTitle}}
@@ -22,7 +22,7 @@
 		</view>
 		<view class="preview-footer" v-if="!loading && !story.hasPermission"></view>
 		<view class="ticket-view" >
-			<view id="ticket" class="ticket" :style="`transform: scale(${ticketScale}); transform-origin: left top;`" v-if="!loading && !story.hasPermission">
+			<view id="ticket" class="ticket" :style="`transform: scale(${ticketScale}); transform-origin: left top;`" v-if="isLoaded && !story.hasPermission">
 				<view class="ticket-left">
 					<text class="ticket-left-title">Open Storynow Membership</text>
 					<text class="ticket-left-description">Access to popular content across all platforms.</text>
@@ -70,6 +70,9 @@
 			userInfo() {
 				return store.userInfo || {};
 			},
+			isLoaded() {
+				return this.story.text || this.story.preview;
+			}
 		},
 		methods: {
 			purchaseVip() {

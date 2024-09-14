@@ -170,7 +170,10 @@
 		padding: 24px 24px 90px;
 		display: flex;
 		flex-direction: column;
-		row-gap: 24px;
+		// row-gap: 24px;
+		&>* {
+			margin-bottom: 24px;
+		}
 	}
 	
 	.create-button,

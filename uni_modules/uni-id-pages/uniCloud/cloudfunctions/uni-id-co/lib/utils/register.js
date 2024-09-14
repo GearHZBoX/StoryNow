@@ -24,12 +24,13 @@ async function realPreRegister (params = {}) {
   const {
     user
   } = params
-  const {
+  let {
     userMatched
   } = await findUser({
     userQuery: user,
     authorizedApp: this.getUniversalClientInfo().appId
   })
+  userMatched = userMatched.filter(user => user.status !== 4);
   if (userMatched.length > 0) {
     throw {
       errCode: ERROR.ACCOUNT_EXISTS

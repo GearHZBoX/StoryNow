@@ -47,10 +47,7 @@ module.exports = async function (params = {}) {
     captcha
   } = params
 
-  const needCaptcha = await getNeedCaptcha.call(this, {
-    email,
-    type: LOG_TYPE.RESET_PWD_BY_EMAIL
-  })
+  const needCaptcha = false;
   if (needCaptcha) {
     await verifyCaptcha.call(this, {
       captcha,
@@ -75,7 +72,7 @@ module.exports = async function (params = {}) {
     throw error
   }
   // 根据手机号查找匹配的用户
-  const {
+  let {
     total,
     userMatched
   } = await findUser.call(this, {
@@ -84,6 +81,7 @@ module.exports = async function (params = {}) {
     },
     authorizedApp: [this.getUniversalClientInfo().appId]
   })
+  userMatched = userMatched.filter(user => user.status !== 4);
   if (userMatched.length === 0) {
     if (total > 0) {
       throw {

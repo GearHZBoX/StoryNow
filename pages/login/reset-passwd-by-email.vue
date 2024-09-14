@@ -41,7 +41,11 @@
 	const uniIdCo = uniCloud.importObject("uni-id-co",{
 		errorOptions:{
 			type:'toast'
-		}
+		},
+		loadingOptions: { 
+			title: 'loading...', 
+			mask: true,
+		},
 	})
 	export default {
 		mixins: [mixin],
@@ -151,12 +155,20 @@
 								password,
 								captcha
 							}).then(e => {
-								uni.navigateTo({
-									url: '/uni_modules/uni-id-pages/pages/login/login-withpwd',
-									complete: (e) => {
-										// console.log(e);
+								// uni.redirectTo({
+								// 	url: '/pages/login/login-with-password',
+								// 	complete: (e) => {
+								// 		// console.log(e);
+								// 	}
+								// })
+								uni.navigateBack({
+									complete: () => {
+										uni.showToast({
+											title: 'Reset Success!',
+											icon: 'none'
+										});
 									}
-								})
+								});
 							})
 							.catch(e => {
 								if (e.errCode == 'uni-id-captcha-required') {

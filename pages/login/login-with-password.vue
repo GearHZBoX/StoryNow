@@ -47,6 +47,7 @@
 		mutations,
 		store
 	} from '../../uni_modules/uni-id-pages/common/store';
+import { goBackToLatestReaderPage } from '../../common/utils';
 	export default {
 		components: {
 			StaticHeader,
@@ -112,6 +113,9 @@
 					password: this.password,
 				}).then(e => {
 					mutations.updateUserInfo();
+					if (goBackToLatestReaderPage()) {
+						return;
+					}
 					uni.switchTab({
 						url: '/pages/user-center/user-center',
 					});
