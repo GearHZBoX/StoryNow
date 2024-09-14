@@ -1,29 +1,40 @@
 <!-- 注销（销毁）账号 -->
 <template>
 	<view class="uni-content">
-		<text class="words" space="emsp">
-			一、注销是不可逆操作，注销后:\n
-			1.帐号将无法登录、无法找回。\n
-			2.帐号所有信息都会清除(个人身份信息、粉丝数等;发布的作品、评论、点赞等;交易信息等)，你
-			的朋友将无法通过本应用帐号联系你，请自行备份相关
-			信息和数据。\n
+		<fixed-header backIcon id="navigator" style="background: var(--light-brand-04, #F6F6F9);">
+			<view class="navigator-text">
+				Cancel Account
+			</view>
+		</fixed-header>
+		<text class="words">
+			First, the cancellation is irreversible operation, after the cancellation :\n
+			1. The account cannot be logged in or retrieved. \n
+			2. All account information will be cleared. Please back up the information yourself
+			Information and data. \n
 
-			二、重要提示\n
-			1.封禁帐号(永久封禁、社交封禁、直播权限封禁)不能申请注销。\n
-			2.注销后，你的身份证、三方帐号(微信、QQ、微博、支付宝)、手机号等绑定关系将解除，解除后可以绑定到其他帐号。\n
-			3.注销后，手机号可以注册新的帐号，新帐号不会存在之前帐号的任何信息(作品、粉丝、评论、个人信息等)。\n
-			4.注销本应用帐号前，需尽快处理帐号下的资金问题。\n
-			5.视具体帐号情况而定，注销最多需要7天。\n
+			Two, important tips
+			1. Blocked accounts (permanent block, social block, live streaming permission block) cannot be cancelled. \n
+			2. After the cancellation, the binding relationship between your ID card, third-party account (facebook,
+			google), mobile phone number, etc. will be removed, and you can be bound to other accounts after the
+			cancellation. \n
+			3. After you log out, you can register a new account. The new account does not contain any information about
+			the previous account. \n
+			4. Before you cancel the application account, handle the fund problem in the account as soon as possible. \n
+			5. Depending on the specific account, it takes up to 7 days to cancel. \n
 		</text>
 		<view class="button-group">
-			<button @click="nextStep" class="next" type="default">下一步</button>
-			<button @click="cancel" type="warn">取消</button>
+			<button @click="nextStep" class="next" type="default">Confirm</button>
+			<button @click="cancel" type="warn">Cancel</button>
 		</view>
 	</view>
 </template>
 
 <script>
+	import fixedHeader from '../../../../../components/fixed-header.vue';
 	export default {
+		components: {
+			fixedHeader,
+		},
 		data() {
 			return {
 
@@ -36,19 +47,21 @@
 			},
 			nextStep() {
 				uni.showModal({
-					content: '已经仔细阅读注销提示，知晓可能带来的后果，并确认要注销',
+					confirmText: "Confirm",
+					cancelText: "Cancel",
+					content: 'Have carefully read the logout prompt, understand the possible consequences, and confirm that you want to logout?',
 					complete: (e) => {
 						if (e.confirm) {
 							const uniIdco = uniCloud.importObject("uni-id-co");
 							uniIdco.closeAccount().then((e) => {
 								uni.showToast({
-									title: '注销成功',
+									title: 'Cancel Account Success',
 									duration: 3000
 								});
 								uni.removeStorageSync('uni_id_token');
 								uni.setStorageSync('uni_id_token_expired', 0)
 								uni.navigateTo({
-									url:"/uni_modules/uni-id-pages/pages/login/login-withoutpwd"
+									url: "/pages/index/index"
 								})
 							})
 						} else {
@@ -66,13 +79,35 @@
 		display: flex;
 		flex-direction: column;
 		font-size: 28rpx;
+
+		.navigator-text {
+			flex: 1;
+			padding-right: 40px;
+			text-align: center;
+			color: var(--light-text-gray01, #221F33);
+			text-align: center;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			/* Title/medium */
+			font-family: "PingFang SC";
+			font-size: 14px;
+			font-style: normal;
+			font-weight: 500;
+			line-height: 20px;
+			/* 142.857% */
+		}
 	}
 
 	.words {
-		padding: 0 26rpx;
-		line-height: 46rpx;
-		margin-top: 20rpx;
-		margin-bottom: 80px;
+		padding: 30px 16px;
+		color: #605C73;
+		font-family: "PingFang SC";
+		white-space: pre-wrap;
+		font-size: 14px;
+		font-style: normal;
+		font-weight: 400;
+		line-height: 20px;
+		/* 142.857% */
 	}
 
 	.button-group button {
@@ -82,6 +117,8 @@
 		height: 42px;
 		line-height: 42px;
 		font-size: 32rpx;
+		border-radius: 27px;
+		background: var(--light-brand-02, #9883FC);
 	}
 
 	.button-group button:after {
@@ -89,9 +126,12 @@
 	}
 
 	.button-group button.next {
-		color: #e64340;
-		border: solid 1px #e64340;
+		border: 0.5px solid var(--light-brand-02, #9883FC);
+		background: var(--light-brand-03, #F0EDFF);
+		color: var(--light-brand-01, #6B4CFF);
+
 	}
+
 	.button-group {
 		display: flex;
 		flex-direction: row;
@@ -106,10 +146,10 @@
 		background-color: #FFFFFF;
 		max-width: 690px;
 	}
-	
-	
+
+
 	@media screen and (min-width: 690px) {
-		.uni-content{
+		.uni-content {
 			max-width: 690px;
 			margin-left: calc(50% - 345px);
 		}

@@ -2,7 +2,7 @@
 	<view class="to-vip-page">
 		<fixed-header backIcon id="navigator" :style="headerStyle">
 			<view class="navigator-text">
-				Become VIP Member
+				Become VIP Member 
 			</view>
 		</fixed-header>
 
@@ -16,7 +16,7 @@
 				<view :class="`pay-item ${activeItem._id == item._id?'active':''}`" v-for="item in priceItemList"
 					:key="item._id" @click="toSelect(item)">
 					<view class="money">
-						$<text>{{item.amount}}</text> 
+						$<text>{{item.amount}}</text>
 					</view>
 					<view class="desc">{{item.desc}}</view>
 					<view class="notice">{{item.notice}}</view>
@@ -37,7 +37,7 @@
 			</view>
 
 			<view class="submit" @click="toPay">
-				Confirm and pay
+				{{confirmText}}
 			</view>
 		</view>
 
@@ -51,10 +51,15 @@
 </template>
 
 <script>
+	import mixin from '@/uni_modules/uni-id-pages/common/login-page.mixin.js';
 	import fixedHeader from '../../components/fixed-header.vue';
 	import {
 		importObjectConfig
 	} from "../../utils/index.js"
+	import {
+		store,
+		mutations
+	} from "@/uni_modules/uni-id-pages/common/store.js";
 
 	const PayOrderCloud = importObjectConfig('pay-order');
 
@@ -62,8 +67,21 @@
 
 	const PriceConfigCloud = importObjectConfig('price-config')
 	export default {
+		mixins: [mixin],
 		components: {
 			fixedHeader,
+		},
+		computed: {
+			// 1 == 非vip   2 = vip已过期  3 = vip
+			confirmText() {
+					if(this.vipStatus==3){
+						return "Confirm payment to increase VIP validity"
+					}else if(this.vipStatus==2){
+						return "Confirm payment to become a VIP again"
+					}else {
+						return "Confirm payment to become a new VIP"
+					}
+			}
 		},
 		data() {
 			return {
@@ -108,10 +126,10 @@
 			},
 
 			toPay() {
-				if(!this.activeItem._id){
+				if (!this.activeItem._id) {
 					uni.showToast({
-						icon:"none",
-						title:'Please select the payment item first'
+						icon: "none",
+						title: 'Please select the payment item first'
 					})
 					return;
 				}
