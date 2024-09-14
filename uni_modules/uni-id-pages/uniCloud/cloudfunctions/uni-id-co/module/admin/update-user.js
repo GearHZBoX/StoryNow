@@ -100,7 +100,7 @@ module.exports = async function (params = {}) {
 
   // 更新用户名时验证用户名是否重新
   if (username) {
-    const {
+    let {
       userMatched
     } = await findUser({
       userQuery: {
@@ -108,6 +108,7 @@ module.exports = async function (params = {}) {
       },
       authorizedApp
     })
+	userMatched = userMatched.filter(user => user.status !== 4);
     if (userMatched.filter(user => user._id !== uid).length) {
       throw {
         errCode: ERROR.ACCOUNT_EXISTS

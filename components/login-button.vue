@@ -6,6 +6,7 @@
 </template>
 
 <script>
+import { goBackToLatestReaderPage } from '../common/utils';
 import {
 		store,
 		mutations
@@ -75,6 +76,9 @@ import {
 					result.loginType = type
 					// #endif
 					mutations.updateUserInfo();
+					if (goBackToLatestReaderPage()) {
+						return;
+					}
 					uni.switchTab({
 						url: '/pages/user-center/user-center',
 					})

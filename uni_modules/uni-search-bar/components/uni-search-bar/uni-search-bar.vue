@@ -125,7 +125,7 @@
 				return this.cancelText || t("uni-search-bar.cancel")
 			},
 			placeholderText() {
-				return this.placeholder || t("uni-search-bar.placeholder")
+				return this.placeholder || 'Enter search content' /*t("uni-search-bar.placeholder")*/
 			}
 		},
 		watch: {

@@ -29,12 +29,13 @@ async function preBind ({
   bindAccount,
   logType
 } = {}) {
-  const {
+  let {
     userMatched
   } = await findUser({
     userQuery: bindAccount,
     authorizedApp: this.getUniversalClientInfo().appId
   })
+  userMatched = userMatched.filter(user => user.status !== 4);
   if (userMatched.length > 0) {
     await this.middleware.uniIdLog({
       data: {

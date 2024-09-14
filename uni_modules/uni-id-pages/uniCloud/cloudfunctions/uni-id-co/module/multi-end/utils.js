@@ -19,13 +19,13 @@ async function isAuthorizeApproved ({
       errCode: ERROR.ACCOUNT_NOT_EXISTS
     }
   }
-  const {
+  let {
     userMatched
   } = await findUser({
     userQuery: userRecord,
     authorizedApp: appIdList
   })
-
+	userMatched = userMatched.filter(user => user.status !== 4);
   if (userMatched.some(item => item._id !== uid)) {
     throw {
       errCode: ERROR.ACCOUNT_CONFLICT
