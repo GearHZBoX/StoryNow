@@ -7,8 +7,8 @@
 		</view>
 		<view class="login-status-box" v-else>
 			<!-- <img :src="userInfo.avatar_url" class="head-img" /> -->
-			{{userInfo.nickname}}
-			<i class="king"></i>
+			{{userInfo.nickname}} 
+			<i class="king" v-if="isVip"></i>
 		</view>
 
 		<view class="vip-box">
@@ -26,14 +26,14 @@
 			<view class="menu-item">
 				<view class="menu-item-icon history-icon ">
 				</view>
-				<view class="menu-item-title">历史记录</view>
+				<view class="menu-item-title">History</view>
 				<!-- <view class="menu-item-more"></view> -->
 			</view>
 
-			<view class="read-continue" v-if="1||hasLogin">
-				<text>Stepford Wives Literature's Overbearing President Loves Meg husband gets punished!
+			<view class="read-continue"  v-if="readHsitory">
+				<text class="summary">	{{readHsitory.summary}}
 				</text>
-				<view class="continue">continue</view>
+				<view class="continue" @click="toHistory">continue</view>
 			</view>
 		</view>
 
@@ -74,7 +74,11 @@
 		store,
 		mutations
 	} from "@/uni_modules/uni-id-pages/common/store.js";
-
+	import dayjs from "dayjs";
+	import isBetween from "dayjs/plugin/isBetween";
+	dayjs.extend(isBetween);
+	
+	console.log(dayjs())
 	export default {
 		computed: {
 			userInfo() {
@@ -82,10 +86,33 @@
 			},
 			hasLogin() {
 				return store.hasLogin
+			},
+			isVip() {
+				console.log("测试数据1231",store.userInfo,dayjs())
+				if (store.userInfo && store.userInfo?.vip) {
+					const duration = store.userInfo?.vip?.duration;
+					const [startTime, endTime] = duration;
+					console.log("测试数据",startTime, endTime)
+					return dayjs().isBetween(startTime, endTime)
+				}
+
+				return false;
 			}
 		},
 		data() {
-			return {};
+			return {
+				readHsitory:null
+			};
+		},
+		onShow(){
+			console.log("用户信息",store.userInfo )
+			try{
+				const readHsitory = uni.getStorageSync('readHsitory');
+				this.readHsitory = JSON.parse(readHsitory);
+			}catch(e){
+				console.log("暂无历史记录")
+			}
+			
 		},
 		methods: {
 			toPage(url, auth) {
@@ -109,6 +136,7 @@
 					url: '/pages/login/login',
 				})
 			},
+			
 
 			logout() {
 				uni.showModal({
@@ -118,13 +146,23 @@
 					confirmText: "Confirm",
 					success: function(res) {
 						if (res.confirm) {
-							mutations.logout();
+							mutations.logout().then(()=>{
+								uni.redirectTo({
+									url:"/pages/login/login"
+								})
+							})
 						} else if (res.cancel) {
 							console.log('用户点击取消1');
 						}
 					}
 				});
 			},
+			
+			toHistory(){
+				uni.navigateTo({
+					url:`/pages/reader/reader?id=${this.readHsitory._id}&title=${this.readHsitory.title}`
+				})
+			}
 		},
 	};
 </script>
@@ -142,8 +180,8 @@
 		display: flex;
 		flex-direction: column;
 		height: 100%;
-		background:#F6F6F9  url("../../static/img_bg.png") top/100% auto no-repeat;
-		
+		background: #F6F6F9 url("../../static/img_bg.png") top/100% auto no-repeat;
+
 		.login-status-box {
 			height: 44px;
 			display: flex;
@@ -257,15 +295,17 @@
 				align-items: center;
 				background: #F0EDFF;
 
-				text {
+				.summary {
 					overflow: hidden;
 					text-overflow: ellipsis;
 					white-space: nowrap;
+					flex-wrap: nowrap;
 					font-family: "PingFang SC";
 					font-size: 14px;
 					font-style: normal;
 					font-weight: 400;
 					line-height: 20px;
+					height: 20px;
 				}
 
 				.continue {

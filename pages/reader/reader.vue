@@ -105,6 +105,8 @@
 					this.debugInfo = res;
 					this.story = res.result?.data || {};
 					this.storyTitle = this.story.title;
+					
+					this.updateReadHistory();
 				}).catch(err => {
 					console.error(err);
 					this.debugInfo = err;
@@ -121,6 +123,11 @@
 					}).exec();
 				})
 			},
+			
+			// 更新读书记录
+			updateReadHistory(){
+				uni.setStorageSync('readHsitory', JSON.stringify(this.story));
+			}
 		},
 		onReady() {
 			this.pageHeight = uni.getSystemInfoSync().windowHeight;

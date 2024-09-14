@@ -127,8 +127,12 @@
 					if (res.id) {
 						uni.showToast({
 							icon: "none",
-							title: "Submission successful. We will address it as soon as possible."
+							title: "Submission successful. We will address it as soon as possible.",
+							success(){
+								uni.navigateBack();
+							}
 						})
+						
 					}
 				} catch (e) {
 					console.log(e)
