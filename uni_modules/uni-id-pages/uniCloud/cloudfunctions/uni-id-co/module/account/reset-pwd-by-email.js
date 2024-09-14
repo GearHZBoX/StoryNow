@@ -47,10 +47,7 @@ module.exports = async function (params = {}) {
     captcha
   } = params
 
-  const needCaptcha = await getNeedCaptcha.call(this, {
-    email,
-    type: LOG_TYPE.RESET_PWD_BY_EMAIL
-  })
+  const needCaptcha = false;
   if (needCaptcha) {
     await verifyCaptcha.call(this, {
       captcha,

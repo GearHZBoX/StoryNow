@@ -3,7 +3,7 @@
 		<uni-captcha :focus="focusCaptchaInput" ref="captcha" scene="send-email-code" v-model="captcha" />
 		<view class="box">
 			<uni-easyinput :placeholder-style="placeholderStyle" :focus="focusEmailCodeInput" @blur="focusEmailCodeInput = false" type="number" class="input-box" :inputBorder="false" v-model="modelValue" maxlength="6"
-				placeholder="Enter the verification code">
+				placeholder="Enter the verification code" @clear="modelValue = ''">
 			</uni-easyinput>
 			<view class="short-code-btn" hover-class="hover" @click="start">
 				<text v-if="!sendingEmail" :class="reverseNumber==0?'highlight':'inner-text'"  @click="start">{{innerText}}</text>
@@ -115,8 +115,8 @@
 		},
 		computed: {
 			innerText() {
-				if (this.reverseNumber == 0) return "Send to email";
-				return "resend" + '(' + this.reverseNumber + 's)';
+				if (this.reverseNumber == 0) return "Send email";
+				return "Resend" + '(' + this.reverseNumber + 's)';
 			}
 		},
 		created() {

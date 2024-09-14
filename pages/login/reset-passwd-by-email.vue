@@ -41,7 +41,11 @@
 	const uniIdCo = uniCloud.importObject("uni-id-co",{
 		errorOptions:{
 			type:'toast'
-		}
+		},
+		loadingOptions: { 
+			title: 'loading...', 
+			mask: true,
+		},
 	})
 	export default {
 		mixins: [mixin],
@@ -151,8 +155,8 @@
 								password,
 								captcha
 							}).then(e => {
-								uni.navigateTo({
-									url: '/uni_modules/uni-id-pages/pages/login/login-withpwd',
+								uni.redirectTo({
+									url: '/pages/login/login',
 									complete: (e) => {
 										// console.log(e);
 									}

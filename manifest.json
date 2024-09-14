@@ -87,7 +87,10 @@
                 }
             }
         },
-        "nvueCompiler" : "uni-app"
+        "nvueCompiler" : "uni-app",
+        "uniStatistics" : {
+            "enable" : true
+        }
     },
     /* 快应用特有相关 */
     "quickapp" : {},
@@ -109,7 +112,8 @@
         "usingComponents" : true
     },
     "uniStatistics" : {
-        "enable" : false
+        "enable" : false,
+        "version" : "2"
     },
     "vueVersion" : "3",
     "locale" : "en"
