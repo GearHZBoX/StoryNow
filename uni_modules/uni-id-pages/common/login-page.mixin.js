@@ -1,8 +1,14 @@
+import dayjs from "dayjs";
+import isBetween from "dayjs/plugin/isBetween";
+dayjs.extend(isBetween);
 import {
+	store,
 	mutations
 } from '@/uni_modules/uni-id-pages/common/store.js'
 import config from '@/uni_modules/uni-id-pages/config.js'
-import { placeholderStyle } from '../../../common/constant';
+import {
+	placeholderStyle
+} from '../../../common/constant';
 import PrimaryButton from '../../../components/primary-button.vue';
 const mixin = {
 	components: {
@@ -86,6 +92,25 @@ const mixin = {
 					console.log('不存在 隐私政策协议组件');
 				}
 			}
+		},
+		testData() {
+			return "3242342"
+		},
+		// 1 == 非vip   2 = vip已过期  3 = vip
+		vipStatus() {
+			console.log("测试数据1231", store.userInfo, dayjs())
+			if (store.userInfo && store.userInfo?.vip) {
+				const duration = store.userInfo?.vip?.duration;
+				const [startTime, endTime] = duration;
+				console.log("测试数据", startTime, endTime)
+				return dayjs().isBetween(startTime, endTime) ? 3 : 2
+			}
+
+			return 1;
+		},
+		
+		vipDuration(){
+			return store.userInfo?.vip?.duration ||[];
 		}
 	},
 	methods: {

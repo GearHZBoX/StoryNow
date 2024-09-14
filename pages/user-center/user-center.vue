@@ -8,7 +8,15 @@
 		<view class="login-status-box" v-else>
 			<!-- <img :src="userInfo.avatar_url" class="head-img" /> -->
 			{{userInfo.nickname}}
-			<i class="king"></i>
+			<i class="king" v-if="vipStatus==3"></i>
+			<i class="king expire" v-else-if="vipStatus==2"></i>
+		</view>
+
+		<view class="vip-time" v-if="vipStatus==3">
+			vip valid until {{userInfo.vip.duration[1]}}
+		</view>
+		<view class="vip-time expire" v-else-if="vipStatus==2">
+			vip expired on  {{userInfo.vip.duration[1]}}
 		</view>
 
 		<view class="vip-box">
@@ -26,14 +34,14 @@
 			<view class="menu-item">
 				<view class="menu-item-icon history-icon ">
 				</view>
-				<view class="menu-item-title">历史记录</view>
+				<view class="menu-item-title">History</view>
 				<!-- <view class="menu-item-more"></view> -->
 			</view>
 
-			<view class="read-continue" v-if="1||hasLogin">
-				<text>Stepford Wives Literature's Overbearing President Loves Meg husband gets punished!
+			<view class="read-continue" v-if="readHsitory">
+				<text class="summary"> {{readHsitory.summary}}
 				</text>
-				<view class="continue">continue</view>
+				<view class="continue" @click="toHistory">continue</view>
 			</view>
 		</view>
 
@@ -56,6 +64,13 @@
 				<view class="menu-item-title">Log Out</view>
 				<view class="menu-item-more"></view>
 			</view>
+			
+			<view class="menu-item" v-if="hasLogin" @click="logoff">
+				<view class="menu-item-icon logout-icon">
+				</view>
+				<view class="menu-item-title">Cancel Account</view>
+				<view class="menu-item-more"></view>
+			</view>
 		</view>
 
 
@@ -70,22 +85,36 @@
 </template>
 
 <script>
+	import mixin from '@/uni_modules/uni-id-pages/common/login-page.mixin.js';
 	import {
 		store,
 		mutations
 	} from "@/uni_modules/uni-id-pages/common/store.js";
 
 	export default {
+		mixins: [mixin],
 		computed: {
 			userInfo() {
 				return store.userInfo || {};
 			},
 			hasLogin() {
 				return store.hasLogin
-			}
+			},
 		},
 		data() {
-			return {};
+			return {
+				readHsitory: null
+			};
+		},
+		onShow() {
+			console.log("用户信息", store.userInfo)
+			try {
+				const readHsitory = uni.getStorageSync('readHsitory');
+				this.readHsitory = JSON.parse(readHsitory);
+			} catch (e) {
+				console.log("暂无历史记录")
+			}
+
 		},
 		methods: {
 			toPage(url, auth) {
@@ -110,6 +139,7 @@
 				})
 			},
 
+
 			logout() {
 				uni.showModal({
 					title: 'Storynow',
@@ -118,13 +148,26 @@
 					confirmText: "Confirm",
 					success: function(res) {
 						if (res.confirm) {
-							mutations.logout();
+							mutations.logout()
 						} else if (res.cancel) {
 							console.log('用户点击取消1');
 						}
 					}
 				});
 			},
+
+			toHistory() {
+				uni.navigateTo({
+					url: `/pages/reader/reader?id=${this.readHsitory._id}&title=${this.readHsitory.title}`
+				})
+			},
+			
+			
+			logoff(){
+				uni.navigateTo({
+					url:"/uni_modules/uni-id-pages/pages/userinfo/deactivate/deactivate"
+				})	
+			}
 		},
 	};
 </script>
@@ -134,7 +177,6 @@
 	page {
 		width: 100%;
 		min-height: 100%;
-
 	}
 
 	/* #endif */
@@ -142,14 +184,15 @@
 		display: flex;
 		flex-direction: column;
 		height: 100%;
-		background:#F6F6F9  url("../../static/img_bg.png") top/100% auto no-repeat;
-		
+		background: #F6F6F9 url("../../static/img_bg.png") top/100% auto no-repeat;
+
 		.login-status-box {
 			height: 44px;
 			display: flex;
 			justify-content: flex-start;
 			align-items: center;
-			margin: 68px 24px 24px;
+			margin: 68px 24px 0px;
+			border:1px soilid red;
 			font-family: "Open Sans";
 			font-size: 20px;
 			font-style: normal;
@@ -175,12 +218,28 @@
 				height: 20px;
 				margin-left: 6px;
 				background: url('../../static/user-center/king.svg') center/100% auto no-repeat;
+
+				&.expire {
+					background: url('../../static/user-center/no_king.svg') center/100% auto no-repeat;
+				}
+			}
+		}
+
+		.vip-time {
+			margin: 0px 24px 10px;
+			color:#A68332;
+			font-size: 12px;
+			font-style: normal;
+			font-weight: 400;
+			line-height: 16px;
+			&.expire{
+				color:#C0C0CC;
 			}
 		}
 
 		.vip-box {
 			border: 1px solid red;
-			margin: 0 24px;
+			margin: 6px 24px 0;
 			padding: 12px 16px;
 			background: #FCEDCF;
 			border: 1px solid white;
@@ -242,7 +301,7 @@
 		}
 
 		.history {
-			margin: 0 16px;
+			margin: 0 16px 0;
 			border-radius: 12px;
 			overflow: hidden;
 			margin-bottom: 12px;
@@ -257,15 +316,17 @@
 				align-items: center;
 				background: #F0EDFF;
 
-				text {
+				.summary {
 					overflow: hidden;
 					text-overflow: ellipsis;
 					white-space: nowrap;
+					flex-wrap: nowrap;
 					font-family: "PingFang SC";
 					font-size: 14px;
 					font-style: normal;
 					font-weight: 400;
 					line-height: 20px;
+					height: 20px;
 				}
 
 				.continue {

@@ -9,7 +9,7 @@ let hostUserInfo = uni.getStorageSync('uni-id-pages-userInfo')||{}
 // console.log( hostUserInfo);
 const data = {
 	userInfo: hostUserInfo,
-	hasLogin: Object.keys(hostUserInfo).length != 0
+	hasLogin: Object.keys(hostUserInfo).length != 0,
 }
 
 // console.log('data', data);
@@ -78,7 +78,7 @@ export const mutations = {
 		}
 		uni.removeStorageSync('uni_id_token');
 		uni.setStorageSync('uni_id_token_expired', 0)
-		uni.redirectTo({
+		uni.navigateTo({
 			url: `/${pagesJson.uniIdRouter && pagesJson.uniIdRouter.loginPage ? pagesJson.uniIdRouter.loginPage: 'uni_modules/uni-id-pages/pages/login/login-withoutpwd'}`,
 		});
 		uni.$emit('uni-id-pages-logout')
