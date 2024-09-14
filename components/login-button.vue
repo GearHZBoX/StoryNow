@@ -40,21 +40,25 @@ import {
 							provider: type
 						})
 						Object.assign(e.authResult, res.userInfo)
-						uni.hideLoading()
-						this.login(e.authResult, type)
+						try {
+							this.login(e.authResult, type)
+						} catch(e) {
+							console.error(e);
+							uni.hideLoading();
+						}
 					},
 					fail: (err) => {
 						console.log(err);
 						uni.hideLoading();
 						uni.showModal({
-							title: '登录失败',
+							title: 'Login failed',
 							content: err.errMsg,
 							showCancel: false,
 						})
 					}
 				})
 			},
-			login(params, type) { 
+			async login(params, type) { 
 				console.log({params,type});
 				//toLowerCase
 				let action = 'loginBy' + type.trim().replace(type[0], type[0].toUpperCase())
@@ -63,7 +67,7 @@ import {
 				})
 				uniIdCo[action](params).then(result => {
 					uni.showToast({
-						title: '登录成功',
+						title: 'Login success',
 						icon: 'none',
 						duration: 2000
 					});
@@ -78,7 +82,7 @@ import {
 				.catch(e=>{
 					uni.showModal({
 						content: e.message,
-						confirmText:"知道了",
+						confirmText:"Confirm",
 						showCancel: false
 					});
 				})

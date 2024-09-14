@@ -1,0 +1,7 @@
+{
+  "name": "increment-story-tap-count",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

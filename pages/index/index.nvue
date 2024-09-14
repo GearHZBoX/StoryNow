@@ -68,6 +68,9 @@
 </template>
 
 <script>
+import { uniq } from 'lodash';
+import { CACHE_STORY_TITLE_STORAGE_KEY, CACHE_TITLE_COUNT } from '../../common/constant';
+import { map } from 'lodash';
 	// #ifdef APP-PLUS
 	const dom = weex.requireModule('dom');
 	const animation = weex.requireModule('animation');
@@ -106,7 +109,7 @@
 				total: 1,
 				initiated: false,
 				isEmpty: false,
-				placeholder: `Stepford Wives Literature's Overbearing President Loves Meg husband gets punished!`,
+				placeholder: ``,
 			}
 		},
 		computed: {
@@ -146,7 +149,41 @@
 			this.pageHeight = uni.getSystemInfoSync().windowHeight;
 			this.pageWidth = uni.getSystemInfoSync().windowWidth;
 		},
+		onLoad() {
+			
+			const cachedTitles = uni.getStorageSync(CACHE_STORY_TITLE_STORAGE_KEY);
+			if (cachedTitles) {				
+				this.placeholder = cachedTitles[Math.round(Math.random() * cachedTitles.length - 1)];
+			}
+			if (Math.random() * 10 > 5) {
+				this.setSearchPlaceholder();
+			}
+		},
 		methods: {
+			async setSearchPlaceholder() {
+				const db = uniCloud.database();
+				
+				const storyCollection = db.collection('short-stories');
+				
+				const { result: { total } } = await storyCollection.count().catch(err => {
+					console.error(err);
+					return {
+						result: {
+							total: 10
+						}
+					}
+				});
+				
+				const randomIndex = Math.round(Math.random() * total);
+				
+				const chosenStory = await storyCollection.field('_id, title').skip(randomIndex).limit(1).get({ getOne: true });
+				
+				console.log('chosen story', chosenStory?.result?.data);
+				
+				if (chosenStory?.result?.data.title) {
+					this.placeholder = chosenStory.result.data.title;
+				}
+			},
 			getHighlightTitle(title, keyword) {
 				const regexp = new RegExp(keyword, 'ig');
 				const fragments = title.split(regexp);
@@ -159,6 +196,18 @@
 				if (!_id) {
 					return;
 				}
+				
+				uniCloud.callFunction({
+					name: 'increment-story-tap-count',
+					data: {
+						_id,
+					},
+				}).then(() => {
+					console.log('inc success')
+				}).catch(err => {
+					console.error('inc failed', err);
+				})
+				
 				uni.navigateTo({
 					url: `/pages/reader/reader?id=${_id}&title=${title}`,
 				});
@@ -220,6 +269,20 @@
 				this.loadData();
 				this.loadingAni();
 			},
+			async cacheTitle(titles) {
+				const storageResp = await uni.getStorage({ key: CACHE_STORY_TITLE_STORAGE_KEY }).catch(err => {
+					console.error(err);
+					return {
+						data: [],
+					}
+				});
+				const cachedTitles = storageResp.data;
+				
+				await uni.setStorage({
+					key: CACHE_STORY_TITLE_STORAGE_KEY,
+					data: uniq([...titles, ...cachedTitles].slice(0, CACHE_TITLE_COUNT)),
+				})
+			},
 			async loadData(append = true) {
 				if (this.loadingMore) {
 					return;
@@ -245,6 +308,7 @@
 					}
 					this.dataList.push(...dbResp.data);
 					this.total = dbResp.count;
+					this.cacheTitle(map(dbResp.data, 'title'));
 				} catch (err) {
 					console.error(err);
 					uni.showToast({
@@ -451,6 +515,11 @@
 		color: #605C73;
 		text-overflow: ellipsis;
 		lines: 3;
+		/* #ifdef H5 */
+		display: -webkit-box;
+		-webkit-line-clamp: 3;
+		-webkit-box-orient: vertical;
+		/* #endif */
 
 		/* body/regular */
 		font-family: "Open Sans";

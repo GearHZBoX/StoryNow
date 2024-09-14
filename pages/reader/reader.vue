@@ -21,18 +21,20 @@
 			</text>
 		</view>
 		<view class="preview-footer" v-if="!loading && !story.hasPermission"></view>
-		<view class="ticket" v-if="!loading && !story.hasPermission">
-			<view class="ticket-left">
-				<text class="ticket-left-title">Open Storynow Membership</text>
-				<text class="ticket-left-description">Access to popular content across all platforms.</text>
-			</view>
-			<view class="ticket-divider"></view>
-			<view class="ticket-right" @click.stop="purchaseVip">
-				<text class="ticket-right-prefix">${{price}}/</text>
-				<text class="ticket-right-suffix">day</text>
+		<view class="ticket-view" >
+			<view id="ticket" class="ticket" :style="`transform: scale(${ticketScale}); transform-origin: left top;`" v-if="!loading && !story.hasPermission">
+				<view class="ticket-left">
+					<text class="ticket-left-title">Open Storynow Membership</text>
+					<text class="ticket-left-description">Access to popular content across all platforms.</text>
+				</view>
+				<view class="ticket-divider"></view>
+				<view class="ticket-right" @click.stop="purchaseVip">
+					<text class="ticket-right-prefix">${{price}}/</text>
+					<text class="ticket-right-suffix">day</text>
+				</view>
 			</view>
 		</view>
-		<uni-load-more status="loading" v-if="loading" icon-type="auto"></uni-load-more>
+		<uni-load-more :contentText="{ contentrefresh: 'Loading story' }" status="loading" v-if="loading" icon-type="auto"></uni-load-more>
 	</view>
 </template>
 
@@ -61,6 +63,7 @@
 				pageHeight: 300,
 				pageWidth: 200,
 				price: 0.3,
+				ticketScale: 1,
 			};
 		},
 		computed: {
@@ -81,41 +84,55 @@
 				
 				if (!this.story.hasPermission) {
 					console.log('to purchase page');
-					uni.showToast({
-						title: 'to purchase page',
-						icon: 'none',
+					uni.navigateTo({
+						url: `/pages/to-vip/to-vip?redirectUrl=${this.$page.fullPath}`,
 					})
 					return;
 				}
 				
 				console.log('already has permission');
+				this.loadData();
+			},
+			loadData() {
+				this.loading = true;
+				uniCloud.callFunction({
+					name: 'get-story',
+					data: {
+						id: this.storyId,
+					}
+				}).then(res => {
+					console.log('get-story-res', res);
+					this.debugInfo = res;
+					this.story = res.result?.data || {};
+					this.storyTitle = this.story.title;
+				}).catch(err => {
+					console.error(err);
+					this.debugInfo = err;
+					this.error = err;
+				}).finally(() => {
+					this.loading = false;
+				}).then(() => {
+					uni.createSelectorQuery().in(this).select('#ticket').boundingClientRect(data => {
+						if (!data) {
+							return;
+						}
+						const properWidth = this.pageWidth - 32;
+						this.ticketScale = Math.min(properWidth / data.width, 2);
+					}).exec();
+				})
 			},
 		},
 		onReady() {
 			this.pageHeight = uni.getSystemInfoSync().windowHeight;
 			this.pageWidth = uni.getSystemInfoSync().windowWidth;
 		},
+		onShow() {
+			this.loadData();
+		},
 		onLoad(query) {
 			this.storyId = query.id;
 			this.storyTitle = query.title;
-			this.loading = true;
-			uniCloud.callFunction({
-				name: 'get-story',
-				data: {
-					id: query.id,
-				}
-			}).then(res => {
-				console.log('get-story-res', res);
-				this.debugInfo = res;
-				this.story = res.result?.data || {};
-				this.storyTitle = this.story.title;
-			}).catch(err => {
-				console.error(err);
-				this.debugInfo = err;
-				this.error = err;
-			}).finally(() => {
-				this.loading = false;
-			})
+			this.loadData();
 		},
 		mounted() {
 			const query = uni.createSelectorQuery().in(this);
@@ -236,98 +253,102 @@
 		transition: opacity .25s;
 	}
 	
-	.ticket {
-		
-		background-image: url('../../static/ticket.png');
-		background-repeat: no-repeat;
-		background-size: contain;
-		margin: 0 16px;
-		padding: 18px 16px;
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		position: absolute;
+	.ticket-view {
+		position: absolute;	
 		bottom: 0;
-		
-		&-left {
+		transform-origin: top left;
+		.ticket {
 			
-			width: 200px;
+			background-image: url('../../static/ticket.png');
+			background-repeat: no-repeat;
+			background-size: contain;
+			margin: 0 0 4px 16px;
+			padding: 18px 16px;
 			display: flex;
-			flex-direction: column;
-			
-			&-title {
-				color: #483510;
-				
-				/* Title/medium */
-				font-family: "Open Sans";
-				font-size: 14px;
-				font-style: normal;
-				font-weight: 500;
-				line-height: 20px; /* 142.857% */
-			}
-			
-			&-description {
-				color: #A68332;
-				
-				/* body/regular */
-				font-family: "Open Sans";
-				font-size: 12px;
-				font-style: normal;
-				font-weight: 400;
-				line-height: 18px; /* 133.333% */
-			}
-		}
-		
-		&-divider {
-			width: 0;
-			height: 56px;
-			border-left: 1px dashed #F8D177;
-			margin-left: 49px;
-		}
-		
-		&-right {
-			border-radius: 40px;
-			background: #F8D177;
-			padding: 8px 20px;
-			margin-left: 16px;
-			display: flex;
+			flex-direction: row;
 			align-items: center;
-			justify-content: center;
 			
-			&-prefix {
-				color: #483510;
-				text-align: center;
+			&-left {
 				
-				/* Mobile/Button/B2_1_ZH */
-				font-family: "PingFang SC";
-				font-size: 14px;
-				font-style: normal;
-				font-weight: 600;
-				line-height: 20px; /* 142.857% */
+				width: 200px;
+				display: flex;
+				flex-direction: column;
+				
+				&-title {
+					color: #483510;
+					
+					/* Title/medium */
+					font-family: "Open Sans";
+					font-size: 14px;
+					font-style: normal;
+					font-weight: 500;
+					line-height: 20px; /* 142.857% */
+				}
+				
+				&-description {
+					color: #A68332;
+					
+					/* body/regular */
+					font-family: "Open Sans";
+					font-size: 12px;
+					font-style: normal;
+					font-weight: 400;
+					line-height: 18px; /* 133.333% */
+				}
 			}
 			
-			&-suffix {
-				color: #483510;
+			&-divider {
+				width: 0;
+				height: 56px;
+				border-left: 1px dashed #F8D177;
+				margin-left: 49px;
+			}
+			
+			&-right {
+				border-radius: 40px;
+				background: #F8D177;
+				padding: 8px 20px;
+				margin-left: 16px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
 				
-				/* label/regular */
-				font-family: "PingFang SC";
-				font-size: 10px;
-				font-style: normal;
-				font-weight: 400;
-				line-height: 12px;
+				&-prefix {
+					color: #483510;
+					text-align: center;
+					
+					/* Mobile/Button/B2_1_ZH */
+					font-family: "PingFang SC";
+					font-size: 14px;
+					font-style: normal;
+					font-weight: 600;
+					line-height: 20px; /* 142.857% */
+				}
+				
+				&-suffix {
+					color: #483510;
+					
+					/* label/regular */
+					font-family: "PingFang SC";
+					font-size: 10px;
+					font-style: normal;
+					font-weight: 400;
+					line-height: 12px;
+				}
 			}
 		}
 	}
+	
 	
 	.page-bottom {
 		// height: 20px;
 	}
 	
 	.preview-footer {
-		background: linear-gradient(180deg, rgba(246, 246, 249, 0.00) 0%, #fff 100%);
-		height: 70px;
+		background: linear-gradient(180deg, rgba(246, 246, 249, 0.00) 0%, #fff 56.25%, #fff 100%);
+		height: 160px;
 		width: 100%;
 		position: absolute;
-		bottom: 90px;
+		bottom: 0;
 	}
 </style>
