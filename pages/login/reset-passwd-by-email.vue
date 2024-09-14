@@ -155,12 +155,20 @@
 								password,
 								captcha
 							}).then(e => {
-								uni.redirectTo({
-									url: '/pages/login/login',
-									complete: (e) => {
-										// console.log(e);
+								// uni.redirectTo({
+								// 	url: '/pages/login/login-with-password',
+								// 	complete: (e) => {
+								// 		// console.log(e);
+								// 	}
+								// })
+								uni.navigateBack({
+									complete: () => {
+										uni.showToast({
+											title: 'Reset Success!',
+											icon: 'none'
+										});
 									}
-								})
+								});
 							})
 							.catch(e => {
 								if (e.errCode == 'uni-id-captcha-required') {
