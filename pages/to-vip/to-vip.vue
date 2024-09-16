@@ -204,6 +204,7 @@
 					title: `会员有效期：\r\n ${data?.userInfo?.vip?.duration}`,
 					duration: 10 * 1000
 				})
+				mutations.updateUserInfo();
 			}
 		}
 	}
