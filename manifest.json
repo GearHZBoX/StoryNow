@@ -73,8 +73,8 @@
                 "payment" : {
                     "paypal" : {
                         "__platform__" : [ "ios", "android" ],
-                        "returnURL_ios" : "test.demo1://paypalpay",
-                        "returnURL_android" : "test.demo1://paypalpay"
+                        "returnURL_ios" : "com.tianhe.storynow://paypalpay",
+                        "returnURL_android" : "com.tianhe.storynow://paypalpay"
                     },
                     "google" : {}
                 }

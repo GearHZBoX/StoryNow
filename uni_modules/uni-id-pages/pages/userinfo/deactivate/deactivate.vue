@@ -31,6 +31,10 @@
 
 <script>
 	import fixedHeader from '../../../../../components/fixed-header.vue';
+	import {
+		store,
+		mutations
+	} from "@/uni_modules/uni-id-pages/common/store.js";
 	export default {
 		components: {
 			fixedHeader,
@@ -55,14 +59,19 @@
 							const uniIdco = uniCloud.importObject("uni-id-co");
 							uniIdco.closeAccount().then((e) => {
 								uni.showToast({
+									icon:"none",
 									title: 'Cancel Account Success',
 									duration: 3000
 								});
 								uni.removeStorageSync('uni_id_token');
 								uni.setStorageSync('uni_id_token_expired', 0)
-								uni.navigateTo({
+								uni.switchTab({
 									url: "/pages/index/index"
 								})
+								uni.$emit('uni-id-pages-logout')
+								mutations.setUserInfo({},{cover:true})
+							}).catch((err)=>{
+								console.log("注销失败",err)
 							})
 						} else {
 							uni.navigateBack()

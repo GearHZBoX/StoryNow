@@ -111,8 +111,8 @@ import { goBackToLatestReaderPage } from '../../common/utils';
 				uniIdCo.login({
 					email: this.email,
 					password: this.password,
-				}).then(e => {
-					mutations.updateUserInfo();
+				}).then(async () => {
+					await mutations.updateUserInfo();
 					if (goBackToLatestReaderPage()) {
 						return;
 					}

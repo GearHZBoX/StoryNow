@@ -114,6 +114,7 @@
 				console.log("测试", res)
 				if (res.data) {
 					this.priceItemList = res.data;
+					// this.setMax();
 				}
 			},
 
@@ -201,9 +202,19 @@
 				}
 				uni.showToast({
 					icon: "none",
-					title: `会员有效期：\r\n ${data?.userInfo?.vip?.duration}`,
+					title: `VIP validity：\r\n ${data?.userInfo?.vip?.duration[0]}-${data?.userInfo?.vip?.duration[1]}`,
 					duration: 10 * 1000
 				})
+				await mutations.updateUserInfo();
+				
+				uni.navigateBack();
+			},
+			
+			setMax(){
+					this.activeItem = this.priceItemList.map((item)=>{
+					return item.days==30
+				}) ||{}
+				console.log("获取参数",this.activeItem._id)
 			}
 		}
 	}
