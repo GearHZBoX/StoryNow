@@ -38,7 +38,7 @@
 
 	.divider-text {
 		overflow: hidden;
-		color: var(--light-text-gray03, #919099);
+		color: var(--light-text-gray03, $light_text_gray3);
 		text-overflow: ellipsis;
 
 		/* body/regular */

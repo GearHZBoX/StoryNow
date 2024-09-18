@@ -57,7 +57,7 @@ import { goBackToLatestReaderPage } from '../../common/utils';
 		data() {
 			return {
 				placeholderStyle: `
-		color: var(--light-text-gray04, #C0C0CC);
+		color: $light_text_gray4;
 		font-family: "Open Sans";
 		font-size: 16px;
 		font-style: normal;
@@ -140,6 +140,7 @@ import { goBackToLatestReaderPage } from '../../common/utils';
 </script>
 
 <style lang="scss">
+	@import "../../common/uni-to-storynow.scss";
 	.page-view {
 		width: 100%;
 		min-height: 100%;
@@ -168,7 +169,7 @@ import { goBackToLatestReaderPage } from '../../common/utils';
 			row-gap: 4px;
 
 			&-main {
-				color: var(--light-text-gray01, #221F33);
+				color: var(--light-text-gray01, $light_text_gray1);
 				font-family: "SF UI Display";
 				font-size: 24px;
 				font-style: normal;
@@ -177,7 +178,7 @@ import { goBackToLatestReaderPage } from '../../common/utils';
 			}
 
 			&-sub {
-				color: var(--light-text-gray03, #919099);
+				color: var(--light-text-gray03, $light_text_gray3);
 
 				/* body/regular */
 				font-family: "PingFang SC";
@@ -201,7 +202,7 @@ import { goBackToLatestReaderPage } from '../../common/utils';
 		&-title {
 			padding: 8px 0;
 			overflow: hidden;
-			color: var(--light-text-gray01, #221F33);
+			color: var(--light-text-gray01, $light_text_gray1);
 			text-overflow: ellipsis;
 
 			/* Title/medium */
@@ -223,13 +224,13 @@ import { goBackToLatestReaderPage } from '../../common/utils';
 
 
 				.uni-easyinput__content {
-					background: #f6f6f9 !important;
+					background: $light_brand_04 !important;
 					padding: 8px;
 					border-radius: 12px;
 				}
 
 				.uni-easyinput__content-input {
-					background: #f6f6f9;
+					background: $light_brand_04;
 					border-radius: 12px;
 				}
 
@@ -256,7 +257,7 @@ import { goBackToLatestReaderPage } from '../../common/utils';
 	}
 
 	.login-input-placeholder {
-		color: var(--light-text-gray04, #C0C0CC);
+		color: $light_text_gray4;
 		font-family: "PingFang SC";
 		font-size: 16px;
 		font-style: normal;

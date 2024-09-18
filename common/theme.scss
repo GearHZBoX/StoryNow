@@ -1,0 +1,52 @@
+// nvue css 变量不生效，使用 scss 变量替代
+		
+		$light_brand_01: #6B4CFF;
+		$light_brand_02: #AB9AFC;
+		$light_brand_03: #F0EDFF;
+		$light_brand_04: #F6F6F9;
+		
+		$light_text_gray1: #221F33;
+		$light_text_gray2: #605C73;
+		$light_text_gray3: #919099;
+		$light_text_gray4: #C0C0CC;
+		
+		$light_function_red: #FF5995;
+		$light_function_bg: rgba(0, 0, 0, 0.65);
+		$light_function_01: #FFFFFF;
+		$light_function_btn: rgba(255, 255, 255, 0.6);
+		
+		$light_membership_01: #483510;
+		$light_membership_02: #A68332;
+		$light_membership_03: #F8D177;
+		$light_membership_04: #FCEDCF;
+		
+		@media (prefers-color-scheme: dark) {
+			
+			page {
+				$light_brand_01: blue;
+				$light_brand_02: #AB9AFC;
+				$light_brand_03: #F0EDFF;
+				$light_brand_04: #F6F6F9;
+				
+				$light_text_gray1: #221F33;
+				$light_text_gray2: #605C73;
+				$light_text_gray3: #919099;
+				$light_text_gray4: #C0C0CC;
+				
+				$light_function_red: #FF5995;
+				$light_function_bg: rgba(255, 255, 255, 0.65);
+				$light_function_01: #FFFFFF;
+				$light_function_btn: rgba(0, 0, 0, 0.6);
+				
+				$light_membership_01: #483510;
+				$light_membership_02: #A68332;
+				$light_membership_03: #F8D177;
+				$light_membership_04: #FCEDCF;
+			}
+		}
+
+
+@font-face {
+	font-family: "Open Sans", sans-serif;
+	src: url("../../static/font/Open_Sans/static/OpenSans-Regular.ttf") format('ttf');
+}

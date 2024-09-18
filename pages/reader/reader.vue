@@ -1,7 +1,7 @@
 <template>
 	<view style="position: relative;overflow-x: hidden;">
 		<fixed-header backIcon id="navigator">
-			<text class="navigator-text" :style="`opacity: ${showNavigatorTitle ? 1 : 0};`">
+			<text class="reader-navigator-text" :style="`opacity: ${showNavigatorTitle ? 1 : 0};`">
 				{{storyTitle}}
 			</text>
 		</fixed-header>
@@ -173,14 +173,14 @@
 
 		&-title {
 			overflow: hidden;
-			color: #221F33;
+			color: $light_text_gray1;
 			text-overflow: ellipsis;
 
 			/* Title/bold */
 			font-family: "Open Sans";
 			font-size: 20px;
 			font-style: normal;
-			font-weight: 600;
+			font-weight: 700;
 			line-height: 28px;
 			/* 140% */
 		}
@@ -200,7 +200,7 @@
 
 			&-uploader {
 				overflow: hidden;
-				color: #605C73;
+				color: $light_text_gray2;
 				text-overflow: ellipsis;
 
 				/* body/regular */
@@ -214,7 +214,7 @@
 
 			&-suffix {
 				overflow: hidden;
-				color: #919099;
+				color: $light_text_gray3;
 				text-overflow: ellipsis;
 
 				/* body/regular */
@@ -231,24 +231,24 @@
 		padding: 0 16px;
 
 		&-text {
-			color: #605C73;
+			color: $light_text_gray2;
 			overflow: hidden;
 			text-overflow: ellipsis;
 
 			/* body/regular */
 			font-family: "PingFang SC";
-			font-size: 18px;
+			font-size: 20px;
 			font-style: normal;
 			font-weight: 400;
-			line-height: 28px;
+			line-height: 56px;
 			/* 155.556% */
 		}
 	}
 
-	.navigator-text {
+	.reader-navigator-text {
 		lines: 1;
 		overflow: hidden;
-		color: #221F33;
+		color: $light_text_gray1;
 		text-overflow: ellipsis;
 		white-space: nowrap;
 
@@ -256,7 +256,7 @@
 		font-family: "Open Sans";
 		font-size: 16px;
 		font-style: normal;
-		font-weight: 400;
+		font-weight: 700;
 		line-height: 20px;
 		/* 125% */
 		
@@ -285,7 +285,7 @@
 				flex-direction: column;
 				
 				&-title {
-					color: #483510;
+					color: $light_membership_01;
 					
 					/* Title/medium */
 					font-family: "Open Sans";
@@ -296,7 +296,7 @@
 				}
 				
 				&-description {
-					color: #A68332;
+					color: $light_membership_02;
 					
 					/* body/regular */
 					font-family: "Open Sans";
@@ -310,13 +310,13 @@
 			&-divider {
 				width: 0;
 				height: 56px;
-				border-left: 1px dashed #F8D177;
+				border-left: 1px dashed $light_membership_03;
 				margin-left: 49px;
 			}
 			
 			&-right {
 				border-radius: 40px;
-				background: #F8D177;
+				background: $light_membership_03;
 				padding: 8px 20px;
 				margin-left: 16px;
 				display: flex;
@@ -324,7 +324,7 @@
 				justify-content: center;
 				
 				&-prefix {
-					color: #483510;
+					color: $light_membership_01;
 					text-align: center;
 					
 					/* Mobile/Button/B2_1_ZH */
@@ -336,7 +336,7 @@
 				}
 				
 				&-suffix {
-					color: #483510;
+					color: $light_membership_01;
 					
 					/* label/regular */
 					font-family: "PingFang SC";

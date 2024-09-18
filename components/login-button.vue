@@ -121,7 +121,7 @@ import {
 <style lang="scss">
 	.login-button {
 		border-radius: 27px;
-		background: var(--light-brand-04, #F6F6F9);
+		background: $light_brand_04;
 		display: flex;
 		padding: 10px;
 		display: flex;
@@ -137,7 +137,7 @@ import {
 		}
 		
 		&-text {
-			color: #605C73;
+			color: $light_text_gray2;
 			
 			/* Title/medium */
 			font-family: "Open Sans";
