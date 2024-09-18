@@ -21,8 +21,9 @@
 			</text>
 		</view>
 		<view class="preview-footer" v-if="!loading && !story.hasPermission"></view>
-		<view class="ticket-view" >
-			<view id="ticket" class="ticket" :style="`transform: scale(${ticketScale}); transform-origin: left top;`" v-if="isLoaded && !story.hasPermission">
+		<view class="ticket-view">
+			<view id="ticket" class="ticket" :style="`transform: scale(${ticketScale}); transform-origin: left top;`"
+				v-if="isLoaded && !story.hasPermission">
 				<view class="ticket-left">
 					<text class="ticket-left-title">Open Storynow Membership</text>
 					<text class="ticket-left-description">Access to popular content across all platforms.</text>
@@ -34,11 +35,15 @@
 				</view>
 			</view>
 		</view>
-		<uni-load-more :contentText="{ contentrefresh: 'Loading story' }" status="loading" v-if="loading" icon-type="auto"></uni-load-more>
+		<uni-load-more :contentText="{ contentrefresh: 'Loading story' }" status="loading" v-if="loading"
+			icon-type="auto"></uni-load-more>
 	</view>
 </template>
 
 <script>
+	import {
+		debounce
+	} from 'lodash';
 	import {
 		store,
 		mutations
@@ -64,6 +69,9 @@
 				pageWidth: 200,
 				price: 0.3,
 				ticketScale: 1,
+				scrollTop: 0,
+				// 路径参数对象
+				query:{}
 			};
 		},
 		computed: {
@@ -81,10 +89,10 @@
 					uni.navigateTo({
 						url: '/pages/login/login',
 					})
-					
+
 					return;
 				}
-				
+
 				if (!this.story.hasPermission) {
 					console.log('to purchase page');
 					uni.navigateTo({
@@ -92,7 +100,7 @@
 					})
 					return;
 				}
-				
+
 				console.log('already has permission');
 				this.loadData();
 			},
@@ -108,8 +116,7 @@
 					this.debugInfo = res;
 					this.story = res.result?.data || {};
 					this.storyTitle = this.story.title;
-					
-					this.updateReadHistory();
+					this.scrollTo();
 				}).catch(err => {
 					console.error(err);
 					this.debugInfo = err;
@@ -126,10 +133,26 @@
 					}).exec();
 				})
 			},
-			
+
 			// 更新读书记录
-			updateReadHistory(){
-				uni.setStorageSync('readHsitory', JSON.stringify(this.story));
+			updateReadHistory: debounce(function() {
+				const readHsitory = {
+					_id: this.story._id,
+					title: this.story.title,
+					scrollTop: this.scrollTop
+				}
+				uni.setStorageSync('readHsitory', JSON.stringify(readHsitory));
+			}, 500),
+
+			scrollTo() {
+				console.log("滚动条位置",this.query)
+				if (!this.query.scrollTop) {
+					return;
+				}
+				uni.pageScrollTo({
+					scrollTop: Number(this.query.scrollTop),
+					duration: 300
+				});
 			}
 		},
 		onReady() {
@@ -142,6 +165,8 @@
 		onLoad(query) {
 			this.storyId = query.id;
 			this.storyTitle = query.title;
+			this.query = query;
+			
 			this.loadData();
 		},
 		mounted() {
@@ -153,6 +178,7 @@
 		onPageScroll({
 			scrollTop
 		}) {
+
 			const query = uni.createSelectorQuery().in(this);
 			query.select('#title').boundingClientRect(data => {
 				if (data.height + data.top < this.navigatorBottomTop) {
@@ -161,6 +187,9 @@
 					this.showNavigatorTitle = false;
 				}
 			}).exec();
+
+			this.scrollTop = scrollTop;
+			this.updateReadHistory();
 		}
 	}
 </script>
@@ -259,16 +288,17 @@
 		font-weight: 400;
 		line-height: 20px;
 		/* 125% */
-		
+
 		transition: opacity .25s;
 	}
-	
+
 	.ticket-view {
-		position: absolute;	
+		position: absolute;
 		bottom: 0;
 		transform-origin: top left;
+
 		.ticket {
-			
+
 			background-image: url('../../static/ticket.png');
 			background-repeat: no-repeat;
 			background-size: contain;
@@ -277,43 +307,45 @@
 			display: flex;
 			flex-direction: row;
 			align-items: center;
-			
+
 			&-left {
-				
+
 				width: 200px;
 				display: flex;
 				flex-direction: column;
-				
+
 				&-title {
 					color: #483510;
-					
+
 					/* Title/medium */
 					font-family: "Open Sans";
 					font-size: 14px;
 					font-style: normal;
 					font-weight: 500;
-					line-height: 20px; /* 142.857% */
+					line-height: 20px;
+					/* 142.857% */
 				}
-				
+
 				&-description {
 					color: #A68332;
-					
+
 					/* body/regular */
 					font-family: "Open Sans";
 					font-size: 12px;
 					font-style: normal;
 					font-weight: 400;
-					line-height: 18px; /* 133.333% */
+					line-height: 18px;
+					/* 133.333% */
 				}
 			}
-			
+
 			&-divider {
 				width: 0;
 				height: 56px;
 				border-left: 1px dashed #F8D177;
 				margin-left: 49px;
 			}
-			
+
 			&-right {
 				border-radius: 40px;
 				background: #F8D177;
@@ -322,22 +354,23 @@
 				display: flex;
 				align-items: center;
 				justify-content: center;
-				
+
 				&-prefix {
 					color: #483510;
 					text-align: center;
-					
+
 					/* Mobile/Button/B2_1_ZH */
 					font-family: "PingFang SC";
 					font-size: 14px;
 					font-style: normal;
 					font-weight: 600;
-					line-height: 20px; /* 142.857% */
+					line-height: 20px;
+					/* 142.857% */
 				}
-				
+
 				&-suffix {
 					color: #483510;
-					
+
 					/* label/regular */
 					font-family: "PingFang SC";
 					font-size: 10px;
@@ -348,12 +381,12 @@
 			}
 		}
 	}
-	
-	
+
+
 	.page-bottom {
 		// height: 20px;
 	}
-	
+
 	.preview-footer {
 		background: linear-gradient(180deg, rgba(246, 246, 249, 0.00) 0%, #fff 56.25%, #fff 100%);
 		height: 160px;

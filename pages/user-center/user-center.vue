@@ -12,25 +12,24 @@
 			<i class="king expire" v-else-if="vipStatus==2"></i>
 		</view>
 
-		<view class="vip-time" v-if="vipStatus==3">
-			vip valid until {{userInfo.vip.duration[1]}}
+		<view class="vip-time" v-if="vipStatus==3" @click="toPage('/pages/to-vip/to-vip',true)">
+			vip valid until {{userInfo.vip.duration[1]}}  <view class="to-vip">Renew</view>
 		</view>
-		<view class="vip-time expire" v-else-if="vipStatus==2">
-			vip expired on  {{userInfo.vip.duration[1]}}
+		<view class="vip-time expire" v-else-if="vipStatus==2" @click="toPage('/pages/to-vip/to-vip',true)">
+			vip expired on  {{userInfo.vip.duration[1]}}  <view class="to-vip">Renew</view>
 		</view>
 
-		<view class="vip-box">
+		<view class="vip-box" v-if="vipStatus!=3" @click="toPage('/pages/to-vip/to-vip',true)">
 			<view class="vip-left-box">
 				<view class="vip-title">Open Storynow Membership</view>
 				<view class="vip-desc">Access to popular content across all platforms.</view>
 			</view>
-			<view class="vip-right" @click="toPage('/pages/to-vip/to-vip',true)">
+			<view class="vip-right" >
 				<text>0.3</text>$/day
 			</view>
 		</view>
 
-
-		<view class="history">
+		<view class="history" v-if="readHsitory">
 			<view class="menu-item">
 				<view class="menu-item-icon history-icon ">
 				</view>
@@ -38,8 +37,8 @@
 				<!-- <view class="menu-item-more"></view> -->
 			</view>
 
-			<view class="read-continue" v-if="readHsitory">
-				<text class="summary"> {{readHsitory.summary}}
+			<view class="read-continue" >
+				<text class="summary"> {{readHsitory.title}}
 				</text>
 				<view class="continue" @click="toHistory">continue</view>
 			</view>
@@ -111,6 +110,7 @@
 			try {
 				const readHsitory = uni.getStorageSync('readHsitory');
 				this.readHsitory = JSON.parse(readHsitory);
+				console.log("历史记录",this.readHsitory )
 			} catch (e) {
 				console.log("暂无历史记录")
 			}
@@ -157,11 +157,11 @@
 			},
 
 			toHistory() {
+				console.log("滚动条跳转",this.readHsitory.scrollTop)
 				uni.navigateTo({
-					url: `/pages/reader/reader?id=${this.readHsitory._id}&title=${this.readHsitory.title}`
+					url: `/pages/reader/reader?id=${this.readHsitory._id}&title=${this.readHsitory.title}&scrollTop=${this.readHsitory.scrollTop}`
 				})
 			},
-			
 			
 			logoff(){
 				uni.navigateTo({
@@ -232,8 +232,22 @@
 			font-style: normal;
 			font-weight: 400;
 			line-height: 16px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
 			&.expire{
 				color:#C0C0CC;
+			}
+			.to-vip{
+				background: var(--vip, linear-gradient(90deg, #FCEBB1 0.26%, #F2D38D 99.82%));
+				color: var(--light-membership-01, #483510);
+				font-family: "Open Sans";
+				font-size: 16px;
+				font-style: normal;
+				font-weight: 400;
+				line-height: 20px;
+				padding: 8px 15px;
+				border-radius: 24px;
 			}
 		}
 
