@@ -225,7 +225,7 @@
 	page {
 		width: 100%;
 		min-height: 100%;
-		background-color: #F6F6F9;
+		background-color: $light_brand_04;
 	}
 
 	/* #endif */
@@ -235,13 +235,13 @@
 		display: flex;
 		justify-content: center;
 		flex-direction: column;
-		background: #F6F6F9 url('../../static/user-center/pay_bg.png') top/100% auto no-repeat;
+		background: $light_brand_04 url('../../static/user-center/pay_bg.png') top/100% auto no-repeat;
 
 		.navigator-text {
 			flex: 1;
 			padding-right: 40px;
 			text-align: center;
-			color: var(--light-text-gray01, #221F33);
+			color: var(--light-text-gray01, $light_text_gray1);
 			text-align: center;
 			text-overflow: ellipsis;
 			white-space: nowrap;
@@ -272,7 +272,7 @@
 				justify-content: flex-start;
 				align-items: center;
 				overflow: hidden;
-				color: var(--light-text-gray01, #221F33);
+				color: var(--light-text-gray01, $light_text_gray1);
 				font-family: "Open Sans";
 				font-size: 16px;
 				font-style: normal;
@@ -309,7 +309,7 @@
 					background: url("../../static/pay/pay_item.svg") center/100% auto no-repeat;
 
 					&.active {
-						border: 2px solid var(--light-membership-03, #F8D177);
+						border: 2px solid var(--light-membership-03, $light_membership_03);
 						background: url("../../static/pay/item_bg_active.svg") center/100% auto no-repeat !important;
 
 						.select {
@@ -317,8 +317,8 @@
 						}
 
 						.notice {
-							color: var(--light-membership-01, #483510);
-							background: var(--light-membership-03, #F8D177);
+							color: var(--light-membership-01, $light_membership_01);
+							background: var(--light-membership-03, $light_membership_03);
 						}
 					}
 
@@ -334,7 +334,7 @@
 					}
 
 					.money {
-						color: var(--light-membership-01, #483510);
+						color: var(--light-membership-01, $light_membership_01);
 						text-align: center;
 						font-family: Roboto;
 						font-size: 16px;
@@ -345,7 +345,7 @@
 
 						/* 175% */
 						text {
-							color: var(--light-membership-01, #483510);
+							color: var(--light-membership-01, $light_membership_01);
 							/* numeral/price */
 							font-family: Roboto;
 							font-size: 24px;
@@ -356,7 +356,7 @@
 					}
 
 					.desc {
-						color: var(--light-membership-02, #A68332);
+						color: var(--light-membership-02, $light_membership_02);
 						text-align: center;
 						margin-top: 2px;
 						/* label/regular */
@@ -378,8 +378,8 @@
 						padding: 0 4px;
 						position: absolute;
 						bottom: 0px;
-						background: var(--light-membership-04, #FCEDCF);
-						color: var(--light-membership-02, #A68332);
+						background: var(--light-membership-04, $light_membership_04);
+						color: var(--light-membership-02, $light_membership_02);
 						text-align: center;
 
 						/* body/regular */
@@ -396,7 +396,7 @@
 			.agreement-box {
 				display: flex;
 				margin-top: 20px;
-				color: var(--light-text-gray03, #919099);
+				color: var(--light-text-gray03, $light_text_gray3);
 
 				/* body/regular */
 				font-family: "Open Sans";
@@ -420,7 +420,7 @@
 				}
 
 				text {
-					color: var(--light-membership-02, #A68332);
+					color: var(--light-membership-02, $light_membership_02);
 					/* body/regular */
 					font-family: "Open Sans";
 					font-size: 12px;
@@ -440,7 +440,7 @@
 				flex-shrink: 0;
 				border-radius: 50px;
 				background: var(--vip, linear-gradient(90deg, #FCEBB1 0.26%, #F2D38D 99.82%));
-				color: var(--light-membership-01, #483510);
+				color: var(--light-membership-01, $light_membership_01);
 				text-align: center;
 
 				/* Title/medium */
@@ -460,7 +460,7 @@
 			flex-direction: column;
 
 			.tip-title {
-				color: var(--light-text-gray02, #605C73);
+				color: var(--light-text-gray02, $light_text_gray2);
 				margin-bottom: 2px;
 				/* body/regular */
 				font-family: "Open Sans";
@@ -472,7 +472,7 @@
 			}
 
 			text {
-				color: var(--light-text-gray02, #605C73);
+				color: var(--light-text-gray02, $light_text_gray2);
 				/* body/regular */
 				font-family: "Open Sans";
 				font-size: 12px;

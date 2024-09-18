@@ -181,7 +181,7 @@
 				default () {
 					return {
 						padding: '',
-						backgroundColor: '#FFFFFF'
+						backgroundColor: '$light_function_01'
 					}
 				}
 			},

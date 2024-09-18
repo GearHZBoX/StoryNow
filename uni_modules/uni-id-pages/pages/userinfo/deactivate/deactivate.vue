@@ -93,7 +93,7 @@
 			flex: 1;
 			padding-right: 40px;
 			text-align: center;
-			color: var(--light-text-gray01, #221F33);
+			color: var(--light-text-gray01, $light_text_gray1);
 			text-align: center;
 			text-overflow: ellipsis;
 			white-space: nowrap;
@@ -109,7 +109,7 @@
 
 	.words {
 		padding: 30px 16px;
-		color: #605C73;
+		color: $light_text_gray2;
 		font-family: "PingFang SC";
 		white-space: pre-wrap;
 		font-size: 14px;
@@ -136,8 +136,8 @@
 
 	.button-group button.next {
 		border: 0.5px solid var(--light-brand-02, #9883FC);
-		background: var(--light-brand-03, #F0EDFF);
-		color: var(--light-brand-01, #6B4CFF);
+		background: $light_brand_03;
+		color: $light_brand_01;
 
 	}
 
@@ -152,7 +152,7 @@
 		align-items: center;
 		border-top: solid 1px #e4e6ec;
 		padding-top: 10px;
-		background-color: #FFFFFF;
+		background-color: $light_function_01;
 		max-width: 690px;
 	}
 

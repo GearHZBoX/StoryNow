@@ -88,7 +88,7 @@
 	}
 
 	.box {
-		background-color: #FFFFFF;
+		background-color: $light_function_01;
 		height: 200px;
 		width: 750rpx;
 		flex-direction: column;
@@ -136,7 +136,7 @@
 		border-color: #EEEEEE;
 		border-style: solid;
 		border-width: 1px;
-		background-color: #FFFFFF;
+		background-color: $light_function_01;
 	}
 
 	.close:active {
@@ -145,7 +145,7 @@
 	}
 
 	.agree {
-		color: #FFFFFF;
+		color: $light_function_01;
 	}
 
 	/* #ifdef MP */

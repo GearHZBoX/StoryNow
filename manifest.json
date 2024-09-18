@@ -11,6 +11,7 @@
     },
     /* 5+App特有相关 */
     "app-plus" : {
+        "darkmode" : true,
         "usingComponents" : true,
         "nvueStyleCompiler" : "uni-app",
         "compilerVersion" : 3,
@@ -90,7 +91,8 @@
         "nvueCompiler" : "uni-app",
         "uniStatistics" : {
             "enable" : true
-        }
+        },
+        "nvueLaunchMode" : ""
     },
     /* 快应用特有相关 */
     "quickapp" : {},

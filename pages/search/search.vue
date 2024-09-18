@@ -2,7 +2,7 @@
 	<view>
 		<view class="page-header"></view>
 		<view class="search-container">
-			<uni-search-bar :placeholder="placeholder" ref="searchBar" @clear="clear" @confirm="search" @cancel="cancel" focus="true" v-model="searchVal" bg-color="#ffffff"
+			<uni-search-bar :placeholder="placeholder" ref="searchBar" @clear="clear" @confirm="search" @cancel="cancel" focus="true" v-model="searchVal" bg-color="$light_function_01"
 				:radius="100" cancel-text="Cancel"></uni-search-bar>
 		</view>
 		<view class="search-history">
@@ -130,7 +130,7 @@
 
 <style lang="scss">
 	page {
-		background-color: #F6F6F9;
+		background-color: $light_brand_04;
 	}
 
 	.search-container {
@@ -152,7 +152,7 @@
 
 			&-title {
 				overflow: hidden;
-				color: #221F33;
+				color: $light_text_gray1;
 				text-overflow: ellipsis;
 
 				/* Title/medium */
@@ -165,7 +165,7 @@
 			}
 
 			&-clean {
-				color: #919099;
+				color: $light_text_gray3;
 
 				/* body/regular */
 				font-family: "Open Sans";
@@ -180,7 +180,7 @@
 				justify-content: center;
 				padding: 4px 8px;
 				border-radius: 16px;
-				border: 1px solid #F0EDFF;
+				border: 1px solid $light_brand_03;
 
 				&-icon {
 					width: 9px;
@@ -200,12 +200,12 @@
 			&-item {
 				padding: 6px 16px;
 				border-radius: 20px;
-				background-color: #ffffff;
+				background-color: $light_function_01;
 				lines: 1;
 				max-width: 120px;
 
 				overflow: hidden;
-				color: #605C73;
+				color: $light_text_gray2;
 				text-overflow: ellipsis;
 				white-space: nowrap;
 

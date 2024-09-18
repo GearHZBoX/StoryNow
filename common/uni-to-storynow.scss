@@ -25,19 +25,19 @@
 	border-radius: 12px;
 }
 .uni-easyinput__content {
-	background: #f6f6f9 !important;
+	background: $light_brand_04 !important;
 	padding: 8px;
 	border-radius: 12px;
 }
 
 .uni-easyinput__content-input {
-	background: #f6f6f9;
+	background: $light_brand_04;
 	border-radius: 12px;
 }
 
 .main-title {
 	overflow: hidden;
-	color: var(--light-text-gray01, #221F33);
+	color: $light_text_gray1;
 	text-overflow: ellipsis;
 	
 	/* Title/medium */
@@ -73,7 +73,7 @@
 			row-gap: 4px;
 
 			&-main {
-				color: var(--light-text-gray01, #221F33);
+				color: $light_text_gray1;
 				font-family: "SF UI Display";
 				font-size: 24px;
 				font-style: normal;
@@ -82,7 +82,7 @@
 			}
 
 			&-sub {
-				color: var(--light-text-gray03, #919099);
+				color: var(--light-text-gray03, $light_text_gray3);
 
 				/* body/regular */
 				font-family: "PingFang SC";
@@ -97,4 +97,8 @@
 	
 .is-input-focused {
 	border-color: $story-now-border-color-highlight;
+}
+
+.uni-input-placeholder {
+	color: $light_text_gray4;
 }

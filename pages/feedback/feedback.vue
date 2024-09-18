@@ -1,6 +1,6 @@
 <template>
 	<view class="feedback">
-		<fixed-header backIcon id="navigator" style="background: var(--light-brand-04, #F6F6F9);">
+		<fixed-header backIcon id="navigator" style="background: $light_brand_04;">
 			<view class="navigator-text">
 				Report and Feedback
 			</view>
@@ -151,7 +151,7 @@
 			flex: 1;
 			padding-right: 40px;
 			text-align: center;
-			color: var(--light-text-gray01, #221F33);
+			color: var(--light-text-gray01, $light_text_gray1);
 			text-align: center;
 			text-overflow: ellipsis;
 			white-space: nowrap;
@@ -172,7 +172,7 @@
 				justify-content: space-between;
 
 				.left {
-					color: #221F33;
+					color: $light_text_gray1;
 					font-family: "PingFang SC";
 					font-size: 14px;
 					font-style: normal;
@@ -181,12 +181,12 @@
 
 					/* 142.857% */
 					text {
-						color: #FF5995;
+						color: $light_function_red;
 					}
 				}
 
 				.right {
-					color: #919099;
+					color: $light_text_gray3;
 					text-align: center;
 					/* 12-16-regular */
 					font-family: "PingFang SC";
@@ -202,11 +202,11 @@
 			.textarea {
 				width: 100%;
 				border-radius: 12px;
-				background: #F6F6F9;
+				background: $light_brand_04;
 				margin-top: 10px;
 				padding: 12px;
 				box-sizing: border-box;
-				color: #221F33;
+				color: $light_text_gray1;
 				/* body/regular */
 				font-family: "PingFang SC";
 				font-size: 14px;
@@ -216,7 +216,7 @@
 
 				/* 142.857% */
 				&::placeholder {
-					color: #C0C0CC;
+					color: $light_text_gray4;
 					font-family: "PingFang SC";
 					font-size: 14px;
 					font-style: normal;
@@ -235,7 +235,7 @@
 					width: 82px;
 					height: 82px;
 					border-radius: 12px;
-					background: #F6F6F9;
+					background: $light_brand_04;
 					display: flex;
 					justify-content: center;
 					align-items: center;
@@ -254,7 +254,7 @@
 					width: 82px;
 					height: 82px;
 					border-radius: 12px;
-					background: #F6F6F9;
+					background: $light_brand_04;
 					margin: 0 8px 8px 0;
 					flex-grow: 0;
 					flex-shrink: 0;
@@ -280,7 +280,7 @@
 			}
 
 			.notice {
-				color: #919099;
+				color: $light_text_gray3;
 				margin-top: 0px;
 				/* body/regular */
 				font-family: "Open Sans";

@@ -62,8 +62,8 @@
 						type: 'google',
 						icon: '../../static/Google Logo.svg',
 						text: 'Sign In with Google',
-						backgroundColor: '#F6F6F9',
-						textColor: '#605C73',
+						backgroundColor: '$light_brand_04',
+						textColor: '$light_text_gray2',
 					},
 					{
 						type: 'facebook',
@@ -139,7 +139,7 @@
 		}
 
 		&-title {
-			color: #221F33;
+			color: $light_text_gray1;
 			text-align: center;
 			font-family: "SF UI Display";
 			font-size: 24px;
@@ -150,7 +150,7 @@
 		}
 
 		&-subtitle {
-			color: #919099;
+			color: $light_text_gray3;
 			text-align: center;
 
 			/* body/regular */
@@ -186,10 +186,10 @@
 		align-items: center;
 		align-self: stretch;
 		border-radius: 27px;
-		background: var(--light-brand-04, #F6F6F9);
+		background: var(--light-brand-04, $light_brand_04);
 		
 		&-text {
-			color: var(--light-text-gray02, #605C73);
+			color: var(--light-text-gray02, $light_text_gray2);
 			
 			/* Title/medium */
 			font-family: "Open Sans";
@@ -210,7 +210,7 @@
 		
 		&-text {
 			width: 275px;
-			color: var(--light-text-gray03, #919099);
+			color: var(--light-text-gray03, $light_text_gray3);
 			text-align: center;
 			
 			/* label/regular */

@@ -57,7 +57,7 @@
 			flex:1;
 			padding-right: 40px;
 			text-align: center;
-			color: var(--light-text-gray01, #221F33);
+			color: var(--light-text-gray01, $light_text_gray1);
 			text-align: center;
 			text-overflow: ellipsis;
 			white-space: nowrap;
@@ -70,7 +70,7 @@
 		}
 		.content-box {
 			padding: 30px 16px;
-			color:  #605C73;
+			color:  $light_text_gray2;
 			font-family: "PingFang SC";
 			white-space: pre-wrap;
 			font-size: 14px;
@@ -79,7 +79,7 @@
 			line-height: 20px; /* 142.857% */
 			.content-title{
 				overflow: hidden;
-				color: #221F33;
+				color: $light_text_gray1;
 				font-family: "Open Sans";
 				font-size: 16px;
 				font-style: normal;

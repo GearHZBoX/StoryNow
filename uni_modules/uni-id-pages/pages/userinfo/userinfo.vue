@@ -262,7 +262,7 @@ const uniIdCo = uniCloud.importObject("uni-id-co")
 		margin: 10%;
 		margin-top: 40px;
 		border-radius: 0;
-		background-color: #FFFFFF;
+		background-color: $light_function_01;
 		width: 80%;
 	}
 

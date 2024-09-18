@@ -172,7 +172,7 @@
 	};
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 	/* #ifndef APP-NVUE */
 	page {
 		width: 100%;
@@ -184,7 +184,7 @@
 		display: flex;
 		flex-direction: column;
 		height: 100%;
-		background: #F6F6F9 url("../../static/img_bg.png") top/100% auto no-repeat;
+		background: $light_brand_04 url("../../static/img_bg.png") top/100% auto no-repeat;
 
 		.login-status-box {
 			height: 44px;
@@ -227,7 +227,7 @@
 
 		.vip-time {
 			margin: 0px 24px 10px;
-			color:#A68332;
+			color:$light_membership_02;
 			font-size: 12px;
 			font-style: normal;
 			font-weight: 400;
@@ -236,7 +236,7 @@
 			justify-content: space-between;
 			align-items: center;
 			&.expire{
-				color:#C0C0CC;
+				color:$light_text_gray4;
 			}
 			.to-vip{
 				background: var(--vip, linear-gradient(90deg, #FCEBB1 0.26%, #F2D38D 99.82%));
@@ -255,7 +255,7 @@
 			border: 1px solid red;
 			margin: 6px 24px 0;
 			padding: 12px 16px;
-			background: #FCEDCF;
+			background: $light_membership_04;
 			border: 1px solid white;
 			border-radius: 12px 12px 0 0;
 			display: flex;
@@ -267,7 +267,7 @@
 				flex-direction: column;
 
 				.vip-title {
-					color: #483510;
+					color: $light_membership_01;
 					font-family: "PingFang SC";
 					font-size: 14px;
 					font-style: normal;
@@ -277,7 +277,7 @@
 				}
 
 				.vip-desc {
-					color: #A68332;
+					color: $light_membership_02;
 					font-family: "Open Sans";
 					font-size: 12px;
 					font-style: normal;
@@ -292,20 +292,20 @@
 				height: 36px;
 				padding: 8px 20px;
 				border-radius: 40px;
-				background: #F8D177;
+				background: $light_membership_03;
 				margin-left: 16px;
 				box-sizing: border-box;
 				display: flex;
 				justify-content: center;
 				align-items: center;
-				color: #483510;
+				color: $light_membership_01;
 				font-family: "Open Sans";
 				font-size: 12px;
 				font-style: normal;
 				font-weight: 400;
 
 				text {
-					color: #483510;
+					color: $light_membership_01;
 					font-family: Roboto;
 					font-size: 14px;
 					font-style: normal;
@@ -328,7 +328,7 @@
 				margin-bottom: 16px;
 				display: flex;
 				align-items: center;
-				background: #F0EDFF;
+				background: $light_brand_03;
 
 				.summary {
 					overflow: hidden;
@@ -355,7 +355,7 @@
 					align-items: center;
 					border-radius: 20px;
 					background: rgba(255, 255, 255, 0.60);
-					color: #6B4CFF;
+					color: $light_brand_01;
 					font-family: "PingFang SC";
 					font-size: 12px;
 					font-style: normal;
@@ -410,7 +410,7 @@
 				flex: 1;
 				display: flex;
 				align-items: center;
-				color: #221F33;
+				color: $light_text_gray1;
 				font-family: "PingFang SC";
 				font-size: 14px;
 				font-style: normal;
