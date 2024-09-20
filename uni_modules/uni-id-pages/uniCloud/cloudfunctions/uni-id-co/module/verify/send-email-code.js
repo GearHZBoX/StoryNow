@@ -42,7 +42,17 @@ module.exports = async function(params = {}) {
 		captcha
 	})
 	
-	const verifyCode = "233333";
+	 
+	
+	let verifyCode = (Math.random() * 999999).toFixed();
+	
+	while (verifyCode.length < 6) {
+		verifyCode += '0';
+	}
+	
+	if (verifyCode.length > 6) {
+		verifyCode = verifyCode.substring(0, 6);
+	}
 
 	await require('../../lib/utils/verify-code')
 		.setEmailVerifyCode.call(this, {
@@ -55,21 +65,23 @@ module.exports = async function(params = {}) {
 	console.log('ready to send email');
 
 	const transporter = nodemailer.createTransport({
-		service: 'outlook',
+		host: 'smtp.qq.com', // 发送方邮箱 qq 通过lib/wel-konw
+		port: 465,
+		secure: true, // true for 465, false for other ports
 		auth: {
-			user: "storynow.app@outlook.com",
-			pass: "LatteBabe@123",
+			user: "storynow@foxmail.com",
+			pass: "trkhxacprndfbdjh",
 		},
 	});
 
 	const mailOptions = {
-		from: 'storynow.app@outlook.com',
+		from: 'storynow@foxmail.com',
 		to: params.email,
 		subject: '【StoryNow】verify your email',
 		text: 'your verify code is ' + verifyCode,
 	};
 
-	new Promise((resolve, reject) => {
+	await new Promise((resolve, reject) => {
 		transporter.sendMail(mailOptions, (error, info) => {
 			if (error) {
 				console.error(error);

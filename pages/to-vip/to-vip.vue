@@ -2,7 +2,7 @@
 	<view class="to-vip-page">
 		<fixed-header backIcon id="navigator" :style="headerStyle">
 			<view class="navigator-text">
-				Become VIP Member 
+				{{vipStatus === 3 ? 'Prolong VIP Period' : 'Become VIP Member'}}
 			</view>
 		</fixed-header>
 
@@ -36,7 +36,7 @@
 				</view>
 			</view>
 
-			<view class="submit" @click="toPay">
+			<view class="submit" @click="selectPayProvider()">
 				{{confirmText}}
 			</view>
 		</view>
@@ -60,6 +60,7 @@
 		store,
 		mutations
 	} from "@/uni_modules/uni-id-pages/common/store.js";
+import { map } from 'lodash';
 
 	const PayOrderCloud = importObjectConfig('pay-order');
 
@@ -126,7 +127,7 @@
 				this.activeItem = item;
 			},
 
-			toPay() {
+			selectPayProvider() {
 				if (!this.activeItem._id) {
 					uni.showToast({
 						icon: "none",
@@ -134,7 +135,7 @@
 					})
 					return;
 				}
-
+				
 				if (!this.checked) {
 					uni.showModal({
 						title: 'Do you agree to the agreement?',
@@ -151,33 +152,173 @@
 					});
 					return;
 				}
-				this.toCreateOrder();
+				
+				const providerList = [{
+					id: 'google',
+					title: 'Google Pay',
+				}, {
+					id: 'paypal',
+					title: 'PayPal',
+				}];
+				uni.showActionSheet({
+					itemList: map(providerList, 'title'),
+					popover: true,
+					success: (res) => {
+						this.toCreateOrder(map(providerList, 'id')[res.tapIndex]);
+					}
+				})
+			},
+			
+			googlePayHandler({
+				success,
+				fail,
+			}) {
+				plus.payment.getChannels((providers) => {
+					let provider = providers.find(function(e) {
+						return e.id === "google-pay";
+					});
+					
+					console.log('provide', provider);
+
+					let paymentMethodType = "PAYPAL";
+					
+					let cardPaymentMethodConfig = {
+						environment: 3, // 必填 1 是product  3是test
+						paymentMethodType: paymentMethodType, //必填 CARD、PAYPAL
+						existingPaymentMethodRequired: false, //可选 如果设置为true同时已经准备好了支付allowedPaymentMethods中的付款方式，isReadyToPay就会返回true。
+					
+						currencyCode: "USD", //必填
+						countryCode: "US", //在欧洲经济区必填
+						transactionId: "", //当你想要接收googlepay回调的时候必填
+						totalPriceStatus: "FINAL", //必填  NOT_CURRENTLY_KNOWN、ESTIMATED、FINAL
+						totalPrice: "111.00", //必填 满足正则格式^[0-9]+(\.[0-9][0-9])?$
+						// totalPriceLabel: "100heelo", //可选
+						// checkoutOption: "DEFAULT", //可选 DEFAULT、COMPLETE_IMMEDIATE_PURCHASE
+					
+						// merchantName: "Example Merchant", //可选
+						// emailRequired: true, //可选
+						// shippingAddressRequired: true, //可选
+						// shippingPhoneNumberRequired: false, //可选
+						// allowedCountryCodes: ["US", "GB"], //可选
+						allowedAuthMethods: ["PAN_ONLY", "CRYPTOGRAM_3DS"], //必填
+						allowedCardNetworks: ["AMEX", "DISCOVER", "JCB", "MASTERCARD", "VISA"], //必填
+						// allowPrepaidCards: false, //可选
+						// // allowCreditCards:false,//可选  
+						// assuranceDetailsRequired: false, //可选
+						// billingAddressRequired: true, //可选
+						// billingAddressParametersFormat: "FULL", //可选 MIN
+						// phoneNumberRequired: false, //可选
+						tokenizationSpecificationType: "DIRECT", //必填 PAYMENT_GATEWAY、DIRECT
+						gateway: "example", //PAYMENT_GATEWAY时必填
+						gatewayMerchantId: "exampleGatewayMerchantId", //PAYMENT_GATEWAY时必填
+						protocolVersion: "ECv2", //DIRECT时必填
+						publicKey: "", //DIRECT时必填
+      //       buildTokenizationSpecification:{//可选，此字段是为了方便开发者自定义构造tokenizationSpecification参数,设置此字段时，会覆盖掉`tokenizationSpecificationType`、`gateway`、`gatewayMerchantId`、`protocolVersion`、`publicKey`字段。(HBuilderX 3.5.1+支持)
+						// 	"type":"PAYMENT_GATEWAY",
+						// 	"parameters":{
+						// 		"gateway":"custom-gateway",
+						// 		"gatewayMerchantId":"mock-gatewayMerchantId"
+						// 	}
+						// }
+					};
+					
+
+					let paypalPaymentMethodConfig = {
+						environment: 3, // 必填 1 是product  3是test
+						paymentMethodType: paymentMethodType, //必填 CARD、PAYPAL
+						existingPaymentMethodRequired: false, //可选 如果设置为true同时已经准备好了支付allowedPaymentMethods中的付款方式，isReadyToPay就会返回true。
+
+						currencyCode: "USD", //必填
+						countryCode: "US", //在欧洲经济区必填
+						transactionId: "", //当你想要接收googlepay回调的时候必填
+						totalPriceStatus: "FINAL", //必填  NOT_CURRENTLY_KNOWN、ESTIMATED、FINAL
+						totalPrice: "111.00", //必填 满足正则格式^[0-9]+(\.[0-9][0-9])?$
+						totalPriceLabel: "100heelo", //可选
+						checkoutOption: "DEFAULT", //可选 DEFAULT、COMPLETE_IMMEDIATE_PURCHASE
+
+						merchantName: "TIANHE STORY TECHNOLOGY LIMITED", //可选
+						// emailRequired: true, //可选
+						// shippingAddressRequired: true, //可选
+						shippingPhoneNumberRequired: false, //可选
+						allowedCountryCodes: ["US", "GB"], //可选
+						merchantId: "BCR2DN4T6PKY5MIC", //必填
+					};
+
+					let statement;
+
+					if (paymentMethodType === "CARD") {
+						statement = {
+							...cardPaymentMethodConfig
+						};
+					} else {
+						statement = {
+							...paypalPaymentMethodConfig
+						};
+					}
+
+					console.log(JSON.stringify(statement));
+
+					plus.payment.request(provider, statement, (result) => {
+						console.log("支付成功 :" + JSON.stringify(result));
+						success?.(result);
+					}, (e) => {
+						console.log("支付失败： " + JSON.stringify(e));
+						fail?.(e);
+					})
+				});
 			},
 
-			async toCreateOrder() {
-				const res = await PayOrderCloud.createBusinessOrder(this.activeItem)
-
-				console.log("toCreateOrder", res)
-
-				uni.requestPayment({
-					"provider": "paypal",
-					"orderInfo": res.paymanet,
-					success: (result) => {
-
-						var rawdata = JSON.parse(result.rawdata);
-						this.captureOrder({
-							...res,
-							days: this.activeItem.days
-						})
-					},
-					fail: function(err) {
-						console.log('fail:' + JSON.stringify(err));
-						uni.showToast({
-							title: "payment fail",
-							icon: "none"
-						})
-					}
+			async toCreateOrder(provider) {
+				const res = await PayOrderCloud.createBusinessOrder({
+					...this.activeItem,
+					provider,
 				});
+
+				console.log("toCreateOrder", res);
+				
+				if (['paypal'].includes(provider)) {
+					uni.requestPayment({
+						"provider": "paypal",
+						"orderInfo": res.paymanet,
+						success: (result) => {
+							var rawdata = JSON.parse(result.rawdata);
+							console.log('---', rawdata);
+							this.captureOrder({
+								...res,
+								days: this.activeItem.days
+							})
+						},
+						fail: function(err) {
+							console.log('fail:' + JSON.stringify(err));
+							uni.showToast({
+								title: "payment fail",
+								icon: "none"
+							})
+						}
+					});
+					return;
+				}
+				
+				if (provider === 'google') {
+					this.googlePayHandler({
+						success: (result) => {
+							var rawdata = JSON.parse(result.rawdata);
+							console.log('---', rawdata);
+							this.captureOrder({
+								...res,
+								days: this.activeItem.days
+							})
+						},
+						fail: function(err) {
+							console.log('fail:' + JSON.stringify(err));
+							uni.showToast({
+								title: "payment fail",
+								icon: "none"
+							})
+						}
+					})
+				}
+
 			},
 
 			async captureOrder(params) {
@@ -289,8 +430,10 @@
 			.pay-item-list {
 				margin-top: 8px;
 				display: flex;
+				flex-direction: row;
 				flex-wrap: wrap;
 				justify-content: space-between;
+				padding: 16px;
 
 				.pay-item {
 					width: 162px;

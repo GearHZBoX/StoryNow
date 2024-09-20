@@ -71,7 +71,7 @@
 				ticketScale: 1,
 				scrollTop: 0,
 				// 路径参数对象
-				query:{}
+				query:{},
 			};
 		},
 		computed: {
@@ -151,7 +151,7 @@
 				}
 				uni.pageScrollTo({
 					scrollTop: Number(this.query.scrollTop),
-					duration: 300
+					duration: 0,
 				});
 			}
 		},
@@ -190,6 +190,13 @@
 
 			this.scrollTop = scrollTop;
 			this.updateReadHistory();
+		},
+		onReachBottom() {
+			console.log('reach bottom');
+			// uni.navigateTo({
+			// 	url: '/pages/reader/reader',
+			// 	animationType: 'slide-in-bottom',
+			// })
 		}
 	}
 </script>
