@@ -37,6 +37,7 @@
 		</view>
 		<uni-load-more :contentText="{ contentrefresh: 'Loading story' }" status="loading" v-if="loading"
 			icon-type="auto"></uni-load-more>
+		<uni-fab horizontal="right" :pattern="fabPattern" />
 	</view>
 </template>
 
@@ -49,6 +50,7 @@
 		mutations
 	} from '@/uni_modules/uni-id-pages/common/store.js';
 	import fixedHeader from '../../components/fixed-header.vue';
+import { pick } from 'lodash';
 	export default {
 		components: {
 			fixedHeader,
@@ -71,7 +73,13 @@
 				ticketScale: 1,
 				scrollTop: 0,
 				// 路径参数对象
-				query:{},
+				query: {},
+				fabPattern: {
+					color: '#7A7E83',
+					buttonColor: '#fff',
+					iconColor: '#aaa',
+					icon: 'down',
+				}
 			};
 		},
 		computed: {
@@ -83,6 +91,18 @@
 			}
 		},
 		methods: {
+			async loadNextStory() {
+				const db = uniCloud.database();
+				const collection = db.collection('short-stories');
+				
+				const existIds = map(this.$store.state.readerTrack.stack, '_id');
+				
+				const storyCount = collection.where({
+					_id: db.command.neq(existIds),
+				});
+				
+				
+			},
 			purchaseVip() {
 				// 判断登录状态
 				if (!store.hasLogin) {
@@ -104,7 +124,7 @@
 				console.log('already has permission');
 				this.loadData();
 			},
-			loadData() {
+			loadData: debounce(function() {
 				this.loading = true;
 				uniCloud.callFunction({
 					name: 'get-story',
@@ -117,6 +137,8 @@
 					this.story = res.result?.data || {};
 					this.storyTitle = this.story.title;
 					this.scrollTo();
+					this.$store.commit('pushReaderStack', pick(this.story, '_id'));
+					console.log('vuex', this.$store.state.readerTrack);
 				}).catch(err => {
 					console.error(err);
 					this.debugInfo = err;
@@ -132,7 +154,7 @@
 						this.ticketScale = Math.min(properWidth / data.width, 2);
 					}).exec();
 				})
-			},
+			}, 500),
 
 			// 更新读书记录
 			updateReadHistory: debounce(function() {
@@ -145,7 +167,7 @@
 			}, 500),
 
 			scrollTo() {
-				console.log("滚动条位置",this.query)
+				console.log("滚动条位置", this.query)
 				if (!this.query.scrollTop) {
 					return;
 				}
@@ -166,7 +188,7 @@
 			this.storyId = query.id;
 			this.storyTitle = query.title;
 			this.query = query;
-			
+
 			this.loadData();
 		},
 		mounted() {
@@ -298,13 +320,14 @@
 
 		transition: opacity .25s;
 	}
-	
+
 	.ticket-view {
-		position: absolute;	
+		position: absolute;
 		bottom: 0;
 		transform-origin: top left;
+
 		.ticket {
-			
+
 			background-image: url('../../static/ticket.png');
 			background-repeat: no-repeat;
 			background-size: contain;
@@ -313,43 +336,45 @@
 			display: flex;
 			flex-direction: row;
 			align-items: center;
-			
+
 			&-left {
-				
+
 				width: 200px;
 				display: flex;
 				flex-direction: column;
-				
+
 				&-title {
 					color: $light_membership_01;
-					
+
 					/* Title/medium */
 					font-family: "Open Sans";
 					font-size: 14px;
 					font-style: normal;
 					font-weight: 500;
-					line-height: 20px; /* 142.857% */
+					line-height: 20px;
+					/* 142.857% */
 				}
-				
+
 				&-description {
 					color: $light_membership_02;
-					
+
 					/* body/regular */
 					font-family: "Open Sans";
 					font-size: 12px;
 					font-style: normal;
 					font-weight: 400;
-					line-height: 18px; /* 133.333% */
+					line-height: 18px;
+					/* 133.333% */
 				}
 			}
-			
+
 			&-divider {
 				width: 0;
 				height: 56px;
 				border-left: 1px dashed $light_membership_03;
 				margin-left: 49px;
 			}
-			
+
 			&-right {
 				border-radius: 40px;
 				background: $light_membership_03;
@@ -358,22 +383,23 @@
 				display: flex;
 				align-items: center;
 				justify-content: center;
-				
+
 				&-prefix {
 					color: $light_membership_01;
 					text-align: center;
-					
+
 					/* Mobile/Button/B2_1_ZH */
 					font-family: "PingFang SC";
 					font-size: 14px;
 					font-style: normal;
 					font-weight: 600;
-					line-height: 20px; /* 142.857% */
+					line-height: 20px;
+					/* 142.857% */
 				}
-				
+
 				&-suffix {
 					color: $light_membership_01;
-					
+
 					/* label/regular */
 					font-family: "PingFang SC";
 					font-size: 10px;
@@ -384,12 +410,12 @@
 			}
 		}
 	}
-	
-	
+
+
 	.page-bottom {
 		// height: 20px;
 	}
-	
+
 	.preview-footer {
 		background: linear-gradient(180deg, rgba(246, 246, 249, 0.00) 0%, #fff 56.25%, #fff 100%);
 		height: 160px;
