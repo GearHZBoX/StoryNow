@@ -124,11 +124,11 @@ import { map } from 'lodash';
 			},
 		},
 		beforeCreate() {
-			const domModule = uni.requireNativePlugin('dom');
-			domModule.addRule('fontFace', {
-				'fontFamily': "Open Sans",
-				'src': "url('file://static/font/Open_Sans/OpenSans-VariableFont_wdth,wght.ttf')"
-			});
+			// const domModule = uni.requireNativePlugin('dom');
+			// domModule.addRule('fontFace', {
+			// 	'fontFamily': "Open Sans",
+			// 	'src': "url('file://../../static/font/Open_Sans/OpenSans-VariableFont_wdth,wght.ttf')",
+			// });
 
 			uni.$on('index-search', result => {
 				console.log('index-search', result);
@@ -155,7 +155,7 @@ import { map } from 'lodash';
 			if (cachedTitles) {				
 				this.placeholder = cachedTitles[Math.round(Math.random() * cachedTitles.length - 1)];
 			}
-			if (Math.random() * 10 > 5) {
+			if (!this.placeholder || Math.random() * 10 > 5) {
 				this.setSearchPlaceholder();
 			}
 		},
@@ -224,6 +224,10 @@ import { map } from 'lodash';
 					url: '/pages/search/search',
 					animationType: 'fade-in',
 					animationDuration: 200,
+					complete: () => {
+						this.searchVal = '';
+						this.loadData();
+					}
 				});
 			},
 			async onrefresh(e) {
@@ -372,7 +376,7 @@ import { map } from 'lodash';
 		min-height: 100%;
 		display: flex;
 		font-family: "Open Sans";
-		background-color: #F6F6F9;
+		background-color: $light_brand_04;
 	}
 
 	/* #endif */
@@ -482,7 +486,7 @@ import { map } from 'lodash';
 
 			&-uploader {
 				overflow: hidden;
-				color: #605C73;
+				color: $light_text_gray2;
 				text-overflow: ellipsis;
 
 				/* body/regular */
@@ -496,7 +500,7 @@ import { map } from 'lodash';
 
 			&-suffix {
 				overflow: hidden;
-				color: #919099;
+				color: $light_text_gray3;
 				text-overflow: ellipsis;
 
 				/* body/regular */
@@ -512,7 +516,7 @@ import { map } from 'lodash';
 
 	.summary {
 		overflow: hidden;
-		color: #605C73;
+		color: $light_text_gray2;
 		text-overflow: ellipsis;
 		lines: 3;
 		/* #ifdef H5 */
@@ -540,7 +544,7 @@ import { map } from 'lodash';
 
 	.search-container {
 		margin: 0 18px;
-		background-color: #ffffff;
+		background-color: $light_function_01;
 		border-radius: 100px;
 		height: 36px;
 		margin-bottom: 20px;
@@ -558,7 +562,7 @@ import { map } from 'lodash';
 
 		&-placeholder {
 			overflow: hidden;
-			color: #C0C0CC;
+			color: $light_text_gray4;
 			text-overflow: ellipsis;
 			/* #ifndef APP */
 			white-space: nowrap;
@@ -578,7 +582,7 @@ import { map } from 'lodash';
 
 		&-value {
 			overflow: hidden;
-			color: #221F33;
+			color: $light_text_gray1;
 			text-overflow: ellipsis;
 			/* #ifndef APP */
 			white-space: nowrap;
@@ -631,7 +635,7 @@ import { map } from 'lodash';
 			text-overflow: ellipsis;
 
 			/* Mobile/Tag/T1_2_ZH */
-			font-family: "PingFang SC";
+			font-family: "Open Sans";
 			font-size: 12px;
 			font-style: normal;
 			font-weight: 400;
@@ -641,12 +645,12 @@ import { map } from 'lodash';
 	}
 
 	.highlight-keyword {
-		color: #6B4CFF;
+		color: $light_brand_01;
 	}
 	
 	.header-title {
 		overflow: hidden;
-		color: #221F33;
+		color: $light_text_gray1;
 		text-overflow: ellipsis;
 		/* #ifndef APP */
 		white-space: nowrap;
@@ -657,7 +661,7 @@ import { map } from 'lodash';
 		font-family: "Open Sans";
 		font-size: 16px;
 		font-style: normal;
-		font-weight: 400;
+		font-weight: 600;
 		line-height: 20px;
 		margin-bottom: 8px;
 	}
@@ -673,7 +677,7 @@ import { map } from 'lodash';
 	
 	.title-text {
 		overflow: hidden;
-		color: #221F33;
+		color: $light_text_gray1;
 		text-overflow: ellipsis;
 		/* #ifndef APP */
 		white-space: nowrap;
@@ -684,7 +688,7 @@ import { map } from 'lodash';
 		font-family: "Open Sans";
 		font-size: 16px;
 		font-style: normal;
-		font-weight: 400;
+		font-weight: 600;
 		line-height: 20px;
 	}
 	

@@ -12,25 +12,24 @@
 			<i class="king expire" v-else-if="vipStatus==2"></i>
 		</view>
 
-		<view class="vip-time" v-if="vipStatus==3">
-			vip valid until {{userInfo.vip.duration[1]}}
+		<view class="vip-time" v-if="vipStatus==3" @click="toPage('/pages/to-vip/to-vip',true)">
+			vip valid until {{userInfo.vip.duration[1]}}  <view class="to-vip">Renew</view>
 		</view>
-		<view class="vip-time expire" v-else-if="vipStatus==2">
-			vip expired on  {{userInfo.vip.duration[1]}}
+		<view class="vip-time expire" v-else-if="vipStatus==2" @click="toPage('/pages/to-vip/to-vip',true)">
+			vip expired on  {{userInfo.vip.duration[1]}}  <view class="to-vip">Renew</view>
 		</view>
 
-		<view class="vip-box">
+		<view class="vip-box" v-if="vipStatus!=3" @click="toPage('/pages/to-vip/to-vip',true)">
 			<view class="vip-left-box">
 				<view class="vip-title">Open Storynow Membership</view>
 				<view class="vip-desc">Access to popular content across all platforms.</view>
 			</view>
-			<view class="vip-right" @click="toPage('/pages/to-vip/to-vip',true)">
+			<view class="vip-right" >
 				<text>0.3</text>$/day
 			</view>
 		</view>
 
-
-		<view class="history">
+		<view class="history" v-if="readHsitory">
 			<view class="menu-item">
 				<view class="menu-item-icon history-icon ">
 				</view>
@@ -38,8 +37,8 @@
 				<!-- <view class="menu-item-more"></view> -->
 			</view>
 
-			<view class="read-continue" v-if="readHsitory">
-				<text class="summary"> {{readHsitory.summary}}
+			<view class="read-continue" >
+				<text class="summary"> {{readHsitory.title}}
 				</text>
 				<view class="continue" @click="toHistory">continue</view>
 			</view>
@@ -111,6 +110,7 @@
 			try {
 				const readHsitory = uni.getStorageSync('readHsitory');
 				this.readHsitory = JSON.parse(readHsitory);
+				console.log("历史记录",this.readHsitory )
 			} catch (e) {
 				console.log("暂无历史记录")
 			}
@@ -157,11 +157,11 @@
 			},
 
 			toHistory() {
+				console.log("滚动条跳转",this.readHsitory.scrollTop)
 				uni.navigateTo({
-					url: `/pages/reader/reader?id=${this.readHsitory._id}&title=${this.readHsitory.title}`
+					url: `/pages/reader/reader?id=${this.readHsitory._id}&title=${this.readHsitory.title}&scrollTop=${this.readHsitory.scrollTop}`
 				})
 			},
-			
 			
 			logoff(){
 				uni.navigateTo({
@@ -172,7 +172,7 @@
 	};
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 	/* #ifndef APP-NVUE */
 	page {
 		width: 100%;
@@ -184,7 +184,7 @@
 		display: flex;
 		flex-direction: column;
 		height: 100%;
-		background: #F6F6F9 url("../../static/img_bg.png") top/100% auto no-repeat;
+		background: $light_brand_04 url("../../static/img_bg.png") top/100% auto no-repeat;
 
 		.login-status-box {
 			height: 44px;
@@ -227,13 +227,27 @@
 
 		.vip-time {
 			margin: 0px 24px 10px;
-			color:#A68332;
+			color:$light_membership_02;
 			font-size: 12px;
 			font-style: normal;
 			font-weight: 400;
 			line-height: 16px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
 			&.expire{
-				color:#C0C0CC;
+				color:$light_text_gray4;
+			}
+			.to-vip{
+				background: var(--vip, linear-gradient(90deg, #FCEBB1 0.26%, #F2D38D 99.82%));
+				color: var(--light-membership-01, #483510);
+				font-family: "Open Sans";
+				font-size: 16px;
+				font-style: normal;
+				font-weight: 400;
+				line-height: 20px;
+				padding: 8px 15px;
+				border-radius: 24px;
 			}
 		}
 
@@ -241,7 +255,7 @@
 			border: 1px solid red;
 			margin: 6px 24px 0;
 			padding: 12px 16px;
-			background: #FCEDCF;
+			background: $light_membership_04;
 			border: 1px solid white;
 			border-radius: 12px 12px 0 0;
 			display: flex;
@@ -253,7 +267,7 @@
 				flex-direction: column;
 
 				.vip-title {
-					color: #483510;
+					color: $light_membership_01;
 					font-family: "PingFang SC";
 					font-size: 14px;
 					font-style: normal;
@@ -263,7 +277,7 @@
 				}
 
 				.vip-desc {
-					color: #A68332;
+					color: $light_membership_02;
 					font-family: "Open Sans";
 					font-size: 12px;
 					font-style: normal;
@@ -278,20 +292,20 @@
 				height: 36px;
 				padding: 8px 20px;
 				border-radius: 40px;
-				background: #F8D177;
+				background: $light_membership_03;
 				margin-left: 16px;
 				box-sizing: border-box;
 				display: flex;
 				justify-content: center;
 				align-items: center;
-				color: #483510;
+				color: $light_membership_01;
 				font-family: "Open Sans";
 				font-size: 12px;
 				font-style: normal;
 				font-weight: 400;
 
 				text {
-					color: #483510;
+					color: $light_membership_01;
 					font-family: Roboto;
 					font-size: 14px;
 					font-style: normal;
@@ -314,7 +328,7 @@
 				margin-bottom: 16px;
 				display: flex;
 				align-items: center;
-				background: #F0EDFF;
+				background: $light_brand_03;
 
 				.summary {
 					overflow: hidden;
@@ -341,7 +355,7 @@
 					align-items: center;
 					border-radius: 20px;
 					background: rgba(255, 255, 255, 0.60);
-					color: #6B4CFF;
+					color: $light_brand_01;
 					font-family: "PingFang SC";
 					font-size: 12px;
 					font-style: normal;
@@ -396,7 +410,7 @@
 				flex: 1;
 				display: flex;
 				align-items: center;
-				color: #221F33;
+				color: $light_text_gray1;
 				font-family: "PingFang SC";
 				font-size: 14px;
 				font-style: normal;

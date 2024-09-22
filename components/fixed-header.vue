@@ -40,7 +40,7 @@
 		align-items: center;
 		column-gap: 10rpx;
 		position: fixed;
-		background-color: #ffffff;
+		background-color: $light_function_01;
 		width: calc(100% - 35rpx);
 		padding-top: 80rpx;
 		padding-bottom: 16px;

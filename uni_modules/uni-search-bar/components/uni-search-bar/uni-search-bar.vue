@@ -7,9 +7,9 @@
 					<uni-icons color="#c0c4cc" size="18" type="search" />
 				</slot>
 			</view>
-			<input v-if="show || searchVal" :focus="showSync" :disabled="readonly" :placeholder="placeholderText" :maxlength="maxlength"
+			<input v-if="show || searchVal" :focus="showSync" :disabled="readonly" :placeholder="placeholderText" placeholder-class="input-placeholder" :maxlength="maxlength"
 				class="uni-searchbar__box-search-input" confirm-type="search" type="text" v-model="searchVal" :style="{color:textColor}"
-				@confirm="confirm" @blur="blur" @focus="emitFocus" placeholder-style="color: #C0C0CC;" />
+				@confirm="confirm" @blur="blur" @focus="emitFocus" placeholder-style="color: $light_text_gray4;" />
 			<text v-else class="uni-searchbar__text-placeholder">{{ placeholder }}</text>
 			<view v-if="show && (clearButton==='always'||clearButton==='auto'&&searchVal!=='') &&!readonly"
 				class="uni-searchbar__box-icon-clear" @touchend.prevent="clear">
@@ -257,6 +257,7 @@
 		align-items: center;
 		height: $uni-searchbar-height;
 		padding: 5px 8px 5px 0px;
+		background-color: $light_function_01;
 	}
 
 	.uni-searchbar__box-icon-search {
@@ -311,7 +312,7 @@
 	.bar-builtin-search-trigger {
 		border-left: 1px solid rgba(240, 237, 255, 1);
 		padding-left: 12px;
-		color: var(--light-brand-01, #6B4CFF);
+		color: $light_brand_01;
 		text-align: right;
 		
 		/* body/regular */
@@ -321,6 +322,10 @@
 		font-weight: 400;
 		line-height: 20px; /* 142.857% */
 		margin-left: 8px;
+	}
+	
+	.input-placeholder {
+		color: $light_text_gray4;
 	}
 	
 </style>

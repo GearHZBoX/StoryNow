@@ -273,7 +273,7 @@ export default {
 
 .checkbox-box ::v-deep .uni-checkbox-input.uni-checkbox-input-checked {
   border-color: $uni-color-primary;
-  color: #FFFFFF !important;
+  color: $light_function_01 !important;
   background-color: $uni-color-primary;
 }
 

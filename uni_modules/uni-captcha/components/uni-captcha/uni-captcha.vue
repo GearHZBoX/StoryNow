@@ -53,7 +53,7 @@
 				captchaBase64: "",
 				loging: false,
 				placeholderStyle: `
-					color: var(--light-text-gray04, #C0C0CC);
+					color: $light_text_gray4;
 					font-family: "Open Sans";
 					font-size: 16px;
 					font-style: normal;

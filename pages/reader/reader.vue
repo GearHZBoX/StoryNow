@@ -1,7 +1,7 @@
 <template>
 	<view style="position: relative;overflow-x: hidden;">
 		<fixed-header backIcon id="navigator">
-			<text class="navigator-text" :style="`opacity: ${showNavigatorTitle ? 1 : 0};`">
+			<text class="reader-navigator-text" :style="`opacity: ${showNavigatorTitle ? 1 : 0};`">
 				{{storyTitle}}
 			</text>
 		</fixed-header>
@@ -21,8 +21,9 @@
 			</text>
 		</view>
 		<view class="preview-footer" v-if="!loading && !story.hasPermission"></view>
-		<view class="ticket-view" >
-			<view id="ticket" class="ticket" :style="`transform: scale(${ticketScale}); transform-origin: left top;`" v-if="isLoaded && !story.hasPermission">
+		<view class="ticket-view">
+			<view id="ticket" class="ticket" :style="`transform: scale(${ticketScale}); transform-origin: left top;`"
+				v-if="isLoaded && !story.hasPermission">
 				<view class="ticket-left">
 					<text class="ticket-left-title">Open Storynow Membership</text>
 					<text class="ticket-left-description">Access to popular content across all platforms.</text>
@@ -34,11 +35,15 @@
 				</view>
 			</view>
 		</view>
-		<uni-load-more :contentText="{ contentrefresh: 'Loading story' }" status="loading" v-if="loading" icon-type="auto"></uni-load-more>
+		<uni-load-more :contentText="{ contentrefresh: 'Loading story' }" status="loading" v-if="loading"
+			icon-type="auto"></uni-load-more>
 	</view>
 </template>
 
 <script>
+	import {
+		debounce
+	} from 'lodash';
 	import {
 		store,
 		mutations
@@ -64,6 +69,9 @@
 				pageWidth: 200,
 				price: 0.3,
 				ticketScale: 1,
+				scrollTop: 0,
+				// 路径参数对象
+				query:{}
 			};
 		},
 		computed: {
@@ -81,10 +89,10 @@
 					uni.navigateTo({
 						url: '/pages/login/login',
 					})
-					
+
 					return;
 				}
-				
+
 				if (!this.story.hasPermission) {
 					console.log('to purchase page');
 					uni.navigateTo({
@@ -92,7 +100,7 @@
 					})
 					return;
 				}
-				
+
 				console.log('already has permission');
 				this.loadData();
 			},
@@ -108,8 +116,7 @@
 					this.debugInfo = res;
 					this.story = res.result?.data || {};
 					this.storyTitle = this.story.title;
-					
-					this.updateReadHistory();
+					this.scrollTo();
 				}).catch(err => {
 					console.error(err);
 					this.debugInfo = err;
@@ -126,10 +133,26 @@
 					}).exec();
 				})
 			},
-			
+
 			// 更新读书记录
-			updateReadHistory(){
-				uni.setStorageSync('readHsitory', JSON.stringify(this.story));
+			updateReadHistory: debounce(function() {
+				const readHsitory = {
+					_id: this.story._id,
+					title: this.story.title,
+					scrollTop: this.scrollTop
+				}
+				uni.setStorageSync('readHsitory', JSON.stringify(readHsitory));
+			}, 500),
+
+			scrollTo() {
+				console.log("滚动条位置",this.query)
+				if (!this.query.scrollTop) {
+					return;
+				}
+				uni.pageScrollTo({
+					scrollTop: Number(this.query.scrollTop),
+					duration: 300
+				});
 			}
 		},
 		onReady() {
@@ -142,6 +165,8 @@
 		onLoad(query) {
 			this.storyId = query.id;
 			this.storyTitle = query.title;
+			this.query = query;
+			
 			this.loadData();
 		},
 		mounted() {
@@ -153,6 +178,7 @@
 		onPageScroll({
 			scrollTop
 		}) {
+
 			const query = uni.createSelectorQuery().in(this);
 			query.select('#title').boundingClientRect(data => {
 				if (data.height + data.top < this.navigatorBottomTop) {
@@ -161,6 +187,9 @@
 					this.showNavigatorTitle = false;
 				}
 			}).exec();
+
+			this.scrollTop = scrollTop;
+			this.updateReadHistory();
 		}
 	}
 </script>
@@ -173,14 +202,14 @@
 
 		&-title {
 			overflow: hidden;
-			color: #221F33;
+			color: $light_text_gray1;
 			text-overflow: ellipsis;
 
 			/* Title/bold */
 			font-family: "Open Sans";
 			font-size: 20px;
 			font-style: normal;
-			font-weight: 600;
+			font-weight: 700;
 			line-height: 28px;
 			/* 140% */
 		}
@@ -200,7 +229,7 @@
 
 			&-uploader {
 				overflow: hidden;
-				color: #605C73;
+				color: $light_text_gray2;
 				text-overflow: ellipsis;
 
 				/* body/regular */
@@ -214,7 +243,7 @@
 
 			&-suffix {
 				overflow: hidden;
-				color: #919099;
+				color: $light_text_gray3;
 				text-overflow: ellipsis;
 
 				/* body/regular */
@@ -231,24 +260,24 @@
 		padding: 0 16px;
 
 		&-text {
-			color: #605C73;
+			color: $light_text_gray2;
 			overflow: hidden;
 			text-overflow: ellipsis;
 
 			/* body/regular */
 			font-family: "PingFang SC";
-			font-size: 18px;
+			font-size: 20px;
 			font-style: normal;
 			font-weight: 400;
-			line-height: 28px;
+			line-height: 56px;
 			/* 155.556% */
 		}
 	}
 
-	.navigator-text {
+	.reader-navigator-text {
 		lines: 1;
 		overflow: hidden;
-		color: #221F33;
+		color: $light_text_gray1;
 		text-overflow: ellipsis;
 		white-space: nowrap;
 
@@ -256,10 +285,10 @@
 		font-family: "Open Sans";
 		font-size: 16px;
 		font-style: normal;
-		font-weight: 400;
+		font-weight: 700;
 		line-height: 20px;
 		/* 125% */
-		
+
 		transition: opacity .25s;
 	}
 	
@@ -285,7 +314,7 @@
 				flex-direction: column;
 				
 				&-title {
-					color: #483510;
+					color: $light_membership_01;
 					
 					/* Title/medium */
 					font-family: "Open Sans";
@@ -296,7 +325,7 @@
 				}
 				
 				&-description {
-					color: #A68332;
+					color: $light_membership_02;
 					
 					/* body/regular */
 					font-family: "Open Sans";
@@ -310,13 +339,13 @@
 			&-divider {
 				width: 0;
 				height: 56px;
-				border-left: 1px dashed #F8D177;
+				border-left: 1px dashed $light_membership_03;
 				margin-left: 49px;
 			}
 			
 			&-right {
 				border-radius: 40px;
-				background: #F8D177;
+				background: $light_membership_03;
 				padding: 8px 20px;
 				margin-left: 16px;
 				display: flex;
@@ -324,7 +353,7 @@
 				justify-content: center;
 				
 				&-prefix {
-					color: #483510;
+					color: $light_membership_01;
 					text-align: center;
 					
 					/* Mobile/Button/B2_1_ZH */
@@ -336,7 +365,7 @@
 				}
 				
 				&-suffix {
-					color: #483510;
+					color: $light_membership_01;
 					
 					/* label/regular */
 					font-family: "PingFang SC";
