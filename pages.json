@@ -103,7 +103,10 @@
 			"path": "pages/reader/reader",
 			"style": {
 				"navigationBarTitleText": "阅读器",
-				"navigationStyle": "custom"
+				"navigationStyle": "custom",
+				"app-plus": {
+					"bounce": "vertical"
+				}
 			}
 		},
 		{
