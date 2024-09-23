@@ -70,6 +70,8 @@
 				<view class="menu-item-title">Cancel Account</view>
 				<view class="menu-item-more"></view>
 			</view>
+			
+			<button @click="toTest"> 测试文件解析</button>
 		</view>
 
 
@@ -167,7 +169,42 @@
 				uni.navigateTo({
 					url:"/uni_modules/uni-id-pages/pages/userinfo/deactivate/deactivate"
 				})	
-			}
+			},
+			
+			toTest(){
+				uni.chooseFile({
+				  count: 1, 
+				  type:"all",
+					success:  (res)=> {
+						console.log(JSON.stringify(res.tempFilePaths));
+						this.uploadImg(res.tempFilePaths[0])
+					}
+				});
+			},
+			
+			uploadImg(filePath) {
+				uni.showLoading({
+					title: 'uploading...'
+				});
+				uniCloud.uploadFile({
+					filePath: filePath,
+					cloudPath: `/storyExcle/${new Date().getTime()}.xlsx`,
+					cloudPathAsRealPath: true,
+					success: (res) => {
+						console.log("文件上传成功", res.fileID)
+						// this.imgList.push(res.fileID);
+					},
+					fail(err) {
+						console.log("文件上传失败", err)
+						uni.showToast({
+							title: "文件上传失败"
+						})
+					},
+					complete() {
+						uni.hideLoading()
+					}
+				});
+			},
 		},
 	};
 </script>
