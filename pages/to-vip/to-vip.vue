@@ -136,7 +136,7 @@ import { debounce } from 'lodash';
 				console.log("测试", res)
 				if (res.data) {
 					this.priceItemList = res.data;
-					// this.setMax();
+					this.setMax();
 				}
 			},
 
@@ -389,10 +389,10 @@ import { debounce } from 'lodash';
 			},
 			
 			setMax(){
-					this.activeItem = this.priceItemList.map((item)=>{
-					return item.days==30
-				}) ||{}
-				console.log("获取参数",this.activeItem._id)
+				this.activeItem = this.priceItemList.find((item)=>{
+					console.log(item.isDefault)
+					return item.isDefault
+				}) 
 			}
 		}
 	}

@@ -1,9 +1,6 @@
 {
   "name": "feedback",
-  "dependencies": {
-    "dayjs": "^1.11.13",
-    "get-user": "file:../common/get-user"
-  },
+  "dependencies": {},
   "extensions": {
     "uni-cloud-jql": {}
   }

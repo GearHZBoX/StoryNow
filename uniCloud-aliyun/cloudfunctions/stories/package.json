@@ -1,0 +1,10 @@
+{
+  "name": "stories",
+  "dependencies": {
+    "exceljs": "^4.4.0",
+    "get-user": "file:../common/get-user"
+  },
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

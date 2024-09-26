@@ -1,22 +1,8 @@
 // 云对象教程: https://uniapp.dcloud.net.cn/uniCloud/cloud-obj
-// jsdoc语法提示教程：https://ask.dcloud.net.cn/docs/#//ask.dcloud.net.cn/article/129\\
-const getUser = require('get-user');
-const dayjs = require('dayjs');
+// jsdoc语法提示教程：https://ask.dcloud.net.cn/docs/#//ask.dcloud.net.cn/article/129
 module.exports = {
-	_before:async function () { // 通用预处理器
-		const clientInfo = this.getClientInfo()
-		const uniIdToken = this.getUniIdToken()
+	_before: function () { // 通用预处理器
 		
-		const currentUser = await getUser({
-			uniIdToken
-		}, clientInfo);
-		
-		console.log('当期用户信息', currentUser);
-		this.currentUser = currentUser;
-		
-		if(!this.currentUser){
-			throw Error("getUserInfo fail")
-		}
 	},
 	
 	// 新建 feedback
@@ -29,8 +15,6 @@ module.exports = {
 			const feedbackInfo = await dbJQL.collection('feedback').add({
 				"content": content,
 				"img_list": imgList,
-				"user_id":this.currentUser._id,
-				"createdAt":dayjs().format("YYYY-MM-DD HH:mm:ss")
 			})
 			if(!feedbackInfo.id){
 				 return {
