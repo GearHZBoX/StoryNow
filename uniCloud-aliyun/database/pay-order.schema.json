@@ -30,7 +30,7 @@
 		"pay_status": {
 			"title": "支付状态",
 			"bsonType": "int",
-			"enum": [1, 2, 3, 4],
+			"enum": [1, 2, 3, 4, 5, 6],
 			"description": "支付状态：1 未支付 2 支付成功 3 支付失败 4 取消支付"
 		},
 		"pay_type": {
@@ -47,6 +47,10 @@
 		"pay_detail": {
 			"title": "支付平台详情",
 			"bsonType": "object"
+		},
+		"provider": {
+			"title": "第三方服务商",
+			"bsonType": "string"
 		},
 		"createdAt":{
 			"title": "创建时间",

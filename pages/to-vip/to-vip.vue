@@ -36,7 +36,7 @@
 				</view>
 			</view>
 
-			<view class="submit" @click="selectPayProvider()">
+			<view class="submit" @click="choosePaymentMethods()">
 				{{confirmText}}
 			</view>
 		</view>
@@ -47,6 +47,25 @@
 				iTunes account within 24 hours before the subscription expires. Before this, you can manually turn off
 				auto-renewal in your iTunes/Apple ID settings.</text>
 		</view>
+		<uni-popup ref="popup" type="center">
+			<view class="confirm-view">
+				<view class="confirm-popup">
+					<text class="confirm-popup-title">
+						Payment methods
+					</text>
+					<view class="google-pay-btn" @click="toCreateOrder('google')">
+						<image src="../../static/Google Logo.svg" class="c-icon"></image>
+						<text class="c-text">Pay</text>
+					</view>
+					<view class="paypal-pay-btn" @click="toCreateOrder('paypal')">
+						<image src="../../static/paypal.png" class="c-icon"></image>
+					</view>
+				</view>
+				<view @click="$refs.popup.close()" class="confirm-view-footer" hover-class="confirm-view-footer-hover">
+					<text>Cancel</text>
+				</view>
+			</view>
+		</uni-popup>
 	</view>
 </template>
 
@@ -61,6 +80,7 @@
 		mutations
 	} from "@/uni_modules/uni-id-pages/common/store.js";
 import { map } from 'lodash';
+import { debounce } from 'lodash';
 
 	const PayOrderCloud = importObjectConfig('pay-order');
 
@@ -89,7 +109,8 @@ import { map } from 'lodash';
 				headerStyle: "background:rgba(0,0,0,0)",
 				checked: false,
 				activeItem: {},
-				priceItemList: []
+				priceItemList: [],
+				showOrderCheck: false,
 			}
 		},
 		onLoad() {
@@ -126,8 +147,8 @@ import { map } from 'lodash';
 			toSelect(item) {
 				this.activeItem = item;
 			},
-
-			selectPayProvider() {
+			
+			choosePaymentMethods() {
 				if (!this.activeItem._id) {
 					uni.showToast({
 						icon: "none",
@@ -153,20 +174,7 @@ import { map } from 'lodash';
 					return;
 				}
 				
-				const providerList = [{
-					id: 'google',
-					title: 'Google Pay',
-				}, {
-					id: 'paypal',
-					title: 'PayPal',
-				}];
-				uni.showActionSheet({
-					itemList: map(providerList, 'title'),
-					popover: true,
-					success: (res) => {
-						this.toCreateOrder(map(providerList, 'id')[res.tapIndex]);
-					}
-				})
+				this.$refs.popup.open();
 			},
 			
 			googlePayHandler({
@@ -178,9 +186,9 @@ import { map } from 'lodash';
 						return e.id === "google-pay";
 					});
 					
-					console.log('provide', provider);
+					console.log('provide', provider, this.activeItem);
 
-					let paymentMethodType = "PAYPAL";
+					let paymentMethodType = "CARD";
 					
 					let cardPaymentMethodConfig = {
 						environment: 3, // 必填 1 是product  3是test
@@ -191,7 +199,7 @@ import { map } from 'lodash';
 						countryCode: "US", //在欧洲经济区必填
 						transactionId: "", //当你想要接收googlepay回调的时候必填
 						totalPriceStatus: "FINAL", //必填  NOT_CURRENTLY_KNOWN、ESTIMATED、FINAL
-						totalPrice: "111.00", //必填 满足正则格式^[0-9]+(\.[0-9][0-9])?$
+						totalPrice: String(this.activeItem.amount), //必填 满足正则格式^[0-9]+(\.[0-9][0-9])?$
 						// totalPriceLabel: "100heelo", //可选
 						// checkoutOption: "DEFAULT", //可选 DEFAULT、COMPLETE_IMMEDIATE_PURCHASE
 					
@@ -208,18 +216,18 @@ import { map } from 'lodash';
 						// billingAddressRequired: true, //可选
 						// billingAddressParametersFormat: "FULL", //可选 MIN
 						// phoneNumberRequired: false, //可选
-						tokenizationSpecificationType: "DIRECT", //必填 PAYMENT_GATEWAY、DIRECT
-						gateway: "example", //PAYMENT_GATEWAY时必填
-						gatewayMerchantId: "exampleGatewayMerchantId", //PAYMENT_GATEWAY时必填
-						protocolVersion: "ECv2", //DIRECT时必填
-						publicKey: "", //DIRECT时必填
-      //       buildTokenizationSpecification:{//可选，此字段是为了方便开发者自定义构造tokenizationSpecification参数,设置此字段时，会覆盖掉`tokenizationSpecificationType`、`gateway`、`gatewayMerchantId`、`protocolVersion`、`publicKey`字段。(HBuilderX 3.5.1+支持)
-						// 	"type":"PAYMENT_GATEWAY",
-						// 	"parameters":{
-						// 		"gateway":"custom-gateway",
-						// 		"gatewayMerchantId":"mock-gatewayMerchantId"
-						// 	}
-						// }
+						// tokenizationSpecificationType: "PAYMENT_GATEWAY", //必填 PAYMENT_GATEWAY、DIRECT
+						// gateway: "stripe", //PAYMENT_GATEWAY时必填
+						// gatewayMerchantId: "exampleGatewayMerchantId", //PAYMENT_GATEWAY时必填
+						merchantId: "BCR2DN4T6PKY5MIC", //必填
+						buildTokenizationSpecification:{//可选，此字段是为了方便开发者自定义构造tokenizationSpecification参数,设置此字段时，会覆盖掉`tokenizationSpecificationType`、`gateway`、`gatewayMerchantId`、`protocolVersion`、`publicKey`字段。(HBuilderX 3.5.1+支持)
+							"type":"PAYMENT_GATEWAY",
+							"parameters":{
+								"gateway": "stripe",
+								"stripe:version": '2018-10-31',
+								"stripe:publishableKey": "pk_test_51Q2xHaK0pp9uOY0tFBZeZPmUOjxY0xHKzKJ1o40RJ7jSr3UmdW960rJESAyeYn1GCznMGAcAkC0b0rqQab9iyDiE00irGmLNdh"
+							}
+						}
 					};
 					
 
@@ -268,15 +276,14 @@ import { map } from 'lodash';
 				});
 			},
 
-			async toCreateOrder(provider) {
-				const res = await PayOrderCloud.createBusinessOrder({
-					...this.activeItem,
-					provider,
-				});
-
-				console.log("toCreateOrder", res);
+			toCreateOrder: debounce(async function(provider) {
+				this.$refs.popup.close();
 				
 				if (['paypal'].includes(provider)) {
+					const res = await PayOrderCloud.createBusinessOrder({
+						...this.activeItem,
+						provider,
+					});
 					uni.requestPayment({
 						"provider": "paypal",
 						"orderInfo": res.paymanet,
@@ -300,13 +307,40 @@ import { map } from 'lodash';
 				}
 				
 				if (provider === 'google') {
+					const res = await PayOrderCloud.createBusinessOrderV2({
+						...this.activeItem,
+						provider,
+					});
 					this.googlePayHandler({
 						success: (result) => {
 							var rawdata = JSON.parse(result.rawdata);
 							console.log('---', rawdata);
-							this.captureOrder({
-								...res,
-								days: this.activeItem.days
+							PayOrderCloud.stripeHandler({
+								payResp: rawdata.paymentMethodData.tokenizationData.token,
+								id: res.orderInfo.id
+							}).then(resp => {
+								console.log('ggggggg', resp);
+								if (resp.errCode === 0) {
+									uni.showToast({
+										icon: 'none',
+										title: 'payment succeeded',
+									})
+									uni.redirectTo({
+										url: '/pages/payment-result/payment-result?orderId=' + resp.orderInfo._id, 
+									});
+								} else {
+									uni.showToast({
+										icon: 'none',
+										title: 'payment failed ' + resp.errMsg,
+									});
+									console.error(resp.errMsg);
+								}
+							}).catch(err => {
+								console.error(err);
+								uni.showToast({
+									icon: 'none',
+									title: 'payment failed',
+								});
 							})
 						},
 						fail: function(err) {
@@ -319,7 +353,7 @@ import { map } from 'lodash';
 					})
 				}
 
-			},
+			}, 200),
 
 			async captureOrder(params) {
 				const orderInfo = {
@@ -341,6 +375,7 @@ import { map } from 'lodash';
 					})
 					return;
 				}
+				
 				uni.showToast({
 					icon: "none",
 					title: `VIP validity：\r\n ${data?.userInfo?.vip?.duration[0]}-${data?.userInfo?.vip?.duration[1]}`,
@@ -348,7 +383,9 @@ import { map } from 'lodash';
 				})
 				await mutations.updateUserInfo();
 				
-				uni.navigateBack();
+				uni.redirectTo({
+					url: '/pages/payment-result/payment-result?orderId=' + orderInfo.id, 
+				});
 			},
 			
 			setMax(){
@@ -626,4 +663,83 @@ import { map } from 'lodash';
 			}
 		}
 	}
+	
+	.confirm-view {
+		border-radius: 8px;
+		overflow: hidden;
+		background-color: #FFF;
+		
+		&-footer {
+			border-top: 1px solid #c1c1c1;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			height: 45px;
+			
+			text {
+				color: $light_text_gray2;
+				font-size: 16px;
+			}
+		}
+		
+		&-footer-hover {
+			background-color: #f1f1f1;
+		}
+	}
+	
+	
+	.confirm-popup {
+		padding: 16px 48px;
+		
+		&-title {
+			color: $light_text_gray3;
+			margin-bottom: 15px;
+			display: block;
+			font-size: 14px;
+		}
+	}
+	
+	.google-pay-btn {
+		background-color: #000000;
+		border-radius: 5px;
+		width: 250px;
+		height: 50px;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		margin-bottom: 10px;
+		
+		.c-text {
+			color: #FFF;
+		}
+		
+		.c-icon {
+			margin-right: 5px;
+			width: 18px;
+		}
+	}
+	
+	.paypal-pay-btn {
+		background-color: #ffc539;
+		border-radius: 5px;
+		width: 250px;
+		height: 50px;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		overflow: hidden;
+		
+		.c-text {
+			color: #FFF;
+		}
+		
+		.c-icon {
+			margin-right: 5px;
+			height: 80px;
+			width: 80px;
+		}
+	}
+	
 </style>

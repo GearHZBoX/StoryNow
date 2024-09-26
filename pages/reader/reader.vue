@@ -674,10 +674,12 @@
 		&-text {
 			margin-left: 5px;
 			color: $light_text_gray3;
+			lines: 1;
 		}
 	}
 
 	.reader {
+		min-height: 105%;
 		.downwarp-progress {
 			display: none !important;
 		}
