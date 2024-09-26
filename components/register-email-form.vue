@@ -3,11 +3,11 @@
 		<uni-captcha :focus="focusCaptchaInput" ref="captcha" scene="send-email-code" v-model="captcha" />
 		<view class="box">
 			<uni-easyinput :placeholder-style="placeholderStyle" :focus="focusEmailCodeInput" @blur="focusEmailCodeInput = false" type="number" class="input-box" :inputBorder="false" v-model="modelValue" maxlength="6"
-				placeholder="Enter the verification code" @clear="modelValue = ''">
+				placeholder="Enter the verification code" @clear="clearModelVal">
 			</uni-easyinput>
 			<view class="short-code-btn" hover-class="hover" @click="start">
-				<text v-if="!sendingEmail" :class="reverseNumber==0?'highlight':'inner-text'"  @click="start">{{innerText}}</text>
-				<Spin v-else />
+				<text :class="reverseNumber==0?'highlight':'inner-text'"  @click="start">{{innerText}}</text>
+				<!-- <Spin v-else /> -->
 			</view>
 		</view>
 	</view>
@@ -54,7 +54,7 @@
 			 */
 			count: {
 				type: [String, Number],
-				default: 60
+				default: 31
 			},
 			/**
 			 * 邮箱
@@ -123,6 +123,10 @@
 			this.initClick();
 		},
 		methods: {
+			clearModelVal() {
+				console.log('here');
+				this.modelValue = '';
+			},
 			getImageCaptcha(focus) {
 				this.$refs.captcha.getImageCaptcha(focus)
 			},
@@ -161,18 +165,14 @@
 					"captcha": this.captcha
 				});
 				this.sendingEmail = true;
+				this.reverseNumber = Number(this.count);
+				this.getCode();
 				uniIdCo.sendEmailCode({
 					"email": this.email,
 					"scene": this.type,
 					"captcha": this.captcha
 				}).then(result => {
-					uni.showToast({
-						title: "Send success",
-						icon: 'none',
-						duration: 3000
-					});
-					this.reverseNumber = Number(this.count);
-					this.getCode();
+					console.log('email send result', result)
 				}).catch(e => {
 					if (e.code == "uni-id-invalid-mail-template") {
 						this.modelValue = "123456"
@@ -220,9 +220,7 @@
 		padding: 0;
 		position: absolute;
 		top: 0;
-		right: 8px;
-		width: 260rpx;
-		max-width: 130px;
+		right: 20px;
 		height: 100%;
 		/* #ifndef APP-NVUE */
 		display: flex;

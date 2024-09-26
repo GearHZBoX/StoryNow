@@ -2,7 +2,8 @@
   "name": "pay-order",
   "dependencies": {
     "dayjs": "^1.11.13",
-    "get-user": "file:../common/get-user"
+    "get-user": "file:../common/get-user",
+    "stripe": "^16.12.0"
   },
   "extensions": {
     "uni-cloud-jql": {}
