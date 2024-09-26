@@ -71,7 +71,7 @@
 				<view class="menu-item-more"></view>
 			</view>
 			
-			<button @click="toTest"> 测试文件解析</button>
+			<!-- <button @click="toTest"> 测试文件解析</button> -->
 		</view>
 
 
