@@ -129,6 +129,8 @@
 </script>
 
 <style lang="scss">
+	@import '@/common/uni-to-storynow.scss';
+	
 	page {
 		background-color: $light_brand_04;
 	}

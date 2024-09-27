@@ -655,7 +655,7 @@ import { map } from 'lodash';
 		/* #ifndef APP */
 		white-space: nowrap;
 		/* #endif */
-		lines: 1;
+		lines: 5;
 	
 		/* Title/medium */
 		font-family: "Open Sans";

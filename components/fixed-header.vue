@@ -12,12 +12,14 @@
 <script>
 	export default {
 		name: "fixed-header",
+		emits: ['back'],
 		props: {
 			title: [String, Number],
 			backIcon: Boolean,
 			className: String,
 			style: String,
 			id: String,
+			navigateBackParams: Object,
 		},
 		data() {
 			return {
@@ -26,7 +28,8 @@
 		},
 		methods: {
 			goBack(url) {
-				uni.navigateBack();
+				this.$emit('back');
+				uni.navigateBack(this.navigateBackParams);
 			}
 		}
 	}

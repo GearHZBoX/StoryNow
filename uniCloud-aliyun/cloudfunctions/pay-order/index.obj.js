@@ -5,6 +5,7 @@ const PayPal = uniCloud.importObject('payPal');
 const getUser = require('get-user');
 const dayjs = require('dayjs');
 const isBetween = require("dayjs/plugin/isBetween");
+const stripeUtils = require('./third-party/stripe');
 dayjs.extend(isBetween);
 
 
@@ -148,7 +149,7 @@ module.exports = {
 	async createBusinessOrder(payInfo) {
 		const {
 			amount,
-			currency_code
+			currency_code,
 		} = payInfo;
 
 		const [err, data] = await PayPal.createPayOrder(payInfo);
@@ -159,6 +160,7 @@ module.exports = {
 				errMsg: 'payPal创建订单失败'
 			}
 		}
+	
 
 		const [businessErr, orderInfo] = await createBusinessOrder({
 			"amount": amount,
@@ -281,4 +283,94 @@ module.exports = {
 			}
 		}
 	},
+	
+	async createBusinessOrderV2(params) {
+		const { amount, currency_code, provider } = params;
+		
+		const [businessErr, orderInfo] = await createBusinessOrder({
+			"amount": amount,
+			"currency_code": currency_code,
+			"pay_status": 1,
+			"user_id": this.currentUser._id,
+			provider,
+			"createdAt": dayjs().format("YYYY-MM-DD HH:mm:ss")
+		})
+		
+		if (businessErr) {
+			return {
+				errCode: -1,
+				errMsg: '业务订单创建失败'
+			}
+		}
+		
+		return {
+			orderInfo,
+		};
+	},
+	
+	async stripeHandler(params) {
+		const { id, payResp } = params;
+		const payInfo = JSON.parse(payResp);
+		
+		console.log('---------payinfo', payInfo);
+		
+		const db = uniCloud.database();
+		
+		const transaction = await db.startTransaction();
+		
+		try {
+			const { data: orderRecord } = await transaction.collection('pay-order').doc(id).get()
+			
+			console.log('-=order', orderRecord);
+			
+			await transaction.collection('pay-order').doc(id).update({
+				// ready to charge
+				pay_status: 5,
+				
+			});
+			
+			const createResp = await stripeUtils.create(payInfo, orderRecord);
+			
+			console.log('create resp', createResp);
+			
+			await transaction.collection('pay-order').doc(id).update({
+				// charging，need polling
+				order_id: createResp.id,
+				pay_status: 6,
+			});
+			
+			const captureResp = await stripeUtils.capture(createResp);
+			
+			console.log('capture resp', captureResp);
+			
+			let payStatus = 3;
+			if (captureResp.status === 'succeeded') {
+				payStatus = 2;
+			}
+			
+			await transaction.collection('pay-order').doc(id).update({
+				pay_status: payStatus,
+			})
+			
+			if (captureResp.status !== 'succeeded') {
+				return {
+					errCode: -1,
+					errMsg: 'payment failed'
+				}
+			}
+			
+			return {
+				errCode: 0,
+				orderInfo: orderRecord,
+			};
+		} catch (err) {
+			console.error(err)
+			return {
+				errCode: -1,
+				errMsg: 'payment failed'
+			}
+		} finally {
+			await transaction.commit();
+		}
+	}
 }

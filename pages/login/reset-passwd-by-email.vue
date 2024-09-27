@@ -16,7 +16,7 @@
 				</uni-easyinput>
 			</uni-forms-item>
 			<uni-forms-item name="code">
-				<RegisterEmailForm ref="shortCode" :email="formData.email" type="reset-pwd-by-email" v-model="formData.code">
+				<RegisterEmailForm ref="shortCode" :email="formData.email" type="reset-pwd-by-email" v-model="formData.code" @update:modelValue="formData.code=''" >
 				</RegisterEmailForm>
 			</uni-forms-item>
 			<uni-forms-item name="password">

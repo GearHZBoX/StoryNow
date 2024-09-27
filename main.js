@@ -4,6 +4,9 @@ import Vuei18n from 'vue-i18n';
 // #endif
 import i18nConfig from './i18n/index.js';
 
+import Vuex from 'vuex';
+import store from './store';
+
 // #ifndef VUE3
 import Vue from 'vue'
 import './uni.promisify.adaptor'
@@ -29,6 +32,7 @@ const i18n = createI18n(i18nConfig)
 export function createApp() {
   const app = createSSRApp(App);
   app.use(i18n);
+  app.use(store);
   return {
     app
   };
