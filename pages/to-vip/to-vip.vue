@@ -293,9 +293,9 @@
 				justify-content: space-between;
 
 				.pay-item {
-					width: 162px;
-					height: 96px;
-					margin-bottom: 10px;
+					width: 324rpx;
+					height: 192rpx;
+					margin-bottom: 20rpx;
 					flex-grow: 0;
 					flex-shrink: 0;
 					box-sizing: border-box;
