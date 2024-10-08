@@ -27,11 +27,11 @@
 		<view class="login-footer">
 			<text class="login-footer-text">
 				When you log in，we wil assume that you have read and agree to the 
-				<text class="highlight">
+				<text class="highlight" @click="goto('https://static-mp-2fd7334f-2482-4ac2-b562-dd8f8ddf3c00.next.bspapp.com/agreements/service-agreement.html')">
 					"User Agreement"
 				</text>
 					, the 
-				<text class="highlight">
+				<text class="highlight" @click="goto('https://static-mp-2fd7334f-2482-4ac2-b562-dd8f8ddf3c00.next.bspapp.com/agreements/privacy-agreement.html')">
 					"Privacy Policy"
 				</text>.
 			</text>
@@ -104,7 +104,15 @@
 				uni.navigateTo({
 					url: '/pages/login/register-with-password',
 				})
-			}
+			},
+			goto(url, title = '') {
+				uni.navigateTo({
+					url: '/uni_modules/uni-id-pages/pages/common/webview/webview?url=' + url + '&title=' + title,
+					success: res => {},
+					fail: () => {},
+					complete: () => {}
+				});
+			},
 		}
 	}
 </script>

@@ -480,7 +480,7 @@ import { debounce } from 'lodash';
 				flex-wrap: wrap;
 				justify-content: center;
 				column-gap: 16px;
-				padding: 16px;
+				// padding: 16px;
 
 				.pay-item {
 					width: 162px;

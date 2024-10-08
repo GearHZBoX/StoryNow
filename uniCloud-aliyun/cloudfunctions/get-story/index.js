@@ -22,7 +22,7 @@ exports.main = async (event, context) => {
 		if (currentUser?.vip?.duration?.[0] && currentUser?.vip?.duration?.[1]) {
 			const vipBeginAt = dayjs(currentUser.vip.duration[0]);
 			const vipEndAt = dayjs(currentUser.vip.duration[1]);
-			console.debug('dayjs', vipBeginAt, vipEndAt, dayjs());
+			console.log('dayjs', vipBeginAt, vipEndAt, dayjs());
 			hasPermission = dayjs().isBetween(vipBeginAt, vipEndAt);
 		}
 		if (!hasPermission) {
