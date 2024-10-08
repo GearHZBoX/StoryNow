@@ -1,117 +1,111 @@
 <template>
-	<view>
-
-		<button type="primary" @click="loginByGoogle()">google</button>
-		<view style="height: 10px;"></view>
-		<button type="primary" @click="loginByFC()">facebook</button>
-		<view>loginRes: {{loginRes}}</view>
-		<view>userInfo: {{userInfo}}</view>
-		<view>err: {{err}}</view>
-
-		<button type="primary" @click="toPay">paypal1</button>
-		<view>payInfo 调起支付参数: {{payInfo}}</view>
-		<view>captureInfo 付款成功结果: {{captureInfo}}</view>
-		<view>payError 支付失败: {{payError}}</view>
-	</view>
+    <view class="content">
+        <view class="text-area">
+            <text class="title">{{title}}</text>
+        </view>
+        <view>loadFontFaceFromWeb</view>
+        <button @click="loadFontFaceFromWeb">从网络加载字体</button>
+        <!-- #ifdef APP-PLUS -->
+        <!-- 从本地加载字体 -->
+        <view>loadFontFaceFromLocal</view>
+        <button @click="loadFontFaceFromLocal">从本地加载字体</button>
+        <view>loadFontFaceFromCache</view>
+        <button @click="loadFontFaceFromCache">从网络加载字体并缓存</button>
+        <!-- #endif -->
+    </view>
 </template>
 
 <script>
-	const PayOrder = uniCloud.importObject('pay-order')
-	const Paypal = uniCloud.importObject('paypal')
+    const url = 'https://sungd.github.io/Pacifico.ttf'
+    export default {
+        data() {
+            return {
+                title: 'Hello'
+            }
+        },
+        onLoad() {
 
-	export default {
-		data() {
-			return {
-				loginRes: '',
-				err: '',
-				userInfo: '',
-				payInfo: '',
-				captureInfo:'',
-				payError:''
-			}
-		},
-		methods: {
-			loginByFC() {
-				console.log('login by facebook');
-				uni.login({
-					provider: 'facebook',
-					success: (loginRes) => {
-						this.err = '';
-						this.loginRes = typeof loginRes === 'object' ? JSON.stringify(loginRes) : loginRes;
-						// 登录成功
-						uni.getUserInfo({
-							provider: 'facebook',
-							success: (info) => {
-								// 获取用户信息成功, info.authResult保存用户信息
-								this.userInfo = typeof info === 'object' ? JSON.stringify(info) :
-									info;
-							}
-						})
-					},
-					fail: (err) => {
-						// 登录授权失败
-						// err.code是错误码
-						this.err = typeof err === 'object' ? JSON.stringify(err) : err;
-						console.error(err);
-					}
-				})
-			},
-			loginByGoogle() {
-				console.log('login by google');
-				uni.login({
-					provider: 'google',
-					success: (loginRes) => {
-						// 登录成功
-						this.err = '';
-						this.loginRes = typeof loginRes === 'object' ? JSON.stringify(loginRes) : loginRes;
-						uni.getUserInfo({
-							provider: 'google',
-							success: (info) => {
-								// 获取用户信息成功, info.authResult保存用户信息
-								this.userInfo = typeof info === 'object' ? JSON.stringify(info) :
-									info;
-							}
-						})
-					},
-					fail: (err) => {
-						// 登录授权失败
-						// err.code是错误码
-						this.err = typeof err === 'object' ? JSON.stringify(err) : err;
-						console.error(err);
-					}
-				})
-			},
-
-			async toPay() {
-				const data = await PayOrder.createBusinessOrder({
-					amount: 15
-				});
-				
-				this.payInfo = data;
-				uni.requestPayment({
-					"provider": "paypal",
-					"orderInfo": data,
-					success: async (res)=> {
-						var rawdata = JSON.parse(res.rawdata);
-						console.log("orderId：" + rawdata.orderId);
-						let [err,captureInfo] = await Paypal.captureOrder({
-							orderId:rawdata.orderId
-						})
-						if(err){
-							this.payError = err;
-							return;
-						}
-						console.log("付款结果",captureInfo)
-						this.captureInfo = captureInfo
-					},
-					fail: function(err) {
-						console.log('fail:' + JSON.stringify(err));
-					}
-				});
-			}
-		}
-	}
+        },
+        methods: {
+            loadFontFaceFromWeb() {
+                uni.loadFontFace({
+                    family: 'font-test',
+                    source: `url("${url}")`
+                })
+            },
+            // #ifdef APP-PLUS
+            loadFontFaceFromLocal() {
+                uni.loadFontFace({
+                    family: 'Open Sans',
+                    // 本地字体路径需转换为平台绝对路径
+                    source: `url(${plus.io.convertLocalFileSystemURL('_www/static/OpenSans-Regular.ttf')})`,
+                    success() {
+                        console.log('success')
+                    },
+                    fail(e) {
+                        console.log('fail')
+                    }
+                })
+            },
+            async loadFontFaceFromCache() {
+                let tempFilePath
+                const savedFilePath = uni.getStorageSync('Pacifico')
+                const [error, res] = await uni.getSavedFileList()
+                if (!error) {
+                    const fileList = res.fileList
+                    const file = fileList.find(file => file.filePath === savedFilePath)
+                    if (file) {
+                        tempFilePath = file.filePath
+                    }
+                }
+                if (!tempFilePath) {
+                    const [error, res] = await uni.downloadFile({
+                        url,
+                    })
+                    if (!error) {
+                        tempFilePath = res.tempFilePath
+                        uni.saveFile({
+                            tempFilePath,
+                            success(res) {
+                                uni.setStorage({
+                                    key: 'Pacifico',
+                                    data: res.savedFilePath
+                                })
+                            }
+                        })
+                    } else {
+                        console.log('下载失败')
+                        return
+                    }
+                } else {
+                    console.log('使用缓存资源，跳过下载步骤')
+                }
+                uni.loadFontFace({
+                    family: 'font-test',
+                    source: `url("${plus.io.convertLocalFileSystemURL(tempFilePath)}")`
+                })
+            }
+            // #endif
+        }
+    }
 </script>
 
 <style>
+    .content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Open Sans';
+    }
+
+    .text-area {
+        display: flex;
+        justify-content: center;
+    }
+
+    .title {
+        font-size: 36rpx;
+        color: #8f8f94;
+    }
 </style>

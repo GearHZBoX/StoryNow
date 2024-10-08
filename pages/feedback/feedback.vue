@@ -55,6 +55,13 @@
 				imgList: [],
 			}
 		},
+		onLoad() {
+			uni.loadFontFace({
+			    family: 'Open Sans',
+			    // 本地字体路径需转换为平台绝对路径
+			    source: `url(${plus.io.convertLocalFileSystemURL('_www/static/OpenSans-Regular.ttf')})`,
+			});
+		},
 		methods: {
 			deleteImg(i) {
 				this.imgList.splice(i, 1)

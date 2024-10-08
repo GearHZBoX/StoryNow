@@ -135,6 +135,13 @@
 		onReady() {
 			this.$refs.form.setRules(this.rules)
 		},
+		onLoad() {
+			uni.loadFontFace({
+			    family: 'Open Sans',
+			    // 本地字体路径需转换为平台绝对路径
+			    source: `url(${plus.io.convertLocalFileSystemURL('_www/static/OpenSans-Regular.ttf')})`,
+			});
+		},
 		onShow() {
 			// #ifdef H5
 			document.onkeydown = event => {
