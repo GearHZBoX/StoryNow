@@ -267,10 +267,10 @@ import { debounce } from 'lodash';
 					console.log(JSON.stringify(statement));
 
 					plus.payment.request(provider, statement, (result) => {
-						console.log("支付成功 :" + JSON.stringify(result));
+						// console.log("支付成功 :" + JSON.stringify(result));
 						success?.(result);
 					}, (e) => {
-						console.log("支付失败： " + JSON.stringify(e));
+						// console.log("支付失败： " + JSON.stringify(e));
 						fail?.(e);
 					})
 				});
@@ -292,7 +292,7 @@ import { debounce } from 'lodash';
 							console.log('---', rawdata);
 							this.captureOrder({
 								...res,
-								days: this.activeItem.days
+								days: this.activeItem.days,
 							})
 						},
 						fail: function(err) {
@@ -310,6 +310,7 @@ import { debounce } from 'lodash';
 					const res = await PayOrderCloud.createBusinessOrderV2({
 						...this.activeItem,
 						provider,
+						days: this.activeItem.days,
 					});
 					this.googlePayHandler({
 						success: (result) => {
@@ -317,16 +318,18 @@ import { debounce } from 'lodash';
 							console.log('---', rawdata);
 							PayOrderCloud.stripeHandler({
 								payResp: rawdata.paymentMethodData.tokenizationData.token,
-								id: res.orderInfo.id
+								id: res.orderInfo.id,
+								days: this.activeItem.days,
 							}).then(resp => {
 								console.log('ggggggg', resp);
 								if (resp.errCode === 0) {
 									uni.showToast({
 										icon: 'none',
 										title: 'payment succeeded',
-									})
+									});
+									mutations.updateUserInfo();
 									uni.redirectTo({
-										url: '/pages/payment-result/payment-result?orderId=' + resp.orderInfo._id, 
+										url: '/pages/payment-result/payment-result?orderId=' + resp.orderInfo._id,
 									});
 								} else {
 									uni.showToast({
@@ -337,6 +340,9 @@ import { debounce } from 'lodash';
 								}
 							}).catch(err => {
 								console.error(err);
+								uni.showModal({
+									content: JSON.stringify(err),
+								})
 								uni.showToast({
 									icon: 'none',
 									title: 'payment failed',
@@ -345,6 +351,9 @@ import { debounce } from 'lodash';
 						},
 						fail: function(err) {
 							console.log('fail:' + JSON.stringify(err));
+							uni.showModal({
+								content: JSON.stringify(err),
+							})
 							uni.showToast({
 								title: "payment fail",
 								icon: "none"
@@ -469,7 +478,8 @@ import { debounce } from 'lodash';
 				display: flex;
 				flex-direction: row;
 				flex-wrap: wrap;
-				justify-content: space-between;
+				justify-content: center;
+				column-gap: 16px;
 				padding: 16px;
 
 				.pay-item {

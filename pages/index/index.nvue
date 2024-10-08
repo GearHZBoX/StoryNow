@@ -10,8 +10,8 @@
 			<uni-icons type="clear" class="search-container-clear-icon" color="#c0c4cc" size="20"></uni-icons>
 		</span>
 	</view>
-	<list show-scrollbar="false" :style="'height:' + pageHeight + 'px'" ref="sublist" class="list" :offset-accuracy="5"
-		:bounce="true" isSwiperList="true" :loadmoreoffset="5">
+	<list @loadmore="onloading" show-scrollbar="true" :style="'height:' + pageHeight + 'px'" ref="sublist" class="list"
+		  :loadmoreoffset="20">
 		<refresh class="refresh" @refresh="onrefresh" @pullingdown="onpullingdown"
 			:display="refreshing ? 'show' : 'hide'">
 			<div class="refresh-view">
@@ -53,16 +53,21 @@
 				<text class="empty-view-text">No content</text>
 			</view>
 		</cell>
-		<loading v-if="hasMore" :display="loadingMore ? 'show' : 'hide'" @loading="onloading">
+		<!-- <loading v-if="hasMore" :display="loadingMore ? 'show' : 'hide'" @loading="onloading">
 			<div class="loading-view">
 				<span ref="loadingIcon">
 					<image v-if="loadingMore" class="load-view-loading" src="../../static/loading.png"></image>
 				</span>
 				<text class="refresh-view-text">{{loadingText}}</text>
 			</div>
-		</loading>
-		<cell v-if="!hasMore && !refreshing && !loadingMore && dataList.length" class="no-more-tip">
-			<text class="refresh-view-text">Loading completed</text>
+		</loading> -->
+		<cell class="no-more-tip">
+			<div class="loading-view">
+				<span ref="loadingIcon">
+					<image v-if="loadingMore" class="load-view-loading" src="../../static/loading.png"></image>
+				</span>
+				<text class="refresh-view-text">{{loadingText}}</text>
+			</div>
 		</cell>
 	</list>
 </template>
@@ -120,7 +125,10 @@ import { map } from 'lodash';
 				if (this.loadingMore) {
 					return 'Loading...';
 				}
-				return 'Release to load more';
+				if (!this.hasMore) {
+					return 'No more story';
+				}
+				return 'Pull up to load more';
 			},
 		},
 		beforeCreate() {
@@ -150,7 +158,6 @@ import { map } from 'lodash';
 			this.pageWidth = uni.getSystemInfoSync().windowWidth;
 		},
 		onLoad() {
-			
 			const cachedTitles = uni.getStorageSync(CACHE_STORY_TITLE_STORAGE_KEY);
 			if (cachedTitles) {				
 				this.placeholder = cachedTitles[Math.round(Math.random() * cachedTitles.length - 1)];
@@ -293,6 +300,8 @@ import { map } from 'lodash';
 				}
 				if (append) {
 					this.loadingMore = true;
+				} else {
+					this.$refs.sublist?.resetLoadmore();
 				}
 				try {
 					const where = this.searchVal ? `${new RegExp(this.searchVal, 'i')}.test(title)` : {};

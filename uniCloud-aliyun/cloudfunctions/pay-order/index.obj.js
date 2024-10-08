@@ -285,7 +285,7 @@ module.exports = {
 	},
 	
 	async createBusinessOrderV2(params) {
-		const { amount, currency_code, provider } = params;
+		const { amount, currency_code, provider, days } = params;
 		
 		const [businessErr, orderInfo] = await createBusinessOrder({
 			"amount": amount,
@@ -293,6 +293,9 @@ module.exports = {
 			"pay_status": 1,
 			"user_id": this.currentUser._id,
 			provider,
+			extra: {
+				days,
+			},
 			"createdAt": dayjs().format("YYYY-MM-DD HH:mm:ss")
 		})
 		
@@ -309,7 +312,7 @@ module.exports = {
 	},
 	
 	async stripeHandler(params) {
-		const { id, payResp } = params;
+		const { id, payResp, days } = params;
 		const payInfo = JSON.parse(payResp);
 		
 		console.log('---------payinfo', payInfo);
@@ -350,7 +353,28 @@ module.exports = {
 			
 			await transaction.collection('pay-order').doc(id).update({
 				pay_status: payStatus,
-			})
+			});
+			
+			
+			
+			const { data: user } = await transaction.collection('uni-id-users').doc(this.currentUser._id).get();
+			
+			const now = dayjs()
+			
+			let newVipDuration = [now.format('YYYY-MM-DD'), now.add(days, 'd').format('YYYY-MM-DD')];
+			
+			const existVipDuration = user.vip?.duration;
+			
+			if (existVipDuration) {
+				if (dayjs().isBefore(dayjs(existVipDuration[1]))) {
+					newVipDuration = [existVipDuration[0], dayjs(existVipDuration[1]).add(days, 'd').format('YYYY-MM-DD')];
+				}
+			}
+			
+			await transaction.collection('uni-id-users').doc(this.currentUser._id).update({
+				'vip.duration': newVipDuration,
+			});
+			
 			
 			if (captureResp.status !== 'succeeded') {
 				return {
