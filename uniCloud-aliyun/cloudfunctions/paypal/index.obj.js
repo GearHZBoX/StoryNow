@@ -1,7 +1,7 @@
 
 
 //运行环境 测试sandbox/ 正式live
-const environment = "sandbox"; 
+const environment = "live"; 
 
 let PAYPAL_CLIENT_ID;
 let PAYPAL_CLIENT_SECRET;
