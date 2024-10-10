@@ -1,15 +1,21 @@
 
-// app1
-const PAYPAL_CLIENT_ID = 'AXquHhZpzIQvG0Qa5l639Qse_xm4wDs_LGNiT_g-MXVkhUpK4j8NTo_GB2e-5Eg5TUvA2JCg8d4hetGF';
-const PAYPAL_CLIENT_SECRET = 'EOU3MrE7BaqGgT7ApNIgV5hv501biOH8A6G0WWyahLgQuQSU-i5BEKTztxEi7Z9oVJHvCtPqCpGsZopo';
 
-// app2
-// const PAYPAL_CLIENT_ID = 'AQNPRcj3_6DnmDDK3AtUTGAULXVR-DAc561UGorL8jC2-W9fRhjIiYS82MRVvB4yosVaGXYxqUSACo0E';
-// const PAYPAL_CLIENT_SECRET = 'EAITsvNkVLnytlYy6uemUUN8N3VCVUs5eZJk32jUjS0NeIDkwNRUcY9yfAYONJ3amkdqJU3fcvpKJzS-';
+//运行环境 测试sandbox/ 正式live
+const environment = "sandbox"; 
 
-const base = "https://api-m.sandbox.paypal.com";
+let PAYPAL_CLIENT_ID;
+let PAYPAL_CLIENT_SECRET;
+let base;
 
-const environment = "sandbox"; //运行环境 sandbox/live
+if(environment=='sandbox'){
+	 PAYPAL_CLIENT_ID = 'AXquHhZpzIQvG0Qa5l639Qse_xm4wDs_LGNiT_g-MXVkhUpK4j8NTo_GB2e-5Eg5TUvA2JCg8d4hetGF';
+	 PAYPAL_CLIENT_SECRET = 'EOU3MrE7BaqGgT7ApNIgV5hv501biOH8A6G0WWyahLgQuQSU-i5BEKTztxEi7Z9oVJHvCtPqCpGsZopo';
+	 base = "https://api-m.sandbox.paypal.com";
+}else{
+	 PAYPAL_CLIENT_ID = "AaM_XKKSsFJj1H_1sEq4jH-GlV2gwY_KiZ_LOJ84ulU02nlgETl2Fryo0kMF6N5uJGZoXJcbzQBbQxP9";
+	 PAYPAL_CLIENT_SECRET = "EK-kJrDBWy8lHNZD8amY3q3IK3AApbOSYhXoiXsfAq-F4iS1C7wsjRisUCS5HDH03zvCnVxKTEuZOuZV";
+	 base = "https://api-m.paypal.com"
+}
 
 /**
  * 生成access Token
