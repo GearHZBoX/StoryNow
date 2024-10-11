@@ -25,7 +25,7 @@
 				<view class="vip-desc">Access to popular content across all platforms.</view>
 			</view>
 			<view class="vip-right" >
-				<text>0.3</text>$/day
+				<text>$0.3</text>/day
 			</view>
 		</view>
 
@@ -45,12 +45,12 @@
 		</view>
 
 		<view class="menu-box">
-			<view class="menu-item" @click="toPage('/pages/about-us/about-us')">
+		<!-- 	<view class="menu-item" @click="toPage('/pages/about-us/about-us')">
 				<view class="menu-item-icon aubout-us-icon">
 				</view>
 				<view class="menu-item-title">About Us</view>
 				<view class="menu-item-more"></view>
-			</view>
+			</view> -->
 			<view class="menu-item" @click="toPage('/pages/feedback/feedback',true)">
 				<view class="menu-item-icon feedback-icon">
 				</view>
