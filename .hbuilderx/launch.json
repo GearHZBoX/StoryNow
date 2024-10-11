@@ -6,7 +6,7 @@
         {
         	"app-plus" : 
         	{
-        		"launchtype" : "remote"
+        		"launchtype" : "local"
         	},
         	"default" : 
         	{

@@ -4,12 +4,12 @@
 		<view class="main">
 			<image class="main-image" src="../../static/tick-success.png"></image>
 			<text class="main-title">Payment success</text>
-			<text class="main-desc">
+			<!-- <text class="main-desc">
 				You can check your order from 
 				<text class="link">
 					here
 				</text>
-			</text>
+			</text> -->
 		</view>
 	</view>
 </template>
