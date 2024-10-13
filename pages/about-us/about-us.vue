@@ -61,7 +61,6 @@
 	.about-us {
 		position: relative;
 		.navigator-text{
-			flex:1;
 			padding-right: 40px;
 			text-align: center;
 			color: var(--light-text-gray01, $light_text_gray1);
@@ -69,11 +68,14 @@
 			text-overflow: ellipsis;
 			white-space: nowrap;
 			/* Title/medium */
-			font-family: "PingFang SC";
-			font-size: 14px;
+			
+			
+			font-family: "Open Sans";
+			font-size: 16px;
 			font-style: normal;
-			font-weight: 500;
+			font-weight: 600;
 			line-height: 20px; /* 142.857% */
+			flex:1;
 		}
 		.content-box {
 			padding: 30px 16px;

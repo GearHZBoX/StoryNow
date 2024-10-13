@@ -10,6 +10,7 @@
 			<view class="pay-content-title">
 				<view class="title-icon"></view>
 				VIP Member
+				<image class="vip-3d" src="../../static/vip-3d.png"></image>
 			</view>
 
 			<view class="pay-item-list">
@@ -37,7 +38,7 @@
 			</view>
 
 			<view class="submit" @click="choosePaymentMethods()">
-				{{confirmText}}
+				Confirm and pay
 			</view>
 		</view>
 
@@ -53,10 +54,10 @@
 					<text class="confirm-popup-title">
 						Payment methods
 					</text>
-					<view class="google-pay-btn" @click="toCreateOrder('google')">
+					<!-- <view class="google-pay-btn" @click="toCreateOrder('google')">
 						<image src="../../static/Google Logo.svg" class="c-icon"></image>
 						<text class="c-text">Pay</text>
-					</view>
+					</view> -->
 					<view class="paypal-pay-btn" @click="toCreateOrder('paypal')">
 						<image src="../../static/paypal.png" class="c-icon"></image>
 					</view>
@@ -106,7 +107,7 @@ import { debounce } from 'lodash';
 		},
 		data() {
 			return {
-				headerStyle: "background:rgba(0,0,0,0)",
+				headerStyle: "background:rgba(0,0,0,0);padding-bottom:100px;",
 				checked: false,
 				activeItem: {},
 				priceItemList: [],
@@ -439,10 +440,9 @@ import { debounce } from 'lodash';
 			text-overflow: ellipsis;
 			white-space: nowrap;
 			/* Title/medium */
-			font-family: "PingFang SC";
-			font-size: 14px;
+			font-size: 16px;
 			font-style: normal;
-			font-weight: 500;
+			font-weight: 600;
 			line-height: 20px;
 			/* 142.857% */
 		}
@@ -469,7 +469,7 @@ import { debounce } from 'lodash';
 				font-family: "Open Sans";
 				font-size: 16px;
 				font-style: normal;
-				font-weight: 400;
+				font-weight: 600;
 
 				.title-icon {
 					width: 20px;
@@ -668,13 +668,14 @@ import { debounce } from 'lodash';
 			}
 
 			text {
-				color: var(--light-text-gray02, $light_text_gray2);
+				color: #919099;
 				/* body/regular */
 				font-family: "Open Sans";
 				font-size: 12px;
 				font-style: normal;
 				font-weight: 400;
 				line-height: 16px;
+				
 				/* 133.333% */
 			}
 		}
@@ -756,6 +757,14 @@ import { debounce } from 'lodash';
 			height: 80px;
 			width: 80px;
 		}
+	}
+	
+	.vip-3d {
+		width: 104px;
+		height: 104px;
+		position: absolute;
+		right: 16px;
+		transform: translateY(-34px);
 	}
 	
 </style>

@@ -76,6 +76,10 @@
 import { uniq } from 'lodash';
 import { CACHE_STORY_TITLE_STORAGE_KEY, CACHE_TITLE_COUNT } from '../../common/constant';
 import { map } from 'lodash';
+import {
+		store,
+		mutations
+	} from "@/uni_modules/uni-id-pages/common/store.js";
 	// #ifdef APP-PLUS
 	const dom = weex.requireModule('dom');
 	const animation = weex.requireModule('animation');
@@ -173,6 +177,8 @@ import { map } from 'lodash';
 			if (!this.placeholder || Math.random() * 10 > 5) {
 				this.setSearchPlaceholder();
 			}
+			
+			mutations.updateUserInfo();
 		},
 		methods: {
 			async setSearchPlaceholder() {
@@ -490,6 +496,7 @@ import { map } from 'lodash';
 		background-color: #fff;
 		border-radius: 20px;
 		margin-bottom: 8px;
+		border: 0.5px rgba(240, 237, 255, 1);
 
 		&-footer {
 			display: flex;
@@ -572,8 +579,8 @@ import { map } from 'lodash';
 		position: relative;
 
 		&-icon {
-			height: 14px;
-			width: 14px;
+			height: 16px;
+			width: 16px;
 			margin-right: 8px;
 		}
 

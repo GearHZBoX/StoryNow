@@ -2,11 +2,13 @@
 	<view class="user-center-page">
 		<!-- 登录状态 -->
 		<view class="login-status-box" v-if="!hasLogin" @click="toLogin">
+			<image src="../../static/avatar-default.png" class="head-img" />
 			Login in
 			<i></i>
 		</view>
 		<view class="login-status-box" v-else>
-			<!-- <img :src="userInfo.avatar_url" class="head-img" /> -->
+			<image :src="userInfo.avatar_url || '../../static/avatar-default.png'" class="head-img" />
+			<!-- <image src="../../static/avatar-default.png"></image> -->
 			{{userInfo.nickname}}
 			<i class="king" v-if="vipStatus==3"></i>
 			<i class="king expire" v-else-if="vipStatus==2"></i>
@@ -20,6 +22,7 @@
 		</view>
 
 		<view class="vip-box" v-if="vipStatus!=3" @click="toPage('/pages/to-vip/to-vip',true)">
+			<image mode="widthFix" src="../../static/diamond.png" class="diamond"></image>
 			<view class="vip-left-box">
 				<view class="vip-title">Open Storynow Membership</view>
 				<view class="vip-desc">Access to popular content across all platforms.</view>
@@ -40,7 +43,7 @@
 			<view class="read-continue" >
 				<text class="summary"> {{readHsitory.title}}
 				</text>
-				<view class="continue" @click="toHistory">continue</view>
+				<view class="continue" @click="toHistory">Continue</view>
 			</view>
 		</view>
 
@@ -65,7 +68,7 @@
 			</view>
 			
 			<view class="menu-item" v-if="hasLogin" @click="logoff">
-				<view class="menu-item-icon logout-icon">
+				<view class="menu-item-icon cancel-icon">
 				</view>
 				<view class="menu-item-title">Cancel Account</view>
 				<view class="menu-item-more"></view>
@@ -123,7 +126,7 @@
 			    family: 'Open Sans',
 			    // 本地字体路径需转换为平台绝对路径
 			    source: `url(${plus.io.convertLocalFileSystemURL('_www/static/OpenSans-Regular.ttf')})`,
-			})
+			});
 		},
 		methods: {
 			toPage(url, auth) {
@@ -379,12 +382,13 @@
 					text-overflow: ellipsis;
 					white-space: nowrap;
 					flex-wrap: nowrap;
-					font-family: "PingFang SC";
+					font-family: "Open Sans";
 					font-size: 14px;
 					font-style: normal;
 					font-weight: 400;
 					line-height: 20px;
 					height: 20px;
+					color: #605C73;
 				}
 
 				.continue {
@@ -392,7 +396,7 @@
 					justify-content: center;
 					align-items: center;
 					display: flex;
-					height: 28px;
+					height: 32px;
 					box-sizing: border-box;
 					padding: 8px 12px;
 					justify-content: center;
@@ -403,8 +407,9 @@
 					font-family: "PingFang SC";
 					font-size: 12px;
 					font-style: normal;
-					font-weight: 500;
+					font-weight: 600;
 					line-height: 14px;
+					margin-left: 8px;
 					/* 116.667% */
 				}
 			}
@@ -441,6 +446,10 @@
 				}
 
 				&.logout-icon {
+					background: url("../../static/logout.svg") center/20px 20px no-repeat;
+				}
+				
+				&.cancel-icon {
 					background: url("../../static/user-center/logout.svg") center/20px 20px no-repeat;
 				}
 
@@ -469,5 +478,10 @@
 				background: url('../../static/user-center/arrow.svg') center/100% auto no-repeat;
 			}
 		}
+	}
+	
+	.diamond {
+		width: 60px;
+		margin-right: 7px;
 	}
 </style>

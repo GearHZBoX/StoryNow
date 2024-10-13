@@ -306,7 +306,8 @@
 		}
 
 		.submit {
-			width: 339px;
+			// width: 339px;
+			width: 92%;
 			height: 44px;
 			border-radius: 27px;
 			background: var(--light-brand-02, #9883FC);
@@ -317,9 +318,9 @@
 			text-align: center;
 			/* Title/medium */
 			font-family: "PingFang SC";
-			font-size: 14px;
+			font-size: 16px;
 			font-style: normal;
-			font-weight: 500;
+			font-weight: 600;
 			line-height: 20px;
 			/* 142.857% */
 			position: fixed;

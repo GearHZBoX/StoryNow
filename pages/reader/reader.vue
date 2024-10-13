@@ -30,9 +30,9 @@
 				<text class="reader-content-text" v-if="story.text || story.preview">
 					{{story.hasPermission ? story.text : `${story.preview}`}}
 				</text>
+				<view class="preview-footer" v-if="!loading && !story.hasPermission"></view>
 			</view>
-			<view class="preview-footer" v-if="!loading && !story.hasPermission"></view>
-			<view class="ticket-view">
+			<!-- <view class="ticket-view">
 				<view id="ticket" class="ticket"
 					:style="`transform: scale(${ticketScale}); transform-origin: left top;`"
 					v-if="isLoaded && !story.hasPermission">
@@ -46,15 +46,19 @@
 						<text class="ticket-right-suffix">day</text>
 					</view>
 				</view>
+			</view> -->
+			<view class="membership-view" v-if="isLoaded && !story.hasPermission">
+				<image @click.stop="purchaseVip" mode="widthFix" class="membership-card" src="../../static/reader-mebership-card.png"></image>
 			</view>
 		</mescroll-body>
-
-		<uni-load-more :contentText="{ contentrefresh: 'Loading story' }" status="loading" v-if="loading"
-			icon-type="auto"></uni-load-more>
+		
+		<view class="load-view" v-if="loading">
+			<uni-load-more :contentText="{ contentrefresh: 'Loading story' }" status="loading" icon-type="auto"></uni-load-more>
+		</view>
 		<!-- <uni-fab horizontal="right" :pattern="fabPattern" @click="goDownToNextStory" /> -->
-		<view class="next-story-button" :style="{width: showText ? '100px' : '18px'}" @click="goDownToNextStory">
-			<uni-icons class="next-story-button-icon" type="down"></uni-icons>
-			<text v-if="showText" class="next-story-button-text">next story</text>
+		<view class="next-story-button" :style="{width: showText ? '90px' : '36px'}" @click="goDownToNextStory">
+			<image src="../../static/arrow.svg" class="next-story-button-icon"></image>
+			<text v-if="showText" class="next-story-button-text">Next</text>
 		</view>
 
 			<view v-if="nextStory?._id" class="next-footer">
@@ -149,7 +153,7 @@
 				return this.story.text || this.story.preview;
 			},
 			isFirst() {
-				return this.storyId === this.$store.state.readerTrack?.stack[0]._id
+				return this.storyId === this.$store.state.readerTrack?.stack[0]?._id
 			},
 			showText() {
 				return this.$store.state.readerTrack.displayNextText;
@@ -176,7 +180,7 @@
 			touchEnd(e) {
 				console.log('end', e)
 				this.touchEndY = e.changedTouches[0].pageY;
-				console.log('--==--', this.touchStartY, this.touchEndY)
+				// console.log('--==--', this.touchStartY, this.touchEndY)
 				if (this.canSlideToNext) {
 					console.log('next story');
 					this.goDownToNextStory();
@@ -379,11 +383,13 @@
 			this.loadData();
 		},
 		onLoad(query) {
+			//  #ifdef APP
 			uni.loadFontFace({
 			    family: 'Open Sans',
 			    // 本地字体路径需转换为平台绝对路径
 			    source: `url(${plus.io.convertLocalFileSystemURL('_www/static/OpenSans-Regular.ttf')})`,
 			})
+			// #endif
 			
 			this.storyId = query.id;
 			this.storyTitle = query.title;
@@ -402,10 +408,10 @@
 			
 		},
 		mounted() {
-			const query = uni.createSelectorQuery().in(this);
-			query.select('#navigator').boundingClientRect(data => {
-				this.navigatorBottomTop = data.height;
-			}).exec();
+			// const query = uni.createSelectorQuery().in(this);
+			// query.select('#navigator').boundingClientRect(data => {
+			// 	this.navigatorBottomTop = data.height;
+			// }).exec();
 		},
 		onPageScroll({
 			scrollTop
@@ -457,6 +463,7 @@
 
 	.reader-header {
 		padding: 12px 16px 8px;
+		margin-top: 16px;
 
 		&-title {
 			overflow: hidden;
@@ -516,6 +523,7 @@
 
 	.reader-content {
 		padding: 0 16px;
+		position: relative;
 
 		&-text {
 			color: $light_text_gray2;
@@ -647,7 +655,7 @@
 
 	.preview-footer {
 		background: linear-gradient(180deg, rgba(246, 246, 249, 0.00) 0%, #fff 56.25%, #fff 100%);
-		height: 160px;
+		height: 40px;
 		width: 100%;
 		position: absolute;
 		bottom: 0;
@@ -658,13 +666,14 @@
 	}
 
 	.next-story-button {
+		box-sizing: border-box;
 		position: fixed;
 		bottom: 15%;
 		right: 7%;
 		display: flex;
 		flex-direction: row;
 		align-items: center;
-		padding: 10px;
+		padding: 8px 16px;
 		background-color: #fff;
 		border-radius: 20px;
 		box-shadow: #f1f1f1 -1px -1px 5px;
@@ -674,13 +683,19 @@
 
 
 		&-icon {
-			color: $light_text_gray3;
+			color: #9883FC;
+			height: 16px;
+			width: 16px;
+			flex-shrink: 0;
 		}
 		
 		&-text {
-			margin-left: 5px;
-			color: $light_text_gray3;
+			color: #9883FC;
 			lines: 1;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			margin-left: 4px;
 		}
 	}
 
@@ -709,5 +724,21 @@
 	
 	.highlight {
 		color: $light_brand_02;
+	}
+	
+	.load-view {
+		// height: 500px;
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+	}
+	
+	.membership-view {
+		padding: 16px;
+	}
+	
+	.membership-card {
+		width: 100%;
 	}
 </style>

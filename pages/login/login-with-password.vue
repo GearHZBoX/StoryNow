@@ -14,7 +14,7 @@
 				placeholder="Enter the email" v-model="email" :focus="focusEmail" @blur="focusEmail = false">
 				<template #left>
 					<uni-icons :size="24" color="rgba(145, 144, 153, 1)" class="input-prefix"
-						type='person-filled'></uni-icons>
+						type='email-filled'></uni-icons>
 				</template>
 			</uni-easyinput>
 			<uni-easyinput :placeholder-style="placeholderStyle" class="sign-in-view-title-password"
