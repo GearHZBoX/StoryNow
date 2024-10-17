@@ -68,9 +68,21 @@
 </template>
 
 <script>
-import { uniq } from 'lodash';
-import { CACHE_STORY_TITLE_STORAGE_KEY, CACHE_TITLE_COUNT } from '../../common/constant';
-import { map } from 'lodash';
+	import {
+		uniq
+	} from 'lodash';
+	import {
+		CACHE_STORY_TITLE_STORAGE_KEY,
+		CACHE_TITLE_COUNT
+	} from '../../common/constant';
+	import {
+		map
+	} from 'lodash';
+	import {
+		importObjectConfig
+	} from "../../utils/index.js"
+	const SearchCodeCloud = importObjectConfig('search-code');
+
 	// #ifdef APP-PLUS
 	const dom = weex.requireModule('dom');
 	const animation = weex.requireModule('animation');
@@ -150,9 +162,9 @@ import { map } from 'lodash';
 			this.pageWidth = uni.getSystemInfoSync().windowWidth;
 		},
 		onLoad() {
-			
+
 			const cachedTitles = uni.getStorageSync(CACHE_STORY_TITLE_STORAGE_KEY);
-			if (cachedTitles) {				
+			if (cachedTitles) {
 				this.placeholder = cachedTitles[Math.round(Math.random() * cachedTitles.length - 1)];
 			}
 			if (!this.placeholder || Math.random() * 10 > 5) {
@@ -162,10 +174,14 @@ import { map } from 'lodash';
 		methods: {
 			async setSearchPlaceholder() {
 				const db = uniCloud.database();
-				
+
 				const storyCollection = db.collection('short-stories');
-				
-				const { result: { total } } = await storyCollection.count().catch(err => {
+
+				const {
+					result: {
+						total
+					}
+				} = await storyCollection.count().catch(err => {
 					console.error(err);
 					return {
 						result: {
@@ -173,13 +189,15 @@ import { map } from 'lodash';
 						}
 					}
 				});
-				
+
 				const randomIndex = Math.round(Math.random() * total);
-				
-				const chosenStory = await storyCollection.field('_id, title').skip(randomIndex).limit(1).get({ getOne: true });
-				
+
+				const chosenStory = await storyCollection.field('_id, title').skip(randomIndex).limit(1).get({
+					getOne: true
+				});
+
 				console.log('chosen story', chosenStory?.result?.data);
-				
+
 				if (chosenStory?.result?.data.title) {
 					this.placeholder = chosenStory.result.data.title;
 				}
@@ -188,15 +206,22 @@ import { map } from 'lodash';
 				const regexp = new RegExp(keyword, 'ig');
 				const fragments = title.split(regexp);
 				const keywordsCache = title.match(regexp)
-				
+
 				console.log('--', fragments, keywordsCache);
-				return fragments.map((fragment, i) => ({ fragment, match: keywordsCache[i], length: fragments.length }))
+				return fragments.map((fragment, i) => ({
+					fragment,
+					match: keywordsCache[i],
+					length: fragments.length
+				}))
 			},
-			toReader({ _id, title }) {
+			toReader({
+				_id,
+				title
+			}) {
 				if (!_id) {
 					return;
 				}
-				
+
 				uniCloud.callFunction({
 					name: 'increment-story-tap-count',
 					data: {
@@ -207,7 +232,7 @@ import { map } from 'lodash';
 				}).catch(err => {
 					console.error('inc failed', err);
 				})
-				
+
 				uni.navigateTo({
 					url: `/pages/reader/reader?id=${_id}&title=${title}`,
 				});
@@ -274,14 +299,16 @@ import { map } from 'lodash';
 				this.loadingAni();
 			},
 			async cacheTitle(titles) {
-				const storageResp = await uni.getStorage({ key: CACHE_STORY_TITLE_STORAGE_KEY }).catch(err => {
+				const storageResp = await uni.getStorage({
+					key: CACHE_STORY_TITLE_STORAGE_KEY
+				}).catch(err => {
 					console.error(err);
 					return {
 						data: [],
 					}
 				});
 				const cachedTitles = storageResp.data;
-				
+
 				await uni.setStorage({
 					key: CACHE_STORY_TITLE_STORAGE_KEY,
 					data: uniq([...titles, ...cachedTitles].slice(0, CACHE_TITLE_COUNT)),
@@ -296,17 +323,25 @@ import { map } from 'lodash';
 				}
 				try {
 					const where = this.searchVal ? `${new RegExp(this.searchVal, 'i')}.test(title)` : {};
-					const dbResp = await uniCloud
-						.databaseForJQL()
-						.collection('short-stories')
-						.where(where)
-						.field('_id,title,summary,uploader')
-						.orderBy('createdAt desc')
-						.skip(this.pageSize * (this.pageCurrent - 1))
-						.limit(this.pageSize)
-						.get({
-							getCount: true
-						});
+					// const dbResp = await uniCloud
+					// 	.databaseForJQL()
+					// 	.collection('short-stories')
+					// 	.where(where)
+					// 	.field('_id,title,summary,uploader')
+					// 	.orderBy('createdAt desc')
+					// 	.skip(this.pageSize * (this.pageCurrent - 1))
+					// 	.limit(this.pageSize)
+					// 	.get({
+					// 		getCount: true
+					// 	});
+					const dbResp = await  SearchCodeCloud.getStoryListAndCode({
+						searchVal:this.searchVal,
+						field:'_id,title,summary,uploader',
+						orderBy:'createdAt desc',
+						pageSize:this.pageSize,
+						pageCurrent:this.pageCurrent
+					})
+					
 					if (!append) {
 						this.dataList = [];
 					}
@@ -316,7 +351,7 @@ import { map } from 'lodash';
 				} catch (err) {
 					console.error(err);
 					uni.showToast({
-						title: `load data failedï¼š${err}`
+						title: `load data failedï¼{err}`
 					});
 				} finally {
 					this.loadingMore = false;
@@ -647,7 +682,7 @@ import { map } from 'lodash';
 	.highlight-keyword {
 		color: $light_brand_01;
 	}
-	
+
 	.header-title {
 		overflow: hidden;
 		color: $light_text_gray1;
@@ -656,7 +691,7 @@ import { map } from 'lodash';
 		white-space: nowrap;
 		/* #endif */
 		lines: 5;
-	
+
 		/* Title/medium */
 		font-family: "Open Sans";
 		font-size: 16px;
@@ -665,7 +700,7 @@ import { map } from 'lodash';
 		line-height: 20px;
 		margin-bottom: 8px;
 	}
-	
+
 	.title-fragments {
 		display: flex;
 		flex-direction: row;
@@ -674,7 +709,7 @@ import { map } from 'lodash';
 		margin-bottom: 8px;
 		flex-wrap: nowrap;
 	}
-	
+
 	.title-text {
 		overflow: hidden;
 		color: $light_text_gray1;
@@ -683,7 +718,7 @@ import { map } from 'lodash';
 		white-space: nowrap;
 		/* #endif */
 		lines: 1;
-	
+
 		/* Title/medium */
 		font-family: "Open Sans";
 		font-size: 16px;
@@ -691,7 +726,7 @@ import { map } from 'lodash';
 		font-weight: 600;
 		line-height: 20px;
 	}
-	
+
 	.fragment-view {
 		display: flex;
 		flex-direction: row;
@@ -700,10 +735,11 @@ import { map } from 'lodash';
 		lines: 1;
 		text-overflow: ellipsis;
 	}
-	
+
 	/* #ifndef APP-NVUE */
 	uni-page-body {
 		flex-direction: column;
 	}
+
 	/* #endif */
 </style>
