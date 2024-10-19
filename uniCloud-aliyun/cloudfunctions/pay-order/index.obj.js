@@ -51,7 +51,7 @@ function updateBusinessOrder(payInfo, updateInfo) {
 				resolve([res, null])
 			}
 		} catch (e) {
-			console.log("更新业务订单失败", e)
+			console.log("geng'x业务订单失败", e)
 			resolve([e, null])
 		}
 	})

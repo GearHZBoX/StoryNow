@@ -1,0 +1,10 @@
+{
+  "name": "search-code",
+  "dependencies": {
+    "dayjs": "^1.11.13",
+    "get-user": "file:../common/get-user"
+  },
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

@@ -1,0 +1,1 @@
+{"bsonType":"object","required":[],"permission":{"read":true,"create":true,"update":true,"delete":true},"properties":{"_id":{"title":"机构Id","description":"ID，系统自动生成"},"organization_name":{"description":"机构名称","bsonType":"string"},"share_rate":{"description":"分成比例","bsonType":"double"}}}
