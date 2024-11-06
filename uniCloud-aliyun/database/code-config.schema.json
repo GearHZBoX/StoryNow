@@ -1,1 +1,31 @@
-{"bsonType":"object","required":[],"permission":{"read":true,"create":true,"update":true,"delete":true},"properties":{"_id":{"description":"ID，系统自动生成"},"book_id":{"title":"图书Id","bsonType":"string"},"organization":{"title":"机构信息","bsonType":"object"},"user_id":{"title":"创建人","bsonType":"string"},"createdAt":{"title":"创建时间","bsonType":"string"}}}
+{
+	"bsonType": "object",
+	"required": [],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"book_id": {
+			"title": "图书Id",
+			"bsonType": "string"
+		},
+		"organization": {
+			"title": "机构信息",
+			"bsonType": "object"
+		},
+		"user_id": {
+			"title": "创建人",
+			"bsonType": "string"
+		},
+		"createdAt": {
+			"title": "创建时间",
+			"bsonType": "string"
+		}
+	}
+}
